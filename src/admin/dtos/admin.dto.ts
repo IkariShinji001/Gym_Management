@@ -1,6 +1,6 @@
 import { IsString, IsNumber, IsEmail, IsPhoneNumber } from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
-
+import { Role } from '../repositories/admin.entity';
 export class CreateAdminDto {
   @IsEmail()
   email: string;
@@ -12,10 +12,10 @@ export class CreateAdminDto {
   phoneNumber: string;
 
   @IsString()
-  fullName: number;
+  fullName: string;
 
   @IsString()
-  role: string;
+  role: Role;
 }
 
 export class updateAdminDto extends PartialType(CreateAdminDto) {}
