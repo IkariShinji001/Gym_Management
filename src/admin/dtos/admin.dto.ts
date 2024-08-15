@@ -6,7 +6,7 @@ export class CreateAdminDto {
   email: string;
 
   @IsString()
-  password: number;
+  password: string;
 
   @IsPhoneNumber()
   phoneNumber: string;
