@@ -9,7 +9,7 @@ export class CreateSupplementProductDto {
   price: number;
 
   @IsString()
-  imageUrl: number;
+  imageUrl: string;
 }
 
 export class updateSupplementProductDto extends PartialType(
