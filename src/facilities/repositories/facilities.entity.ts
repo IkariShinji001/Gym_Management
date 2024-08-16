@@ -15,5 +15,5 @@ export class Facilities {
   description: string;
 
   @Column({ nullable: false })
-  image_url: string;
+  imageUrl: string;
 }

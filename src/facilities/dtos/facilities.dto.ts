@@ -6,12 +6,12 @@ export class CreateFacilityDto {
   name: string;
 
   @IsString()
-  description: number;
+  description: string;
 
   maintenanceDate: Date;
 
   @IsString()
-  imageUrl: number;
+  imageUrl: string;
 }
 
 export class updateFacilityDto extends PartialType(CreateFacilityDto) {}
