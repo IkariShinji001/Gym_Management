@@ -1,6 +1,5 @@
 import { Observable } from 'rxjs';
-import { AdminEmail } from './adminService.interface';
-import { Admin } from 'typeorm';
+import { AdminEmail, Admin } from './adminService.interface';
 
 export interface AdminServiceClient {
   findAdminByEmail(data: AdminEmail): Observable<Admin>;

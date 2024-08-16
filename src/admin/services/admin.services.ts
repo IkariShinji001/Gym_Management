@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { IAdminService } from '../interfaces/admin.service.interface';
@@ -14,7 +14,7 @@ export class AdminService implements IAdminService {
   ) {}
 
   findOneByEmail(data: { email: string }): Promise<Admin> {
-    return this.adminRepository.findOneByOrFail({ email: data.email });
+    return this.adminRepository.findOneBy({ email: data.email });
   }
 
   async findAll(): Promise<Admin[]> {
@@ -23,8 +23,9 @@ export class AdminService implements IAdminService {
   async findOne(id: number): Promise<Admin> {
     return await this.adminRepository.findOne({ where: { id } });
   }
+
+  // validate EMAIL
   async create(newAdmin: CreateAdminDto): Promise<Admin> {
-    // Hash password
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(newAdmin.password, salt);
 
@@ -33,6 +34,7 @@ export class AdminService implements IAdminService {
     const createdAdmin = this.adminRepository.create(newAdmin);
     return await this.adminRepository.save(createdAdmin);
   }
+
   async update(id: number, updateAdmin: updateAdminDto): Promise<Admin> {
     await this.adminRepository.update(id, updateAdmin);
     return this.adminRepository.findOne({ where: { id } });

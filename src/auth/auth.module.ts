@@ -3,6 +3,8 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 import { AuthController } from './controllers/auth.controller';
 import { AuthService } from './services/auth.service';
+import { JwtModule } from '@nestjs/jwt';
+import { jwtConstants } from 'src/constant';
 
 @Module({
   imports: [
@@ -16,6 +18,11 @@ import { AuthService } from './services/auth.service';
         },
       },
     ]),
+    JwtModule.register({
+      global: true,
+      secret: jwtConstants.secret,
+      signOptions: { expiresIn: '1h' },
+    }),
   ],
   controllers: [AuthController],
   providers: [AuthService],

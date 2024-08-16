@@ -1,1 +1,3 @@
-export const FACILITIES_REPOSITORY = 'FACILITIES_REPOSITORY';
+export const jwtConstants = {
+  secret: 'DOREMONMON',
+};
