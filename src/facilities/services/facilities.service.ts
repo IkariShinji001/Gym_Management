@@ -11,23 +11,26 @@ export class FacilitiesService implements IFacilitiesService{
     @InjectRepository(Facilities)
     private facilitiesRepository: Repository<Facilities>,
   ) {}
-  async findOne(id: number): Promise<Facilities> {
-    return await this.facilitiesRepository.findOne({where: {id}});
+  async findAll(): Promise<Facilities[]> {
+    return await this.facilitiesRepository.find();
   }
   async create(newFacility: CreateFacilityDto): Promise<Facilities> {
     const facility = await this.facilitiesRepository.create(newFacility);
     return await this.facilitiesRepository.save(facility);
   }
-  update(id: number, updateFacility: updateFacilityDto): Promise<Facilities> {
-    throw new Error('Method not implemented.');
+  async update(id: number, updateFacility: updateFacilityDto): Promise<Facilities> {
+    await this.facilitiesRepository.update(id, updateFacility);
+    return this.facilitiesRepository.findOne({where: {id}})
   }
-  delete(id: number): Promise<void> {
-    throw new Error('Method not implemented.');
+  async findByName(name: string): Promise<Facilities[]> {
+    const facilities = await this.facilitiesRepository.find({where: {name}})
+    return facilities;
   }
-  findByName(name: string): Promise<Facilities[]> {
-    throw new Error('Method not implemented.');
+  async findOne(id: number): Promise<Facilities> {
+    return await this.facilitiesRepository.findOne({where: {id}});
   }
-  async findAll() {
-    return await this.facilitiesRepository.find();
+  async delete(id: number): Promise<void> {
+    const facility = await this.facilitiesRepository.findOne({where: {id}});
+    await this.facilitiesRepository.delete(facility);
   }
 }
