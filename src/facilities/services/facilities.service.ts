@@ -6,7 +6,7 @@ import { IFacilitiesService } from '../interfaces/facilities.service.interface';
 import { CreateFacilityDto, updateFacilityDto } from '../dtos/facilities.dto';
 
 @Injectable()
-export class FacilitiesService implements IFacilitiesService{
+export class FacilitiesService implements IFacilitiesService {
   constructor(
     @InjectRepository(Facilities)
     private facilitiesRepository: Repository<Facilities>,
@@ -15,22 +15,29 @@ export class FacilitiesService implements IFacilitiesService{
     return await this.facilitiesRepository.find();
   }
   async create(newFacility: CreateFacilityDto): Promise<Facilities> {
-    const facility = await this.facilitiesRepository.create(newFacility);
+    const facility = this.facilitiesRepository.create(newFacility);
     return await this.facilitiesRepository.save(facility);
   }
-  async update(id: number, updateFacility: updateFacilityDto): Promise<Facilities> {
+  async update(
+    id: number,
+    updateFacility: updateFacilityDto,
+  ): Promise<Facilities> {
     await this.facilitiesRepository.update(id, updateFacility);
-    return this.facilitiesRepository.findOne({where: {id}})
+    return this.facilitiesRepository.findOne({ where: { id } });
   }
+
+  //Sai (Dung LIKE )
   async findByName(name: string): Promise<Facilities[]> {
-    const facilities = await this.facilitiesRepository.find({where: {name}})
+    const facilities = await this.facilitiesRepository.find({
+      where: { name },
+    });
     return facilities;
   }
   async findOne(id: number): Promise<Facilities> {
-    return await this.facilitiesRepository.findOne({where: {id}});
+    return await this.facilitiesRepository.findOne({ where: { id } });
   }
   async delete(id: number): Promise<void> {
-    const facility = await this.facilitiesRepository.findOne({where: {id}});
+    const facility = await this.facilitiesRepository.findOne({ where: { id } });
     await this.facilitiesRepository.delete(facility);
   }
 }
