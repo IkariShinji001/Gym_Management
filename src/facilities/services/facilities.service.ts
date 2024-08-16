@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Facilities } from '../repositories/facilities.entity';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IFacilitiesService } from '../interfaces/facilities.service.interface';
 import { CreateFacilityDto, updateFacilityDto } from '../dtos/facilities.dto';
@@ -11,6 +11,7 @@ export class FacilitiesService implements IFacilitiesService {
     @InjectRepository(Facilities)
     private facilitiesRepository: Repository<Facilities>,
   ) {}
+
   async findAll(): Promise<Facilities[]> {
     return await this.facilitiesRepository.find();
   }
@@ -18,6 +19,7 @@ export class FacilitiesService implements IFacilitiesService {
     const facility = this.facilitiesRepository.create(newFacility);
     return await this.facilitiesRepository.save(facility);
   }
+  
   async update(
     id: number,
     updateFacility: updateFacilityDto,
@@ -26,16 +28,19 @@ export class FacilitiesService implements IFacilitiesService {
     return this.facilitiesRepository.findOne({ where: { id } });
   }
 
-  //Sai (Dung LIKE )
   async findByName(name: string): Promise<Facilities[]> {
     const facilities = await this.facilitiesRepository.find({
-      where: { name },
+      where: {
+        name: Like(`%${name}%`), // Sử dụng toán tử ilike để tìm kiếm không phân biệt chữ hoa thường
+      },
     });
     return facilities;
   }
+
   async findOne(id: number): Promise<Facilities> {
     return await this.facilitiesRepository.findOne({ where: { id } });
   }
+
   async delete(id: number): Promise<void> {
     const facility = await this.facilitiesRepository.findOne({ where: { id } });
     await this.facilitiesRepository.delete(facility);

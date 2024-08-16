@@ -9,16 +9,12 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 
 @Controller('/facilities')
 export class FacilitiesController {
   constructor(private facilitiesService: FacilitiesService) {}
-
-  @Get()
-  async findAll(): Promise<Facilities[]> {
-    return await this.facilitiesService.findAll();
-  }
 
   @Post()
   async create(
@@ -35,16 +31,19 @@ export class FacilitiesController {
     return await this.facilitiesService.update(id, updateFacility);
   }
 
-  // sai REST API sai
-  @Get('/getByName/:name')
-  async findByName(@Param('name') name: string): Promise<Facilities[]> {
-    return await this.facilitiesService.findByName(name);
+  @Get()
+  async findByName(@Query('name') name: string): Promise<Facilities[]> {
+    if(name) {
+      return await this.facilitiesService.findByName(name);
+    }
+      else return await this.facilitiesService.findAll();
   }
 
   @Get(':id')
   async findOne(@Param('id') id: number): Promise<Facilities> {
     return await this.facilitiesService.findOne(id);
   }
+
   @Delete(':id')
   async delete(@Param('id') id: number): Promise<void> {
     await this.facilitiesService.delete(id);
