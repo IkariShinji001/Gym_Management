@@ -7,10 +7,10 @@ import {
 export interface ISupplementProductService {
   findAll(): Promise<SupplementProduct[]>;
   findOne(id: number): Promise<SupplementProduct>;
-  create(newFacility: CreateSupplementProductDto): Promise<SupplementProduct>;
+  create(newSupplementProduct: CreateSupplementProductDto): Promise<SupplementProduct>;
   update(
     id: number,
-    updateFacility: updateSupplementProductDto,
+    updateSupplementProduct: updateSupplementProductDto,
   ): Promise<SupplementProduct>;
   delete(id: number): Promise<void>;
   findByName(name: string): Promise<SupplementProduct[]>;
