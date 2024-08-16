@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package ADMIN;
+
+service AdminService {
+  rpc FindAdminByEmail (AdminEmail) returns (Admin) {}
+}
+
+message AdminEmail {
+  string email = 1;
+}
+
+message Admin{
+  int32 id = 1;
+  string email = 2;
+  string fullName = 3;
+  string password = 4;
+  string phoneNumber = 5;
+  string role = 6;
+}

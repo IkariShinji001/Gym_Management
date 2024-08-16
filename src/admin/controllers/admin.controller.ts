@@ -1,11 +1,20 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/common";
-import { Admin } from "../repositories/admin.entity";
-import { AdminService } from "../services/admin.services";
-import { CreateAdminDto, updateAdminDto } from "../dtos/admin.dto";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
+import { Admin } from '../repositories/admin.entity';
+import { AdminService } from '../services/admin.services';
+import { CreateAdminDto, updateAdminDto } from '../dtos/admin.dto';
+import { GrpcMethod } from '@nestjs/microservices';
 
 @Controller('/admin')
 export class AdminController {
-  constructor( private adminService: AdminService) {}
+  constructor(private adminService: AdminService) {}
 
   @Get()
   async getAdmins(): Promise<Admin[]> {
@@ -20,16 +29,25 @@ export class AdminController {
     return await this.adminService.create(CreateAdminDto);
   }
   @Patch(':id')
-  async updateAdmin(@Param('id') id: number, @Body() updateAdminDto: updateAdminDto){
-    return await this.adminService.update(id, updateAdminDto)
+  async updateAdmin(
+    @Param('id') id: number,
+    @Body() updateAdminDto: updateAdminDto,
+  ) {
+    return await this.adminService.update(id, updateAdminDto);
   }
   @Delete(':id')
-  async deleteAdmin(@Param('id') id:number){
+  async deleteAdmin(@Param('id') id: number) {
     return await this.adminService.delete(id);
   }
   @Get('phone/:phoneNumber')
-  async findByPhoneNumber(@Param('phoneNumber') phoneNumber: string): Promise<Admin[]> {
-    return await this.adminService.findByPhoneNumber( phoneNumber);
+  async findByPhoneNumber(
+    @Param('phoneNumber') phoneNumber: string,
+  ): Promise<Admin[]> {
+    return await this.adminService.findByPhoneNumber(phoneNumber);
   }
 
+  @GrpcMethod('AdminService', 'FindAdminByEmail')
+  async findAdminByEmail(data: { email: string }) {
+    return await this.adminService.findOneByEmail(data);
+  }
 }

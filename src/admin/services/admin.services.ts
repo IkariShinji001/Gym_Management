@@ -11,9 +11,11 @@ export class AdminService implements IAdminService {
     @InjectRepository(Admin)
     private adminRepository: Repository<Admin>,
   ) {}
-  findOneByEmail(email: string): Promise<Admin> {
-    throw new Error('Method not implemented.');
+
+  findOneByEmail(data: { email: string }): Promise<Admin> {
+    return this.adminRepository.findOneByOrFail({ email: data.email });
   }
+
   login(email: string, password: string): Promise<{ access_token: string }> {
     throw new Error('Method not implemented.');
   }
