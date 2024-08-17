@@ -1,15 +1,8 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpException,
-  HttpStatus,
-  Post,
-  Res,
-} from '@nestjs/common';
+import { Body, Controller, Post, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthService } from '../services/auth.service';
 import { AdminEmail } from 'src/shared/interfaces/grpc/admin/adminService.interface';
+import { Public } from 'src/constant';
 
 @Controller('/auth')
 export class AuthController {
@@ -20,6 +13,7 @@ export class AuthController {
     return this.authService.getDataAdmin(email);
   }
 
+  @Public()
   @Post('/admin/login')
   async loginAdmin(
     @Body() adminInfo: { email: string; password: string },
@@ -35,7 +29,7 @@ export class AuthController {
         httpOnly: true, // Không cho phép JavaScript truy cập cookie
         maxAge: 3600000, // Thời gian sống của cookie (1 giờ)
       });
-      return { message: 'Thành công' };
+      res.status(200).json({ message: 'Đăng nhập thành công' });
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
