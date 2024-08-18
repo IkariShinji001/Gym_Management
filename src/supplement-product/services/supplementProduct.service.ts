@@ -7,45 +7,23 @@ import {
   CreateSupplementProductDto,
   updateSupplementProductDto,
 } from '../dtos/supplementProduct.dto';
+import { SProductType } from '../repositories/sProductType.entity';
+import { privateDecrypt } from 'crypto';
 
 @Injectable()
 export class SupplementProductService implements ISupplementProductService {
   constructor(
     @InjectRepository(SupplementProduct)
     private supplementProductRepository: Repository<SupplementProduct>,
+
+    @InjectRepository(SProductType)
+    private sProductTypeRepository: Repository<SProductType>,
   ) {}
-
-  async create(
-    newSupplementProduct: CreateSupplementProductDto,
-  ): Promise<SupplementProduct> {
-    const supplementProduct =
-      this.supplementProductRepository.create(newSupplementProduct);
-    return await this.supplementProductRepository.save(supplementProduct);
-  }
-
-  async update(
-    id: number,
-    updateSupplementProduct: updateSupplementProductDto,
-  ): Promise<SupplementProduct> {
-    const supplement = await this.supplementProductRepository.findOneBy({ id });
-    Object.assign(supplement, updateSupplementProduct)
-  
-    return this.supplementProductRepository.save(supplement);
-  }
-
-  async delete(id: number): Promise<void> {
-    this.supplementProductRepository.delete(id);
-  }
 
   async findByName(name: string): Promise<SupplementProduct[]> {
     const supplement = await this.supplementProductRepository.find({
       where: { name },
     });
-    if (supplement.length == 0) {
-      throw new NotFoundException(
-        'No SupplementProducts found with name ${name}',
-      );
-    }
     return supplement;
   }
 
@@ -53,7 +31,61 @@ export class SupplementProductService implements ISupplementProductService {
     return await this.supplementProductRepository.find();
   }
 
+  async create(
+    newSupplementProduct: CreateSupplementProductDto,
+  ): Promise<SupplementProduct> {
+    const type = await this.sProductTypeRepository.findOne({
+      where: { id: newSupplementProduct.typeId },
+    });
+
+    if (!type) {
+      throw new NotFoundException('Deo co thai!');
+    }
+    const supplementProduct = this.supplementProductRepository.create({
+      ...newSupplementProduct,
+      type,
+    });
+    return await this.supplementProductRepository.save(supplementProduct);
+  }
+
+  async update(
+    id: number,
+    updateSupplementProduct: updateSupplementProductDto,
+  ): Promise<SupplementProduct> {
+    const { name, price, imageUrl, typeId } = updateSupplementProduct;
+    const supplement = await this.supplementProductRepository.findOneBy({ id });
+    if (!supplement) {
+      throw new NotFoundException(`Supplement product with id ${id} not found`);
+    }
+    if (typeId) {
+      const type = await this.sProductTypeRepository.findOne({
+        where: { id: typeId },
+      });
+      if (!type) {
+        throw new NotFoundException(`Chua co thai ${typeId}`);
+      }
+      supplement.type = type
+    }
+
+    Object.assign(supplement, updateSupplementProduct);
+
+    return await this.supplementProductRepository.save(supplement);
+  }
+
+  async delete(id: number): Promise<void> {
+    this.supplementProductRepository.delete(id);
+  }
+
   async findOne(id: number) {
     return await this.supplementProductRepository.findOne({ where: { id } });
+  }
+
+  async findByType(typeId: number): Promise<SupplementProduct[]> {
+    const type = await this.sProductTypeRepository.findOne({
+      where: { id: typeId },
+    });
+    return await this.supplementProductRepository.find({
+      where: { type },
+    });
   }
 }
