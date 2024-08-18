@@ -26,9 +26,10 @@ export class AuthController {
       );
 
       res.cookie('access_token', accessToken, {
-        httpOnly: true, // Không cho phép JavaScript truy cập cookie
-        maxAge: 3600000, // Thời gian sống của cookie (1 giờ)
+        httpOnly: true,
+        maxAge: 3600000,
       });
+
       res.status(200).json({ message: 'Đăng nhập thành công' });
     } catch (error) {
       res.status(400).json({ error: error.message });
