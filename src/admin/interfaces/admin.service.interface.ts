@@ -8,4 +8,5 @@ export interface IAdminService {
   update(id: number, updateAdmin: updateAdminDto): Promise<Admin>;
   delete(id: number): Promise<void>;
   findByPhoneNumber(phoneNumber: string): Promise<Admin[]>;
+  findOneByEmail(data: { email: string }): Promise<Admin>;
 }

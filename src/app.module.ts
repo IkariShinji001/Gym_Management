@@ -11,6 +11,9 @@ import { SharedModule } from './shared/shared.module';
 import { DatabaseConfigService } from './config/database.config';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from './auth/auth.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './auth/guards/jwt-auth.guard';
 
 @Module({
   imports: [
@@ -27,8 +30,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     SupplementProductModule,
     FacilitiesModule,
     SharedModule,
+    AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
 })
 export class AppModule {}
