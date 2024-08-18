@@ -1,0 +1,49 @@
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ISProductTypeService } from '../interfaces/sProductType.service.interface';
+import {
+  CreateSProductTypeDto,
+  UpdateSProductTypeDto,
+} from '../dtos/sProductType.dto';
+import { SProductType } from '../repositories/sProductType.entity';
+import { Repository } from 'typeorm';
+
+@Injectable()
+export class SProductTypeService implements ISProductTypeService {
+  constructor(
+    @InjectRepository(SProductType)
+    private sProductTypeRepository: Repository<SProductType>,
+  ) {}
+
+  async findAll(): Promise<SProductType[]> {
+    return await this.sProductTypeRepository.find();
+  }
+  async create(
+    createSProductTypeDto: CreateSProductTypeDto,
+  ): Promise<SProductType> {
+    const supplementProductType = this.sProductTypeRepository.create(
+      createSProductTypeDto,
+    );
+    return await this.sProductTypeRepository.save(supplementProductType);
+  }
+
+  async update(
+    id: number,
+    updateSProductDto: UpdateSProductTypeDto,
+  ): Promise<SProductType> {
+    const sProductType = await this.sProductTypeRepository.findOneBy({ id });
+    if (!sProductType) {
+      throw new NotFoundException('Khong tim thay thai');
+    }
+    Object.assign(sProductType, updateSProductDto);
+    return await this.sProductTypeRepository.save(sProductType);
+  }
+
+  async delete(id: number): Promise<void> {
+    const sProductType = await this.sProductTypeRepository.findOneBy({ id });
+    if (!sProductType) {
+      throw new NotFoundException('Khong tim thay thai');
+    }
+    this.sProductTypeRepository.delete({ id });
+  }
+}
