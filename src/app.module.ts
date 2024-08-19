@@ -17,6 +17,8 @@ import { AuthGuard } from './auth/guards/jwt-auth.guard';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { CloudinaryProvider } from './cloudinary/cloudinary';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { ServicePackageModule } from './service-package/service-package.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -34,6 +36,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
     SharedModule,
     AuthModule,
     CloudinaryModule,
+    ServicePackageModule,
   ],
   controllers: [AppController],
   providers: [
