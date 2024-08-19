@@ -14,7 +14,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/guards/jwt-auth.guard';
-
+import { CloudinaryService } from './cloudinary/cloudinary.service';
+import { CloudinaryProvider } from './cloudinary/cloudinary';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -31,14 +33,17 @@ import { AuthGuard } from './auth/guards/jwt-auth.guard';
     FacilitiesModule,
     SharedModule,
     AuthModule,
+    CloudinaryModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
+    CloudinaryService,
+    CloudinaryProvider,
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: AuthGuard,
+    // },
   ],
 })
 export class AppModule {}
