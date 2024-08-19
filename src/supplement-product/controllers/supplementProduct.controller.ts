@@ -30,16 +30,23 @@ export class SupplementProductController {
     } else return await this.supplementProductService.findAll();
   }
 
+  @Get('/by-type/:typeId')
+  async getSupplementProductByType(
+    @Param('typeId') type: number,
+  ): Promise<SupplementProduct[]> {
+    return await this.supplementProductService.findByType(type);
+  }
+
   @Get('/:id')
-  async getSupplementProduct(@Param('id') id: number) {
+  async getSupplementProductById(@Param('id') id: number) {
     return await this.supplementProductService.findOne(id);
   }
 
   @Post()
   async createSupplementProduct(
-    @Body() newFacility: CreateSupplementProductDto,
+    @Body() createSupplementProduct: CreateSupplementProductDto,
   ) {
-    return await this.supplementProductService.create(newFacility);
+    return await this.supplementProductService.create(createSupplementProduct);
   }
 
   @Patch('/:id')

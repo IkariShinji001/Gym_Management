@@ -12,6 +12,9 @@ import { DatabaseConfigService } from './config/database.config';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './auth/guards/jwt-auth.guard';
+import { ServicePackageModule } from './service-package/service-package.module';
 
 @Module({
   imports: [
@@ -29,8 +32,15 @@ import { AuthModule } from './auth/auth.module';
     FacilitiesModule,
     SharedModule,
     AuthModule,
+    ServicePackageModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
 })
 export class AppModule {}

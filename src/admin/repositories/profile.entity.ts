@@ -7,7 +7,7 @@ export enum Role {
 }
 
 @Entity()
-export class Admin {
+export class Profile {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -23,6 +23,6 @@ export class Admin {
   @Column({ nullable: false })
   fullName: string;
 
-  @Column({ nullable: false, enum: Role })
+  @Column({ type: 'enum', enum: Role, nullable: false })
   role: Role;
 }
