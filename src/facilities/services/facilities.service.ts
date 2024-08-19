@@ -15,6 +15,7 @@ export class FacilitiesService implements IFacilitiesService {
   async findAll(): Promise<Facilities[]> {
     return await this.facilitiesRepository.find();
   }
+  
   async create(newFacility: CreateFacilityDto): Promise<Facilities> {
     const facility = this.facilitiesRepository.create(newFacility);
     return await this.facilitiesRepository.save(facility);
