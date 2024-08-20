@@ -13,13 +13,14 @@ export class AuthController {
     return this.authService.getDataAdmin(email);
   }
 
-  @Public()
+  // @Public()
   @Post('/admin/login')
   async loginAdmin(
     @Body() adminInfo: { email: string; password: string },
     @Res() res: Response,
   ) {
-    try {
+    try { 
+      console.log(adminInfo)
       const accessToken = await this.authService.signInAdmin(
         adminInfo.email,
         adminInfo.password,
@@ -32,7 +33,8 @@ export class AuthController {
 
       res.status(200).json({ message: 'Đăng nhập thành công' });
     } catch (error) {
-      res.status(400).json({ error: error.message });
+      console.log(error)
+      res.status(500).json({ error: error.message });
     }
   }
 }
