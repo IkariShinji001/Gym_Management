@@ -17,6 +17,14 @@ import { jwtConstants } from 'src/constant';
           protoPath: join(__dirname, '../admin/protos/admin.proto'),
         },
       },
+      {
+        name: 'USER',
+        transport: Transport.GRPC,
+        options: {
+          package: 'USER',
+          protoPath: join(__dirname, '../user/protos/user.proto'),
+        },
+      },
     ]),
     JwtModule.register({
       global: true,
