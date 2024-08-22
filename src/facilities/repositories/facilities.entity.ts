@@ -21,10 +21,10 @@ export class Facilities {
   @Column({ type: 'timestamptz', nullable: false })
   purchaseDate: Date;
 
-  @Column({ nullable: false })
+  @Column({ type: 'timestamptz', nullable: false })
   warrantyStartDate: Date;
 
-  @Column({ nullable: false })
+  @Column({ type: 'timestamptz', nullable: false })
   warrantyEndDate: Date;
 
   @Column({ nullable: false })

@@ -21,7 +21,6 @@ import { UserServiceClient } from 'src/shared/interfaces/grpc/user/userServiceCl
 @Injectable()
 export class AuthService implements OnModuleInit {
   private adminService: AdminServiceClient;
-  private userService: UserServiceClient;
 
   constructor(
     @Inject('ADMIN') private client: ClientGrpc,
@@ -31,7 +30,6 @@ export class AuthService implements OnModuleInit {
   onModuleInit() {
     this.adminService =
       this.client.getService<AdminServiceClient>('AdminService');
-    this.userService = this.client.getService<UserServiceClient>('UserService');
   }
 
   async getDataAdmin(email: AdminEmail) {
