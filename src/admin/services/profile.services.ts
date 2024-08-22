@@ -7,7 +7,7 @@ import { Profile } from '../repositories/profile.entity';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
-export class ProfileService implements IProfileService {
+export class                                                                             ProfileService implements IProfileService {
   constructor(
     @InjectRepository(Profile)
     private profileRepository: Repository<Profile>,

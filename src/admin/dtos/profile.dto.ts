@@ -12,6 +12,8 @@ export class CreateProfileDto {
 
   @IsString()
   fullName: string;
+
+  
 }
 
 export class updateProfileDto extends PartialType(CreateProfileDto) {}
