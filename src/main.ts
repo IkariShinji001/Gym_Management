@@ -18,6 +18,14 @@ async function bootstrap() {
       protoPath: join(__dirname, './admin/protos/admin.proto'),
     },
   });
+
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.GRPC,
+    options: {
+      package: 'USER',
+      protoPath: join(__dirname, './user/protos/user.proto'),
+    },
+  });
   await app.startAllMicroservices();
   await app.listen(3001);
 }

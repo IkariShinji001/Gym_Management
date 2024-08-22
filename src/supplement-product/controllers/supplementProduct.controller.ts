@@ -46,6 +46,7 @@ export class SupplementProductController {
   async createSupplementProduct(
     @Body() createSupplementProduct: CreateSupplementProductDto,
   ) {
+    console.log(createSupplementProduct)
     return await this.supplementProductService.create(createSupplementProduct);
   }
 

@@ -8,7 +8,6 @@ import {
   updateSupplementProductDto,
 } from '../dtos/supplementProduct.dto';
 import { SProductType } from '../repositories/sProductType.entity';
-import { privateDecrypt } from 'crypto';
 
 @Injectable()
 export class SupplementProductService implements ISupplementProductService {
@@ -37,6 +36,8 @@ export class SupplementProductService implements ISupplementProductService {
     const type = await this.sProductTypeRepository.findOne({
       where: { id: newSupplementProduct.typeId },
     });
+
+    console.log("=====type: "+type)
 
     if (!type) {
       throw new NotFoundException('Deo co thai!');

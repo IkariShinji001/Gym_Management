@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile } from '@nestjs/common';
 import { SProductTypeService } from '../services/sProductType.service';
 import { SProductType } from '../repositories/sProductType.entity';
 import {

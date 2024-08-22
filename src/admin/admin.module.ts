@@ -7,12 +7,14 @@ import { PtImages } from './repositories/ptImages.entity';
 import { Managers } from './repositories/manager.entity';
 import { Employees } from './repositories/employee.entity';
 import { Pt } from './repositories/pt.entity';
+import { PtController } from './controllers/pt.controller';
+import { PtService } from './services/pt.services';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Profile, PtImages, Managers, Employees, Pt]),
   ],
-  controllers: [ProfileController],
-  providers: [ProfileService],
+  controllers: [ProfileController,PtController],
+  providers: [ProfileService,PtService],
 })
 export class AdminModule {}
