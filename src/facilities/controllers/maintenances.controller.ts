@@ -4,7 +4,7 @@ import { CreateMaintenanceDto } from "../dtos/maintenances.dto";
 import { Maintenances } from "../repositories/maintenances.entity";
 import { UpdateMaintenanceDto } from "../dtos/maintenances.dto";
 
-@Controller('/Maintenance')
+@Controller('/maintenances')
 export class MaintenancesController {
     constructor(private maintenancesService: MaintenancesService) {}
 

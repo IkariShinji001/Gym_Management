@@ -17,6 +17,4 @@ export class Maintenances {
 
     @ManyToOne(() => Facilities, (Facilities) => Facilities.maintenance)
     facility: Facilities;
-
-    
 }

@@ -40,12 +40,9 @@ import { ServicePackageModule } from './service-package/service-package.module';
   ],
   controllers: [AppController],
   providers: [
-    // AppService,
-<<<<<<< HEAD
-=======
+    AppService,
     CloudinaryService,
     CloudinaryProvider,
->>>>>>> e88ca4abce2fb7b5a52295aa09a33a27ca475486
     // // {
     // //   provide: APP_GUARD,
     // //   useClass: AuthGuard,

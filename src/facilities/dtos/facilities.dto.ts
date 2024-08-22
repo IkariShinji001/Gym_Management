@@ -25,7 +25,6 @@ export class CreateFacilityDto {
 
   @IsString()
   imageUrl: string;
-
 }
 
 export class updateFacilityDto extends PartialType(CreateFacilityDto) {}

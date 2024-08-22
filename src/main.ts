@@ -16,6 +16,7 @@ async function bootstrap() {
     options: {
       package: 'ADMIN',
       protoPath: join(__dirname, './admin/protos/admin.proto'),
+      url: 'localhost:5001',  // Sử dụng cổng 5001 thay vì 5000
     },
   });
 
@@ -24,6 +25,7 @@ async function bootstrap() {
     options: {
       package: 'USER',
       protoPath: join(__dirname, './user/protos/user.proto'),
+      url: 'localhost:5002',  // Sử dụng cổng 5002 thay vì 5000
     },
   });
   await app.startAllMicroservices();

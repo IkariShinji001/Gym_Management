@@ -16,13 +16,10 @@ import * as bcrypt from 'bcrypt';
 import { firstValueFrom } from 'rxjs';
 import { JwtService } from '@nestjs/jwt';
 import { access } from 'fs';
-import { UserEmail } from 'src/shared/interfaces/grpc/user/userService.interface';
-import { UserServiceClient } from 'src/shared/interfaces/grpc/user/userServiceClient.interface';
 
 @Injectable()
 export class AuthService implements OnModuleInit {
   private adminService: AdminServiceClient;
-  private userService: UserServiceClient;
 
   constructor(
     @Inject('ADMIN') private client: ClientGrpc,
@@ -32,19 +29,10 @@ export class AuthService implements OnModuleInit {
   onModuleInit() {
     this.adminService =
       this.client.getService<AdminServiceClient>('AdminService');
-    this.userService = this.client.getService<UserServiceClient>('UserService');
   }
 
   async getDataAdmin(email: AdminEmail) {
     return this.adminService.findAdminByEmail(email);
-  }
-
-  async getDataUser(username: UserEmail) {
-    return this.userService.FindOneUserByEmail(email);
-  }
-
-  async signInUser(username: string, password: string) {
-    const user = await firstValueFrom(await this.getDataUser({}));
   }
 
   async signInAdmin(email: string, password: string) {
