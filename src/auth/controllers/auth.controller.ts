@@ -13,27 +13,51 @@ export class AuthController {
     return this.authService.getDataAdmin(email);
   }
 
-  // @Public()
+  @Public()
   @Post('/admin/login')
   async loginAdmin(
     @Body() adminInfo: { email: string; password: string },
     @Res() res: Response,
   ) {
-    try { 
-      console.log(adminInfo)
+    try {
+      console.log(adminInfo);
       const accessToken = await this.authService.signInAdmin(
         adminInfo.email,
         adminInfo.password,
       );
 
-      res.cookie('access_token', accessToken, {
+      res.cookie('admin_access_token', accessToken, {
         httpOnly: true,
         maxAge: 3600000,
       });
 
       res.status(200).json({ message: 'Đăng nhập thành công' });
     } catch (error) {
-      console.log(error)
+      console.log(error);
+      res.status(500).json({ error: error.message });
+    }
+  }
+
+  @Public()
+  @Post('/user/login')
+  async loginUser(
+    @Body() adminInfo: { username: string; password: string },
+    @Res() res: Response,
+  ) {
+    try {
+      const accessToken = await this.authService.signInAdmin(
+        adminInfo.username,
+        adminInfo.password,
+      );
+
+      res.cookie('user_access_token', accessToken, {
+        httpOnly: true,
+        maxAge: 3600000,
+      });
+
+      res.status(200).json({ message: 'Đăng nhập thành công' });
+    } catch (error) {
+      console.log(error);
       res.status(500).json({ error: error.message });
     }
   }

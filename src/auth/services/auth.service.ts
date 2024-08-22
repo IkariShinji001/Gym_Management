@@ -15,8 +15,7 @@ import { AdminServiceClient } from 'src/shared/interfaces/grpc/admin/adminServic
 import * as bcrypt from 'bcrypt';
 import { firstValueFrom } from 'rxjs';
 import { JwtService } from '@nestjs/jwt';
-import { access } from 'fs';
-import { UserEmail } from 'src/shared/interfaces/grpc/user/userService.interface';
+import { Username } from 'src/shared/interfaces/grpc/user/userService.interface';
 import { UserServiceClient } from 'src/shared/interfaces/grpc/user/userServiceClient.interface';
 
 @Injectable()
@@ -39,17 +38,39 @@ export class AuthService implements OnModuleInit {
     return this.adminService.findAdminByEmail(email);
   }
 
-  async getDataUser(username: UserEmail) {
-    return this.userService.FindOneUserByEmail(email);
+  async getDataUser(username: Username) {
+    return this.userService.FindOneUserByUsername(username);
   }
 
   async signInUser(username: string, password: string) {
-    const user = await firstValueFrom(await this.getDataUser({}));
+    const user = await firstValueFrom(await this.getDataUser({ username }));
+
+    if (!user) {
+      throw new HttpException(
+        'Invalid email or password',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    const isMatchPassword = await bcrypt.compare(password, user.password);
+
+    if (!isMatchPassword) {
+      throw new HttpException(
+        'Invalid email or password',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    const payload = {
+      id: user.id,
+    };
+
+    const accessToken = await this.jwtService.signAsync(payload);
+    return { access_token: accessToken };
   }
 
   async signInAdmin(email: string, password: string) {
     const admin = await firstValueFrom(await this.getDataAdmin({ email }));
-    console.log(admin);
     if (!admin) {
       throw new HttpException(
         'Invalid email or password',
@@ -66,7 +87,6 @@ export class AuthService implements OnModuleInit {
       );
     }
 
-    // Successful login logic
     const payload = {
       id: admin.id,
       email: admin.email,

@@ -3,11 +3,11 @@ syntax = "proto3";
 package USER;
 
 service UserService {
-  rpc FindOneUserByEmail (UserEmail) returns (User) {}
+  rpc FindOneUserByUsername (Username) returns (User) {}
 }
 
-message UserEmail {
-  string email = 1;
+message Username {
+  string username = 1;
 }
 
 message User{
