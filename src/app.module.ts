@@ -43,10 +43,10 @@ import { ServicePackageModule } from './service-package/service-package.module';
     AppService,
     CloudinaryService,
     CloudinaryProvider,
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: AuthGuard,
-    // },
+    // // {
+    // //   provide: APP_GUARD,
+    // //   useClass: AuthGuard,
+    // // },
   ],
 })
 export class AppModule {}
