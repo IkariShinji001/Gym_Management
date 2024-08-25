@@ -18,7 +18,7 @@ export class FacilitiesController {
 
   @Post()
   async create(
-    @Body() createFacilityDto: CreateFacilityDto,
+    @Body() createFacilityDto: CreateFacilityDto
   ): Promise<Facilities> {
     return await this.facilitiesService.create(createFacilityDto);
   }

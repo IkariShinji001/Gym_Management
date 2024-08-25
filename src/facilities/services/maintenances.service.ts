@@ -1,21 +1,33 @@
 import { Injectable } from "@nestjs/common";
 import {IMaintenanacesService} from "../interfaces/maintenances.service.interface"
 import { Maintenances } from "../repositories/maintenances.entity";
-import { CreateMaintenanceDto, updateMaintenanceDto } from "../dtos/maintenances.dto";
+import { CreateMaintenanceDto, UpdateMaintenanceDto } from "../dtos/maintenances.dto";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
 
 @Injectable()
-export class MaintenancesService implements IMaintenanacesService {
-    create(newMaintenance: CreateMaintenanceDto): Promise<Maintenances> {
-        throw new Error("Method not implemented.");
+export class 
+MaintenancesService implements IMaintenanacesService {
+    constructor (
+        @InjectRepository(Maintenances)
+        private maintenancesRepository: Repository <Maintenances>,
+    ) {}
+
+    async create(newMaintenance: CreateMaintenanceDto): Promise<Maintenances> {
+        const maintenance = this.maintenancesRepository.create(newMaintenance)
+        return await this.maintenancesRepository.save(maintenance);
     }
-    update(id: number, updateMaintenance: updateMaintenanceDto): Promise<Maintenances> {
-        throw new Error("Method not implemented.");
+    async update(id: number, updateMaintenance: UpdateMaintenanceDto): Promise<Maintenances> {
+        await this.maintenancesRepository.update(id, updateMaintenance)
+        return this.maintenancesRepository.findOne({where: {id}})
     }
-    delete(id: number): Promise<void> {
-        throw new Error("Method not implemented.");
+
+    async delete(id: number): Promise<void> {
+        const maintenance = await this.maintenancesRepository.findOne({where: {id}})
+        await this.maintenancesRepository.delete(maintenance)
     }
-    findAll(): Promise<Maintenances[]> {
-        throw new Error("Method not implemented.");
+
+    async findAll(): Promise<Maintenances[]> {
+        return await this.maintenancesRepository.find()
     }
-    
 }

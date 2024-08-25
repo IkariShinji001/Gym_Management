@@ -20,7 +20,7 @@ export class PtController {
     }
     @Post()
     async createPt(@Body() createPtProfilePtDto: CreatePtProfileDto): Promise<Pt> {
-         const { createProfileDto, createPtDto } = createPtProfilePtDto;
+        const { createProfileDto, createPtDto } = createPtProfilePtDto;
         return await this.ptService.create(createProfileDto, createPtDto);
     }
     @Patch(':id')

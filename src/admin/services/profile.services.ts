@@ -25,13 +25,13 @@ export class                                                                    
   }
 
   // validate EMAIL
-  async create(newProfile: CreateProfileDto): Promise<Profile> {
+  async create(createProfileDto: CreateProfileDto): Promise<Profile> {
     const salt = bcrypt.genSaltSync(10);
-    const hashedPassword = bcrypt.hashSync(newProfile.password, salt);
+    const hashedPassword = bcrypt.hashSync(createProfileDto.password, salt);
 
-    newProfile.password = hashedPassword;
+    createProfileDto.password = hashedPassword;
 
-    const createdProfile = this.profileRepository.create(newProfile);
+    const createdProfile = this.profileRepository.create(createProfileDto);
     return await this.profileRepository.save(createdProfile);
   }
 

@@ -25,4 +25,5 @@ export class Profile {
 
   @Column({ type: 'enum', enum: Role, nullable: false })
   role: Role;
+  
 }
