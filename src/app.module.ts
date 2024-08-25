@@ -41,10 +41,12 @@ import { ServicePackageModule } from './service-package/service-package.module';
   controllers: [AppController],
   providers: [
     AppService,
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: AuthGuard,
-    // },
+    CloudinaryService,
+    CloudinaryProvider,
+    // // {
+    // //   provide: APP_GUARD,
+    // //   useClass: AuthGuard,
+    // // },
   ],
 })
 export class AppModule {}

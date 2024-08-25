@@ -15,7 +15,8 @@ export class CreateProfileDto {
   fullName: string;
 
   @IsEnum(Role)
-    role: Role;  
+  role: Role;
+  
 }
 
 export class updateProfileDto extends PartialType(CreateProfileDto) {}

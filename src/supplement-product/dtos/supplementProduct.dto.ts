@@ -1,6 +1,5 @@
 import { IsString, IsNumber, IsNotEmpty } from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
-import { SProductType } from '../repositories/sProductType.entity';
 
 export class CreateSupplementProductDto {
   @IsString()
