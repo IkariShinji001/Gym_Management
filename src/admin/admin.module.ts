@@ -16,5 +16,6 @@ import { PtService } from './services/pt.services';
   ],
   controllers: [ProfileController,PtController],
   providers: [ProfileService,PtService],
+  exports: [PtService],
 })
 export class AdminModule {}

@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { SoldProduct } from 'src/supplement-product/repositories/soldProduct.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum Role {
   manager = 'manager',
@@ -25,4 +26,8 @@ export class Profile {
 
   @Column({ type: 'enum', enum: Role, nullable: false })
   role: Role;
+
+  // change to sell product < hukhan>
+  @OneToMany(() => SoldProduct, (soldProduct) => soldProduct.profile)
+  soldProducts: SoldProduct
 }

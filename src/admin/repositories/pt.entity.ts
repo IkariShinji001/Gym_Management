@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { PtImages } from './ptImages.entity';
 import { Profile } from './profile.entity';
+import { PtPackages } from 'src/service-package/repositories/ptPackage.entity';
 
 @Entity()
 export class Pt {
@@ -32,6 +33,9 @@ export class Pt {
 
   @OneToMany(() => PtImages, (PtImages) => PtImages.pt)
   images: PtImages[];
+
+  @OneToMany(() => PtPackages,(ptPackage) => ptPackage.pt)
+  ptPackages: PtPackages
 
   @OneToOne(() => Profile)
   @JoinColumn()

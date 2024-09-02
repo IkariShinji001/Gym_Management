@@ -11,7 +11,7 @@ export class CreateSupplementProductDto {
   @IsString()
   imageUrl: string;
 
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
   typeId: number;
 }
