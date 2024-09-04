@@ -6,6 +6,7 @@ import {
   JoinColumn,
   ManyToOne,
   Unique,
+  Decimal128,
 } from 'typeorm';
 import { ServicePackages } from './servicePackage.entity';
 import { PackageDuration } from './packageDuration.entity';
@@ -14,10 +15,10 @@ import { PackageDuration } from './packageDuration.entity';
 @Unique(['packageDuration', 'servicePackage'])
 export class ServicePackagePrice {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
-  @Column({ nullable: false })
-  coverImageUrl: string;
+  @Column('decimal',{nullable: false})
+  price: number;
 
   @ManyToOne(
     () => ServicePackages,

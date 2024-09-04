@@ -17,8 +17,6 @@ export class CreatePtDto {
   @IsString()
   hips: string;
 
-  @IsString()
-  role: string;
   
 }
 

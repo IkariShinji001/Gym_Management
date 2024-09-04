@@ -7,3 +7,5 @@ export class CreatePtProfileDto {
     createPtDto: CreatePtDto;
 }
 
+
+export class UpdatePtProfileDto extends PartialType(CreatePtProfileDto) {}
