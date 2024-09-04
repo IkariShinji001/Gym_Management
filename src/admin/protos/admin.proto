@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package ADMIN;
+package SERVER;
 
 service AdminService {
   rpc FindAdminByEmail (AdminEmail) returns (Admin) {}

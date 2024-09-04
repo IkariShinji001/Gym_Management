@@ -7,14 +7,14 @@ import { Profile } from '../repositories/profile.entity';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
-export class                                                                             ProfileService implements IProfileService {
+export class ProfileService implements IProfileService {
   constructor(
     @InjectRepository(Profile)
     private profileRepository: Repository<Profile>,
   ) {}
 
-  findOneByEmail(data: { email: string }): Promise<Profile> {
-    return this.profileRepository.findOneBy({ email: data.email });
+  async findOneByEmail(data: { email: string }): Promise<Profile> {
+    return await this.profileRepository.findOneBy({ email: data.email });
   }
 
   async findAll(): Promise<Profile[]> {

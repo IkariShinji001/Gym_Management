@@ -39,15 +39,23 @@ export class AuthController {
   }
 
   @Public()
+  @Post('/verify/user')
+  async verifyUser(@Body() data: { accessToken: string }) {
+    const { accessToken } = data;
+    const user = await this.authService.verifyUser(accessToken);
+    return user;
+  }
+
+  @Public()
   @Post('/user/login')
   async loginUser(
-    @Body() adminInfo: { username: string; password: string },
+    @Body() userInfo: { username: string; password: string },
     @Res() res: Response,
   ) {
     try {
-      const accessToken = await this.authService.signInAdmin(
-        adminInfo.username,
-        adminInfo.password,
+      const accessToken = await this.authService.signInUser(
+        userInfo.username,
+        userInfo.password,
       );
 
       res.cookie('user_access_token', accessToken, {
@@ -55,7 +63,7 @@ export class AuthController {
         maxAge: 3600000,
       });
 
-      res.status(200).json({ message: 'Đăng nhập thành công' });
+      res.status(200).json(accessToken);
     } catch (error) {
       console.log(error);
       res.status(500).json({ error: error.message });
