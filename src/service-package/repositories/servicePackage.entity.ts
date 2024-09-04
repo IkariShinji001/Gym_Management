@@ -1,10 +1,11 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ServicePackagePrice } from './servicePackagePrice.entity';
+import { ServicePackageType } from './servicePackageType.entity';
 
 @Entity()
 export class ServicePackages {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column({ nullable: false })
   name: string;
@@ -17,4 +18,7 @@ export class ServicePackages {
     (servicePackagePrice) => servicePackagePrice.servicePackage,
   )
   servicePackagePrices: ServicePackagePrice[];
+
+  @ManyToOne(()=> ServicePackageType, (serviceType) => serviceType.servicePackages)
+  serviceType: ServicePackageType
 }

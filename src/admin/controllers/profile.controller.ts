@@ -28,9 +28,9 @@ export class ProfileController {
   }
   @Post()
   async createAdmin(
-    @Body() CreateAdminDto: CreateProfileDto,
+    @Body() createAdminDto: CreateProfileDto,
   ): Promise<Profile> {
-    return await this.profileService.create(CreateAdminDto);
+    return await this.profileService.create(createAdminDto);
   }
   @Patch(':id')
   async updateAdmin(

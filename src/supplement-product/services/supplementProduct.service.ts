@@ -26,8 +26,10 @@ export class SupplementProductService implements ISupplementProductService {
     return supplement;
   }
 
-  async findAll() {
-    return await this.supplementProductRepository.find();
+  async findAll() :Promise<SupplementProduct[]>{
+    return await this.supplementProductRepository.find({
+      relations:['type']
+    });
   }
 
   async create(
@@ -37,8 +39,6 @@ export class SupplementProductService implements ISupplementProductService {
       where: { id: newSupplementProduct.typeId },
     });
 
-    console.log("=====type: "+type)
-
     if (!type) {
       throw new NotFoundException('Deo co thai!');
     }
@@ -46,6 +46,7 @@ export class SupplementProductService implements ISupplementProductService {
       ...newSupplementProduct,
       type,
     });
+    
     return await this.supplementProductRepository.save(supplementProduct);
   }
 
@@ -65,7 +66,7 @@ export class SupplementProductService implements ISupplementProductService {
       if (!type) {
         throw new NotFoundException(`Chua co thai ${typeId}`);
       }
-      supplement.type = type
+      supplement.type = type;
     }
 
     Object.assign(supplement, updateSupplementProduct);

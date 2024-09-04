@@ -1,5 +1,6 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { SProductType } from './sProductType.entity';
+import { SoldProduct } from './soldProduct.entity';
 
 @Entity()
 export class SupplementProduct {
@@ -17,4 +18,7 @@ export class SupplementProduct {
 
   @ManyToOne(() => SProductType, (type) => type.supplementProducts)
   type: SProductType
+
+  @OneToMany(() => SoldProduct, (soldProduct) => soldProduct.supplementProduct)
+  soldProducts: SoldProduct[]
 }
