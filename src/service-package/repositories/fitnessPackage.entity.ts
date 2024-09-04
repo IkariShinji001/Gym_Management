@@ -4,13 +4,15 @@ import {
   PrimaryGeneratedColumn,
   OneToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import { ServicePackages } from './servicePackage.entity';
+import { FitnessBenefits } from './fitnessBenefit.entity';
 
 @Entity()
-export class FitnessPackages {
+export class FitnessPackage {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column({ nullable: false })
   coverImageUrl: string;
@@ -18,4 +20,7 @@ export class FitnessPackages {
   @OneToOne(() => ServicePackages)
   @JoinColumn()
   servicePackage: ServicePackages;
+
+  @OneToMany(()=> FitnessBenefits, (fitnessBenefits) => fitnessBenefits.fitnessPackage)
+  fitnessBenefits: FitnessBenefits
 }

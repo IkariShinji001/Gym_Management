@@ -40,7 +40,6 @@ export class SProductTypeController {
     @Param('id') id: number,
     @Body() updateSProductTypeDto: UpdateSProductTypeDto,
   ): Promise<SProductType> {
-    console.log(updateSProductTypeDto);
     return await this.sProductTypeService.update(id, updateSProductTypeDto);
   }
 

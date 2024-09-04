@@ -4,16 +4,15 @@ import {
   PrimaryGeneratedColumn,
   OneToOne,
   JoinColumn,
+  ManyToOne,
 } from 'typeorm';
 import { ServicePackages } from './servicePackage.entity';
+import { Pt } from 'src/admin/repositories/pt.entity';
 
 @Entity()
 export class PtPackages {
   @PrimaryGeneratedColumn()
-  id: string;
-
-  @Column({ nullable: false })
-  ptId: number;
+  id: number;
 
   @Column({ nullable: false })
   maxClients: number;
@@ -21,4 +20,8 @@ export class PtPackages {
   @OneToOne(() => ServicePackages)
   @JoinColumn()
   servicePackage: ServicePackages;
+
+  @ManyToOne(() => Pt, (pt) => pt.ptPackages)
+  pt: Pt
 }
+

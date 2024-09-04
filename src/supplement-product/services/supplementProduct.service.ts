@@ -26,8 +26,10 @@ export class SupplementProductService implements ISupplementProductService {
     return supplement;
   }
 
-  async findAll() {
-    return await this.supplementProductRepository.find();
+  async findAll() :Promise<SupplementProduct[]>{
+    return await this.supplementProductRepository.find({
+      relations:['type']
+    });
   }
 
   async create(

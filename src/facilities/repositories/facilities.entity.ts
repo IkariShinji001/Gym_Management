@@ -6,7 +6,7 @@ export class Facilities {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({nullable: false})
+  @Column({ nullable: false })
   branchId: number;
 
   @Column({ nullable: false })
@@ -17,7 +17,7 @@ export class Facilities {
 
   @Column({ nullable: false })
   imageUrl: string;
-  
+
   @Column({ type: 'timestamptz', nullable: false })
   purchaseDate: Date;
 
@@ -27,9 +27,9 @@ export class Facilities {
   @Column({ type: 'timestamptz', nullable: false })
   warrantyEndDate: Date;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, default: true})
   isActive: boolean;
 
   @OneToMany(() => Maintenances, (Maintenances) => Maintenances.facility)
-  maintenance: Maintenances[];
+  maintenances: Maintenances[];
 }

@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { ServicePackagePrice } from './servicePackagePrice.entity';
 
-enum DurationType {
+export enum DurationType {
   DAY = 'day',
   MONTH = 'month',
   YEAR = 'year',
@@ -17,7 +17,7 @@ enum DurationType {
 @Entity()
 export class PackageDuration {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column({ nullable: false })
   duration: number;
