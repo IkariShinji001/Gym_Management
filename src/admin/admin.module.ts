@@ -11,12 +11,16 @@ import { PtController } from './controllers/pt.controller';
 import { PtService } from './services/pt.services';
 import { PtImagesController } from './controllers/ptImages.controller';
 import { PtImagesService } from './services/ptImages.services';
+import { EmployeeController } from './controllers/employee.controller';
+import { EmployeeService } from './services/employee.services';
+import { ManagerController } from './controllers/manager.controller';
+import { ManagerService } from './services/manager.services';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Profile, PtImages, Managers, Employees, Pt]),
   ],
-  controllers: [ProfileController,PtController, PtImagesController],
-  providers: [ProfileService,PtService, PtImagesService],
+  controllers: [ProfileController,PtController, PtImagesController, EmployeeController, ManagerController],
+  providers: [ProfileService,PtService, PtImagesService, EmployeeService, ManagerService],
 })
 export class AdminModule {}

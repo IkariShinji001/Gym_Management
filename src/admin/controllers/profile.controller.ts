@@ -19,28 +19,29 @@ export class ProfileController {
   constructor(private profileService: ProfileService) {}
 
   @Get()
-  async getAdmins(): Promise<Profile[]> {
+  async getProfiles(): Promise<Profile[]> {
     return await this.profileService.findAll();
   }
-  @Get()
-  async findOneAdmin(@Param('id') id: number): Promise<Profile> {
+  @Get(':id')
+  async findOneProfile(@Param('id') id: number): Promise<Profile> {
     return await this.profileService.findOne(id);
   }
   @Post()
-  async createAdmin(
-    @Body() createAdminDto: CreateProfileDto,
+  async createProfile(
+    @Body() createProfileDto: CreateProfileDto,
   ): Promise<Profile> {
-    return await this.profileService.create(createAdminDto);
+    return await this.profileService.create(createProfileDto);
   }
+  
   @Patch(':id')
-  async updateAdmin(
+  async updateProfile(
     @Param('id') id: number,
-    @Body() updateAdminDto: updateProfileDto,
+    @Body() updateProfileDto: updateProfileDto,
   ) {
-    return await this.profileService.update(id, updateAdminDto);
+    return await this.profileService.update(id, updateProfileDto);
   }
   @Delete(':id')
-  async deleteAdmin(@Param('id') id: number) {
+  async deleteProfile(@Param('id') id: number) {
     return await this.profileService.delete(id);
   }
   @Get('/phone/:phoneNumber')
@@ -50,8 +51,8 @@ export class ProfileController {
     return await this.profileService.findByPhoneNumber(phoneNumber);
   }
 
-  @GrpcMethod('AdminService', 'FindAdminByEmail')
-  async findAdminByEmail(data: { email: string }) {
+  @GrpcMethod('ProfileService', 'FindProfileByEmail')
+  async findProfileByEmail(data: { email: string }) {
     return await this.profileService.findOneByEmail(data);
   }
 }
