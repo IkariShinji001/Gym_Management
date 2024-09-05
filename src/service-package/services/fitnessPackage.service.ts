@@ -83,7 +83,7 @@ export class FitnessPackageService implements IFitnessPackageService {
     const {
       createFitnessPackageDto,
       createServicePackageDto,
-      createPackagePriceDto,
+      createPackagePriceDtoList,
       createNewBenefitList,
       updateBenefitList,
     } = createAllFitnessDto;
@@ -96,10 +96,10 @@ export class FitnessPackageService implements IFitnessPackageService {
       servicePackage: savedSP,
     });
 
-    if (createPackagePriceDto) {
-      for (var i = 0; i < createPackagePriceDto.length; i++) {
+    if (createPackagePriceDtoList) {
+      for (var i = 0; i < createPackagePriceDtoList.length; i++) {
         const res = await this.packagePriceService.createPackagePrice(
-          createPackagePriceDto[i],
+          createPackagePriceDtoList[i],
           savedSP,
         );
       }
@@ -159,8 +159,6 @@ export class FitnessPackageService implements IFitnessPackageService {
       ...existedFitness,
       servicePackage: updatedSP,
     });
-
-   
 
     if (updatePackagePriceDto) {
       for (var i = 0; i < updatePackagePriceDto.length; i++) {

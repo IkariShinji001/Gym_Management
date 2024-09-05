@@ -1,4 +1,4 @@
-import { IsBoolean, IsArray,  IsDate, IsNumber,  IsString } from 'class-validator';
+import { IsBoolean, IsBoolean, IsArray,  IsDate, IsNumber, IsNumber,  IsString } from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
 import { Facilities } from '../repositories/facilities.entity';
 
