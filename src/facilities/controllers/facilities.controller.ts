@@ -18,7 +18,7 @@ export class FacilitiesController {
 
   @Post()
   async create(
-    @Body() createFacilityDto: CreateFacilityDto
+    @Body() createFacilityDto: CreateFacilityDto,
   ): Promise<Facilities> {
     return await this.facilitiesService.create(createFacilityDto);
   }
@@ -33,10 +33,21 @@ export class FacilitiesController {
 
   @Get()
   async findByName(@Query('name') name: string): Promise<Facilities[]> {
-    if(name) {
+    if (name) {
       return await this.facilitiesService.findByName(name);
-    }
-      else return await this.facilitiesService.findAll();
+    } else return await this.facilitiesService.findAll();
+  }
+
+  @Get('findFacilityIsFinishedTrue')
+  async findFacilityIsFinishedTrue(): Promise<Facilities[]> {
+    return this.facilitiesService.findFacilityIsFinishedTrue();
+  }
+
+  @Get('checkFacilityIsFinishedIsFalse/:id')
+  async checkFacilityIsFinishedIsFalse(
+    @Param('id') id: number,
+  ): Promise<Facilities> {
+    return await this.facilitiesService.checkFacilityIsFinishedIsFalse(id);
   }
 
   @Get(':id')

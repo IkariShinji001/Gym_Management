@@ -1,8 +1,10 @@
 import {
   Controller,
+  Delete,
   HttpException,
   HttpStatus,
   NotFoundException,
+  Param,
   Post,
   UploadedFile,
   UseInterceptors,
@@ -19,7 +21,7 @@ export class CloudinaryController {
   async uploadImage(@UploadedFile() file: Express.Multer.File) {
     try {
       const result = await this.cloudinaryService.uploadFile(file);
-      return {  
+      return {
         secure_url: result.secure_url,
         public_id: result.public_id,
       };
@@ -28,5 +30,6 @@ export class CloudinaryController {
     }
   }
 
-  
+  @Delete('/:publicId')
+  async deleteImage(@Param('publicId') publicId: string) {}
 }

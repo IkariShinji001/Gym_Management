@@ -16,27 +16,42 @@ export class MaintenancesService implements IMaintenanacesService {
     private maintenancesRepository: Repository<Maintenances>,
     private facilityService: FacilitiesService,
   ) {}
+  async maintenanceHistory(id: number): Promise<Maintenances[]> {
+    return await this.maintenancesRepository
+      .createQueryBuilder('m')
+      .leftJoinAndSelect('m.facility', 'f')
+      .where('f.id=:id', { id })
+      .andWhere('m.isFinished= TRUE')
+      .getMany();
+  }
 
-  async create(newMaintenance: CreateMaintenanceDto): Promise<Maintenances> {
-    const existedFacility = await this.facilityService.findOne(
-      newMaintenance.facilityId,
-    );
-    const maintenance = this.maintenancesRepository.create({
-      ...newMaintenance,
-      facility: existedFacility,
-    });
-    return await this.maintenancesRepository.save(maintenance);
+  async create(newMaintenance: CreateMaintenanceDto): Promise<Maintenances[]> {
+    const maintenanceArray: Maintenances[] = [];
+    for (const facilityId of newMaintenance.facilityIds) {
+      const existedFacility = await this.facilityService.findOne(facilityId);
+      const maintenance = await this.maintenancesRepository.create({
+        ...newMaintenance,
+        facility: existedFacility,
+      });
+      await this.maintenancesRepository.save(maintenance);
+      maintenanceArray.push(maintenance);
+    }
+    return maintenanceArray;
   }
 
   async update(
     id: number,
     updateMaintenance: UpdateMaintenanceDto,
   ): Promise<Maintenances> {
-    await this.maintenancesRepository.update(id, {
+    const facilityId = updateMaintenance.facilityIds[0];
+    const maintenanceToUpdate = {
+      facilityId: facilityId,
       date: updateMaintenance.date,
       description: updateMaintenance.description,
       isFinished: updateMaintenance.isFinished,
-    });
+    };
+    console.log(maintenanceToUpdate);
+    await this.maintenancesRepository.update(id, maintenanceToUpdate);
     return this.maintenancesRepository.findOne({ where: { id } });
   }
 
@@ -48,6 +63,6 @@ export class MaintenancesService implements IMaintenanacesService {
   }
 
   async findAll(): Promise<Maintenances[]> {
-    return await this.maintenancesRepository.find();
+    return await this.maintenancesRepository.find({ relations: ['facility'] });
   }
 }

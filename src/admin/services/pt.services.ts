@@ -6,9 +6,10 @@ import { CreatePtDto, UpdatePtDto } from '../dtos/pt.dto';
 import { Profile } from '../repositories/profile.entity';
 import { ProfileService } from './profile.services';
 import { CreateProfileDto } from '../dtos/profile.dto';
+import { IPtService } from '../interfaces/pt.service.interface';
 
 Injectable();
-export class PtService {
+export class PtService implements IPtService {
   constructor(
     @InjectRepository(Pt)
     private ptRepository: Repository<Pt>,
@@ -40,7 +41,9 @@ export class PtService {
   async delete(id: number): Promise<void> {
     const deletedPt = await this.ptRepository.findOne({
       where: { id },
+      relations: ['profile'],
     });
     await this.ptRepository.delete(deletedPt);
+    await this.profileService.delete(deletedPt.profile.id);
   }
 }

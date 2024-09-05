@@ -1,20 +1,19 @@
-import { IsBoolean, IsDate, IsNumber, IsString } from 'class-validator';
+import { IsBoolean, IsBoolean, IsArray,  IsDate, IsNumber, IsNumber,  IsString } from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
 import { Facilities } from '../repositories/facilities.entity';
-
 
 export class CreateMaintenanceDto {
   @IsString()
   description: string;
-  
+
   @IsDate()
   date: Date;
 
   @IsBoolean()
   isFinished: boolean;
 
-  @IsNumber()
-  facilityId: number;
+  @IsArray()
+  facilityIds: number[];
 }
 
 export class UpdateMaintenanceDto extends PartialType(CreateMaintenanceDto) {}

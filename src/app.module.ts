@@ -18,6 +18,8 @@ import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { CloudinaryProvider } from './cloudinary/cloudinary';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { ServicePackageModule } from './service-package/service-package.module';
+import { BranchModule } from './branch/branch.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -37,6 +39,8 @@ import { ServicePackageModule } from './service-package/service-package.module';
     AuthModule,
     CloudinaryModule,
     ServicePackageModule,
+    BranchModule,
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [
