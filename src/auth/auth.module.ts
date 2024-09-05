@@ -10,19 +10,14 @@ import { jwtConstants } from 'src/constant';
   imports: [
     ClientsModule.register([
       {
-        name: 'ADMIN',
+        name: 'SERVER',
         transport: Transport.GRPC,
         options: {
-          package: 'ADMIN',
-          protoPath: join(__dirname, '../admin/protos/admin.proto'),
-        },
-      },
-      {
-        name: 'USER',
-        transport: Transport.GRPC,
-        options: {
-          package: 'USER',
-          protoPath: join(__dirname, '../user/protos/user.proto'),
+          package: 'SERVER',
+          protoPath: [
+            join(__dirname, '../admin/protos/admin.proto'),
+            join(__dirname, '../user/protos/user.proto'),
+          ],
         },
       },
     ]),

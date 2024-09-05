@@ -34,8 +34,6 @@ export class AuthGuard implements CanActivate {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: jwtConstants.secret,
       });
-      // 💡 We're assigning the payload to the request object here
-      // so that we can access it in our route handlers
       request['user'] = payload;
     } catch {
       throw new UnauthorizedException();
@@ -44,7 +42,15 @@ export class AuthGuard implements CanActivate {
   }
 
   private extractTokenFromCookie(request: Request): string | undefined {
-    const token = request.cookies?.access_token;
+    const origin = request.headers.origin;
+
+    let token: string | undefined;
+
+    if (origin === 'http://localhost:9999') {
+      token = request.cookies?.user_access_token;
+    } else if (origin === 'http://localhost:5137') {
+      token = request.cookies?.admin_access_token;
+    }
     return token;
   }
 }

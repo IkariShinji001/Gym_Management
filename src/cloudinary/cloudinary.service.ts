@@ -14,4 +14,8 @@ export class CloudinaryService {
       },
     );
   }
+
+  async deleteImage(publicId: string) {
+    await v2.uploader.destroy(publicId);
+  }
 }

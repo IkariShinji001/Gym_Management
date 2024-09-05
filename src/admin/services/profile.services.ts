@@ -18,8 +18,8 @@ export class ProfileService implements IProfileService {
     private profileRepository: Repository<Profile>,
   ) {}
 
-  findOneByEmail(data: { email: string }): Promise<Profile> {
-    return this.profileRepository.findOneBy({ email: data.email });
+  async findOneByEmail(data: { email: string }): Promise<Profile> {
+    return await this.profileRepository.findOneBy({ email: data.email });
   }
 
   async findAll(): Promise<Profile[]> {

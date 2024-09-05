@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
-import { User, UserEmail } from './userService.interface';
+import { User, Username } from './userService.interface';
 
 export interface UserServiceClient {
-  FindOneUserByEmail(email: UserEmail): Observable<User>;
+  FindOneUserByUsername(username: Username): Observable<User>;
 }

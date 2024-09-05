@@ -2,11 +2,10 @@ import { IsBoolean, IsArray,  IsDate, IsNumber,  IsString } from 'class-validato
 import { PartialType } from '@nestjs/mapped-types';
 import { Facilities } from '../repositories/facilities.entity';
 
-
 export class CreateMaintenanceDto {
   @IsString()
   description: string;
-  
+
   @IsDate()
   date: Date;
 
