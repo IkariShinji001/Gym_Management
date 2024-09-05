@@ -6,7 +6,7 @@ export interface IManagerService {
     findAll(): Promise<Managers[]>;
     findOne(id: number): Promise<Managers>;
     create(newProfile: CreateProfileDto): Promise<Managers>;
-    update(id: number, updateManager: Managers): Promise<Managers>;
+    // update(id: number, updateManager: Managers): Promise<Managers>;
     delete(id: number): Promise<void>;
     FindAllEmployeesByManagerId(managerId: number): Promise<Employees[]>;
 }

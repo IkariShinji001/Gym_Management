@@ -22,5 +22,6 @@ import { ManagerService } from './services/manager.services';
   ],
   controllers: [ProfileController,PtController, PtImagesController, EmployeeController, ManagerController],
   providers: [ProfileService,PtService, PtImagesService, EmployeeService, ManagerService],
+  exports:[PtService]
 })
 export class AdminModule {}

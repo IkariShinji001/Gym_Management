@@ -7,6 +7,7 @@ import { CreateProfileDto } from '../dtos/profile.dto';
 import { Employees } from '../repositories/employee.entity';
 import { ProfileService } from './profile.services';
 
+
 Injectable();
 export class ManagerService implements IManagerService {
   constructor(
