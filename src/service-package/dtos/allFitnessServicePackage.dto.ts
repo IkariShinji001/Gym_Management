@@ -18,7 +18,7 @@ import {
 export class CreateAllFitnessServicePackageDto {
   createFitnessPackageDto: CreateFitnessPackageDto;
   createServicePackageDto: CreateServicePackageDto;
-  createPackagePriceDto: CreateServicePackagePriceDto[];
+  createPackagePriceDtoList: CreateServicePackagePriceDto[];
   updateBenefitList: Partial<UpdateExistedBenefitsDto[]>;
   createNewBenefitList: Partial<CreatePackageBenefitsDto[]>;
 }
