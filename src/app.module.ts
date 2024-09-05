@@ -19,15 +19,9 @@ import { CloudinaryProvider } from './cloudinary/cloudinary';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { ServicePackageModule } from './service-package/service-package.module';
 import { BranchModule } from './branch/branch.module';
-
+import { VNpayModule } from './vnpay/vnpay.module';
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
-    TypeOrmModule.forRootAsync({
-      useClass: DatabaseConfigService,
-    }),
     UserModule,
     BillModule,
     PackageServiceModule,
@@ -39,6 +33,7 @@ import { BranchModule } from './branch/branch.module';
     CloudinaryModule,
     ServicePackageModule,
     BranchModule,
+    VNpayModule,
   ],
   controllers: [AppController],
   providers: [
