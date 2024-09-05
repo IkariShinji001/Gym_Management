@@ -7,6 +7,6 @@ export interface IPtService {
   findAll(): Promise<Pt[]>;
   findOne(id: number): Promise<Pt>;
   create(newProfile: CreateProfileDto, ptInfoDto: CreatePtDto): Promise<Pt>;
-  update(id: number, updateInfo: UpdatePtDto): Promise<Profile>;
+  update(id: number, updateInfo: UpdatePtDto): Promise<Pt>;
   delete(id: number): Promise<void>;
 }

@@ -11,7 +11,7 @@ export enum Role {
 export class Profile {
   @PrimaryGeneratedColumn()
   id: number;
-
+// email unique
   @Column({ nullable: false })
   email: string;
 
