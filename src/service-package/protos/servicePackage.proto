@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package SERVER;
+
+service ServicePackageService {
+  rpc FindServicePackagePriceByListIds (ServicePackagePriceListIds) returns (ServicePackagePriceList);
+}
+
+message ServicePackagePriceListIds{
+  repeated ServicePackagePriceId servicePackagePriceListIds = 1;
+}
+
+message ServicePackagePriceId {
+  int32 id = 1;
+}
+
+message ServicePackagePrice{
+  int32 id = 1;
+  int32 price = 2;
+  string servicePackageName = 3;
+  int32 duration = 4;
+  string durationType = 5;
+}
+
+message ServicePackagePriceList{
+  repeated ServicePackagePrice servicePackagePriceList = 1;
+}

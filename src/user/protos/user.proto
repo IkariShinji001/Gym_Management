@@ -3,14 +3,23 @@ syntax = "proto3";
 package SERVER;
 
 service UserService {
-  rpc FindOneUserByUsername (Username) returns (User) {}
+  rpc FindOneUserByUsername (Username) returns (User);
+  rpc FindOneUserById (UserId) returns (CustomerStripeId); // Fixed the typo
+}
+
+message UserId {
+  int32 id = 1;
+}
+
+message CustomerStripeId {
+  string customerStripeId = 1;
 }
 
 message Username {
   string username = 1;
 }
 
-message User{
+message User {
   int32 id = 1;
   string username = 2;
   string password = 3;

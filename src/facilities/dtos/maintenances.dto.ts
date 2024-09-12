@@ -1,4 +1,4 @@
-import { IsBoolean, IsArray,  IsDate, IsString } from 'class-validator';
+import { IsArray,  IsDate, IsString } from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
 export class CreateMaintenanceDto {
   @IsString()
@@ -7,7 +7,6 @@ export class CreateMaintenanceDto {
   @IsDate()
   date: Date;
 
-  @IsBoolean()
   isFinished: boolean;
 
   @IsArray()

@@ -18,7 +18,7 @@ import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { CloudinaryProvider } from './cloudinary/cloudinary';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { BranchModule } from './branch/branch.module';
-import { VNpayModule } from './vnpay/vnpay.module';
+import { StripeModule } from './stripe/stripe.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -37,7 +37,7 @@ import { VNpayModule } from './vnpay/vnpay.module';
     CloudinaryModule,
     ServicePackageModule,
     BranchModule,
-    VNpayModule,
+    StripeModule,
   ],
   controllers: [AppController],
   providers: [
