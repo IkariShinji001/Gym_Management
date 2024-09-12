@@ -20,4 +20,6 @@ export class Managers {
   @OneToOne(() => Profile)
   @JoinColumn()
   profile: Profile;
+
+  // branchId: number;
 }

@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { BillModule } from './bill/bill.module';
-import { PackageServiceModule } from './package-service/package-service.module';
+import { ServicePackageModule } from './service-package/service-package.module';
 import { AdminModule } from './admin/admin.module';
 import { SupplementProductModule } from './supplement-product/supplement-product.module';
 import { FacilitiesModule } from './facilities/facilities.module';
@@ -17,20 +17,12 @@ import { AuthGuard } from './auth/guards/jwt-auth.guard';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { CloudinaryProvider } from './cloudinary/cloudinary';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
-import { ServicePackageModule } from './service-package/service-package.module';
 import { BranchModule } from './branch/branch.module';
-
+import { VNpayModule } from './vnpay/vnpay.module';
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
-    TypeOrmModule.forRootAsync({
-      useClass: DatabaseConfigService,
-    }),
     UserModule,
     BillModule,
-    PackageServiceModule,
     AdminModule,
     SupplementProductModule,
     FacilitiesModule,
@@ -39,6 +31,7 @@ import { BranchModule } from './branch/branch.module';
     CloudinaryModule,
     ServicePackageModule,
     BranchModule,
+    VNpayModule,
   ],
   controllers: [AppController],
   providers: [

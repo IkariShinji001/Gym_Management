@@ -1,17 +1,17 @@
 syntax = "proto3";
 
-package USER;
+package SERVER;
 
 service UserService {
-  rpc FindOneUserByEmail (UserEmail) returns (User) {}
+  rpc FindOneUserByUsername (Username) returns (User) {}
 }
 
-message UserEmail {
-  string email = 1;
+message Username {
+  string username = 1;
 }
 
 message User{
   int32 id = 1;
-  string email = 2;
+  string username = 2;
   string password = 3;
 }
