@@ -16,7 +16,7 @@ export class SupplementProduct {
   @Column({ nullable: false })
   imageUrl: string;
 
-  @ManyToOne(() => SProductType, (type) => type.supplementProducts)
+  @ManyToOne(() => SProductType, (type) => type.supplementProducts, {onDelete: 'CASCADE' })
   type: SProductType
 
   @OneToMany(() => SoldProduct, (soldProduct) => soldProduct.supplementProduct)

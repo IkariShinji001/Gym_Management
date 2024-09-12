@@ -57,13 +57,7 @@ export class ServicePackagePriceService implements IServicePackagePriceService {
       where: { id: packagePriceId },
     });
     if (!existedPrice) {
-      console.log(
-        `--- Price with ID: ${packagePriceId} not found ---`,
-      );
-      throw new HttpException(
-        `Price with ID: ${packagePriceId} not found`,
-        400,
-      );
+      return await this.createPackagePrice(updatePackagePriceDto, existedSP)
     }
 
     const existedDuration = await this.packageDurationService.findOneById(
