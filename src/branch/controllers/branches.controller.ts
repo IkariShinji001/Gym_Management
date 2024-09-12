@@ -31,4 +31,9 @@ export class BranchesController {
   async delete(@Param('id') id: number): Promise<void> {
     await this.branchesService.delete(id);
   }
+
+  @Get('findBranchInProvince/:provinceId')
+  async findBranchInProvince(@Param('provinceId') provinceId: number ): Promise<Branches[]> {
+    return await this.branchesService.findBranchInProvince(provinceId);
+  }
 }

@@ -16,11 +16,11 @@ export class MaintenancesService implements IMaintenanacesService {
     private maintenancesRepository: Repository<Maintenances>,
     private facilityService: FacilitiesService,
   ) {}
-  async maintenanceHistory(id: number): Promise<Maintenances[]> {
+  async maintenanceHistory(idFacility: number): Promise<Maintenances[]> {
     return await this.maintenancesRepository
       .createQueryBuilder('m')
       .leftJoinAndSelect('m.facility', 'f')
-      .where('f.id=:id', { id })
+      .where('f.id=:idFacility', { idFacility })
       .andWhere('m.isFinished= TRUE')
       .getMany();
   }
@@ -28,7 +28,7 @@ export class MaintenancesService implements IMaintenanacesService {
   async create(newMaintenance: CreateMaintenanceDto): Promise<Maintenances[]> {
     const maintenanceArray: Maintenances[] = [];
     for (const facilityId of newMaintenance.facilityIds) {
-      const existedFacility = await this.facilityService.findOne(facilityId);
+      const existedFacility = await this.facilityService.findById(facilityId);
       const maintenance = await this.maintenancesRepository.create({
         ...newMaintenance,
         facility: existedFacility,
@@ -50,7 +50,6 @@ export class MaintenancesService implements IMaintenanacesService {
       description: updateMaintenance.description,
       isFinished: updateMaintenance.isFinished,
     };
-    console.log(maintenanceToUpdate);
     await this.maintenancesRepository.update(id, maintenanceToUpdate);
     return this.maintenancesRepository.findOne({ where: { id } });
   }
@@ -64,5 +63,13 @@ export class MaintenancesService implements IMaintenanacesService {
 
   async findAll(): Promise<Maintenances[]> {
     return await this.maintenancesRepository.find({ relations: ['facility'] });
+  }
+
+  async findMaintenanceIsFinished(): Promise<Maintenances[]> {
+    return await this.maintenancesRepository.find({where: { isFinished: true}, relations: ['facility']})
+  }
+
+  async findMaintenanceIsNotFinished(): Promise<Maintenances[]> {
+    return await this.maintenancesRepository.find({where: { isFinished: false}, relations: ['facility']})
   }
 }

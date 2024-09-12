@@ -51,8 +51,9 @@ export class FacilitiesController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number): Promise<Facilities> {
-    return await this.facilitiesService.findOne(id);
+  async findById(@Param('id') id: number): Promise<Facilities> {
+    console.log(id)
+    return await this.facilitiesService.findById(id);
   }
 
   @Delete(':id')

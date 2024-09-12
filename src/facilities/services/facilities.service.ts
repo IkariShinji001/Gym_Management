@@ -18,7 +18,6 @@ export class FacilitiesService implements IFacilitiesService {
 
   async create(newFacility: CreateFacilityDto): Promise<Facilities> {
     const facility = this.facilitiesRepository.create(newFacility);
-    console.log(facility);
     return await this.facilitiesRepository.save(facility);
   }
 
@@ -39,16 +38,32 @@ export class FacilitiesService implements IFacilitiesService {
     return facilities;
   }
 
-  async findOne(id: number): Promise<Facilities> {
-    return await this.facilitiesRepository.findOne({ where: { id } });
+  async findById(id: number): Promise<Facilities> {
+    const facility = await this.facilitiesRepository.findOne({ where: { id } });
+    return facility;
   }
 
   async findFacilityIsFinishedTrue(): Promise<Facilities[]> {
-    return await this.facilitiesRepository
-      .createQueryBuilder('f')
-      .leftJoinAndSelect('f.maintenances', 'm') // Giả sử rằng bạn có mối quan hệ giữa maintenances và facilities
-      .where('m.isFinished IS DISTINCT FROM FALSE') // Điều kiện isFinished khác false
+    let data = await this.facilitiesRepository
+      .createQueryBuilder('facility')
+      .leftJoinAndSelect('facility.maintenances', 'maintenance')
+      .where((qb) => {
+        const subQuery = qb
+          .subQuery()
+          .select('1')
+          .from('maintenances', 'm')
+          .where('m.facilityId = facility.id')
+          .andWhere('m.isFinished = false')
+          .getQuery();
+        return `NOT EXISTS (${subQuery})`;
+      })
       .getMany();
+
+    if (data.length === 0) {
+      data = await this.facilitiesRepository.find();
+    }
+
+    return data;
   }
 
   async checkFacilityIsFinishedIsFalse(id: number): Promise<Facilities> {

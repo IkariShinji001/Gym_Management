@@ -1,8 +1,10 @@
 import {
   Controller,
+  Delete,
   HttpException,
   HttpStatus,
   NotFoundException,
+  Param,
   Post,
   UploadedFile,
   UseInterceptors,
@@ -28,5 +30,8 @@ export class CloudinaryController {
     }
   }
 
-  
+  @Delete(':publicId')
+  async deleteImage(@Param('publicId') publicId: string): Promise<void> {
+      await this.cloudinaryService.deleteImage(publicId);
+  }
 }

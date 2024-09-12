@@ -37,13 +37,26 @@ export class MaintenancesController {
     return this.maintenancesService.findAll();
   }
 
-  @Get('maintenanceHistory/:id')
-  async maintenanceHistory(@Param('id') id: number): Promise<Maintenances[]> {
-    return await this.maintenancesService.maintenanceHistory(id);
+  @Get('maintenanceHistory/:idFacility')
+  async maintenanceHistory(
+    @Param('idFacility') idFacility: number,
+  ): Promise<Maintenances[]> {
+    return await this.maintenancesService.maintenanceHistory(idFacility);
   }
 
   @Delete(':id')
   async delete(@Param('id') id: number): Promise<void> {
     await this.maintenancesService.delete(id);
   }
+
+  @Get('findMaintenanceIsFinished')
+  async findMaintenanceIsFinished(): Promise<Maintenances[]> {
+    return await this.maintenancesService.findMaintenanceIsFinished();
+  }
+
+  @Get('findMaintenanceIsNotFinished')
+  async findMaintenanceIsNotFinished(): Promise<Maintenances[]> {
+    return await this.maintenancesService.findMaintenanceIsNotFinished();
+  }
+
 }
