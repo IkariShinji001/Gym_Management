@@ -21,6 +21,12 @@ import { BranchModule } from './branch/branch.module';
 import { VNpayModule } from './vnpay/vnpay.module';
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    TypeOrmModule.forRootAsync({
+      useClass: DatabaseConfigService,
+    }),
     UserModule,
     BillModule,
     AdminModule,

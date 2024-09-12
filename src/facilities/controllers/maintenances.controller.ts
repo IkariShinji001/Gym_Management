@@ -6,12 +6,13 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { MaintenancesService } from '../services/maintenances.service';
 import { CreateMaintenanceDto } from '../dtos/maintenances.dto';
 import { Maintenances } from '../repositories/maintenances.entity';
 import { UpdateMaintenanceDto } from '../dtos/maintenances.dto';
-import { Facilities } from '../repositories/facilities.entity';
+import { ChartData } from '../interfaces/maintenances.service.interface';
 
 @Controller('/maintenances')
 export class MaintenancesController {
@@ -59,4 +60,14 @@ export class MaintenancesController {
     return await this.maintenancesService.findMaintenanceIsNotFinished();
   }
 
+  @Get('count-maintenances-by-month/:facilityId')
+  async countMaintenancesByMonth(
+    @Param('facilityId') facilityId: number,
+    @Query('year') year: number,
+  ): Promise<ChartData> {
+    return await this.maintenancesService.countMaintenancesByMonth(
+      facilityId,
+      year,
+    );
+  }
 }
