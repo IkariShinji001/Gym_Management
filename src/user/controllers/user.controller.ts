@@ -13,6 +13,11 @@ export class UserController {
     return await this.userService.findOneByUsername(username.username);
   }
 
+  @GrpcMethod('UserService', 'FindOneUserById')
+  async FindOneUserByUserId(userId: { userId: number }) {
+    return await this.userService.findOneByUserId(userId.userId);
+  }
+
   @Get('/:id')
   async getUserById(@Param('id') id: number) {
     console.log(id);

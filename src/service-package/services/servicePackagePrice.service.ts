@@ -10,6 +10,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ServicePackages } from '../repositories/servicePackage.entity';
 import { PackageDurationService } from './packageDuration.service';
+import {
+  IServicePackagePrice,
+  ServicePackagePriceList,
+  ServicePackagePriceListIds,
+} from 'src/shared/interfaces/grpc/servicePackage/servicePackage.interface';
 
 @Injectable()
 export class ServicePackagePriceService implements IServicePackagePriceService {
@@ -25,10 +30,38 @@ export class ServicePackagePriceService implements IServicePackagePriceService {
       relations: ['servicePackage', 'packageDuration'],
     });
   }
-  findByServicePackage(
+
+  async getAllByListIds(
+    listIds: ServicePackagePriceListIds,
+  ): Promise<ServicePackagePriceList> {
+    const res: IServicePackagePrice[] = [];
+    let final; // Initialize res as an array of ServicePackagePrice
+
+    for (const listId of listIds.servicePackagePriceListIds) {
+      const servicePackagePrices = await this.findByServicePackage(listId.id);
+
+      const mappedPrices = servicePackagePrices.map((spr) => ({
+        id: spr.id,
+        price: spr.price,
+        servicePackageName: spr.servicePackage.name,
+        duration: spr.packageDuration.duration,
+        durationType: spr.packageDuration.durationType, // Cast to DurationType
+      }));
+
+      // Push mapped prices to the res array
+      res.push(...mappedPrices);
+      final = { servicePackagePriceList: res };
+    }
+
+    return final; // Return the final result
+  }
+  async findByServicePackage(
     servicePackageId: number,
   ): Promise<ServicePackagePrice[]> {
-    throw new Error('Method not implemented.');
+    return await this.packagePriceRepository.find({
+      where: { id: servicePackageId },
+      relations: ['servicePackage', 'packageDuration'],
+    });
   }
 
   async createPackagePrice(

@@ -7,3 +7,11 @@ export interface User {
   username: string;
   password: string;
 }
+
+export interface UserId {
+  id: number;
+}
+
+export interface CustomerStripeId {
+  customerStripeId: string;
+}
