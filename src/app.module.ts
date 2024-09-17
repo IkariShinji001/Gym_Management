@@ -19,6 +19,8 @@ import { CloudinaryProvider } from './cloudinary/cloudinary';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { BranchModule } from './branch/branch.module';
 import { StripeModule } from './stripe/stripe.module';
+import { MailModule } from './mail/mail.module';
+import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -38,6 +40,8 @@ import { StripeModule } from './stripe/stripe.module';
     ServicePackageModule,
     BranchModule,
     StripeModule,
+    MailModule,
+    RabbitmqModule,
   ],
   controllers: [AppController],
   providers: [
