@@ -1,7 +1,18 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { PackageBenefitService } from '../services/packageBenefit.service';
 import { PackageBenefits } from '../repositories/packageBenefit.entity';
-import { CreatePackageBenefitsDto } from '../dtos/benefitPackage.dto';
+import {
+  CreatePackageBenefitsDto,
+  UpdatePackageBenefitsDto,
+} from '../dtos/benefitPackage.dto';
 
 @Controller('/package-benefits')
 export class PackageBenefitController {
@@ -15,6 +26,7 @@ export class PackageBenefitController {
   async createPB(
     @Body() createBenefitDto: CreatePackageBenefitsDto,
   ): Promise<PackageBenefits> {
+    console.log(createBenefitDto);
     return await this.benefitService.create(createBenefitDto);
   }
 
@@ -25,7 +37,15 @@ export class PackageBenefitController {
     return await this.benefitService.createList(createBenefitDtoList);
   }
 
-  @Delete('/id')
+  @Patch('/:id')
+  async updatePB(
+    @Param('id') id: number,
+    @Body() updateBenefitDto: UpdatePackageBenefitsDto,
+  ) {
+    return await this.benefitService.update(id, updateBenefitDto);
+  }
+
+  @Delete('/:id')
   async deletePB(@Param('id') id: number): Promise<void> {
     await this.benefitService.deleteBenefit(id);
   }

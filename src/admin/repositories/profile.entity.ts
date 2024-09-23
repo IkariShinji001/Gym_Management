@@ -28,6 +28,6 @@ export class Profile {
   role: Role;
 
   // change to sell product < hukhan>
-  @OneToMany(() => SoldProduct, (soldProduct) => soldProduct.profile)
+  @OneToMany(() => SoldProduct, (soldProduct) => soldProduct.profile,)
   soldProducts: SoldProduct
 }

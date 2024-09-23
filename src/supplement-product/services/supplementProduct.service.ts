@@ -26,10 +26,23 @@ export class SupplementProductService implements ISupplementProductService {
     return supplement;
   }
 
-  async findAll() :Promise<SupplementProduct[]>{
-    return await this.supplementProductRepository.find({
-      relations:['type']
-    });
+  async findAll(): Promise<any[]> {
+    const products = await this.supplementProductRepository
+      .createQueryBuilder('supplementProduct')
+      .leftJoinAndSelect('supplementProduct.type', 'type')
+      .leftJoin('supplementProduct.soldProducts', 'soldProduct')
+      .addSelect('SUM(soldProduct.quantity)', 'totalSold')
+      .groupBy('supplementProduct.id')
+      .addGroupBy('type.id')
+      .getRawAndEntities();
+
+    // Map products with totalSold values
+    const result = products.entities.map((product, index) => ({
+      ...product,
+      totalSold: parseInt(products.raw[index].totalSold, 10) || 0, // if totalSold is null, return 0
+    }));
+
+    return result;
   }
 
   async create(
@@ -46,7 +59,7 @@ export class SupplementProductService implements ISupplementProductService {
       ...newSupplementProduct,
       type,
     });
-    
+
     return await this.supplementProductRepository.save(supplementProduct);
   }
 

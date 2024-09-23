@@ -20,13 +20,25 @@ export class ServicePackagesService implements IServicePackageService {
   ) {}
 
   async findAll(): Promise<ServicePackages[]> {
-    return await this.servicePackageRepository.find({
-      relations: ['servicePackagePrices'],
-    });
+    // return await this.servicePackageRepository.find({
+    //   relations: ['servicePackagePrices'],
+    // });
+    const servicePackageList = await this.servicePackageRepository
+    .createQueryBuilder('servicePackage')
+    .leftJoinAndSelect('servicePackage.servicePackagePrices', 'servicePackagePrices')
+    .leftJoinAndSelect(
+      'servicePackagePrices.packageDuration',
+      'packageDuration',
+    )
+    .getMany();
+    return servicePackageList;
   }
 
   async findOneById(id: number): Promise<ServicePackages> {
-    return await this.servicePackageRepository.findOneBy({ id });
+    return await this.servicePackageRepository.findOne({
+      where: { id: id },
+      relations: ['servicePackagePrices'],
+    });
   }
 
   async create(

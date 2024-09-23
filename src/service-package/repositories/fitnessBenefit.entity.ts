@@ -17,6 +17,7 @@ export class FitnessBenefits {
   @ManyToOne(
     () => PackageBenefits,
     (packageBenefits) => packageBenefits.fitnessBenefits,
+    { onDelete: 'CASCADE' },
   )
   packageBenefit: PackageBenefits;
 
