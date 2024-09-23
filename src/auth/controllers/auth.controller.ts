@@ -47,6 +47,12 @@ export class AuthController {
   }
 
   @Public()
+  @Post('/verify/access/face-reconition')
+  async verifyAccessFace(@Body() data: { username: string; password: string }) {
+    const { username, password } = data;
+    return await this.authService.verifyAccessFace(username, password);
+  }
+  @Public()
   @Post('/user/login')
   async loginUser(
     @Body() userInfo: { username: string; password: string },

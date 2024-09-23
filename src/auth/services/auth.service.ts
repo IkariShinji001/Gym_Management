@@ -44,6 +44,27 @@ export class AuthService implements OnModuleInit {
     return this.userService.FindOneUserByUsername(username);
   }
 
+  async verifyAccessFace(username: string, password: string) {
+    const user = await firstValueFrom(await this.getDataUser({ username }));
+
+    if (!user) {
+      throw new HttpException(
+        'Invalid email or password',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+    const isMatchPassword = await bcrypt.compare(password, user.password);
+
+    if (!isMatchPassword) {
+      throw new HttpException(
+        'Invalid email or password',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    return true;
+  }
+
   async signInUser(username: string, password: string) {
     const user = await firstValueFrom(await this.getDataUser({ username }));
 
