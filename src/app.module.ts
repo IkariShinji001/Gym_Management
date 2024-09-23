@@ -20,6 +20,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { ServicePackageModule } from './service-package/service-package.module';
 import { BranchModule } from './branch/branch.module';
 import { PaymentModule } from './payment/payment.module';
+import { ChatbotModule } from './chatbot/chatbot.module';
 
 @Module({
   imports: [
@@ -29,18 +30,19 @@ import { PaymentModule } from './payment/payment.module';
     TypeOrmModule.forRootAsync({
       useClass: DatabaseConfigService,
     }),
+    AdminModule,
     UserModule,
     BillModule,
     PackageServiceModule,
-    AdminModule,
     SupplementProductModule,
     FacilitiesModule,
     SharedModule,
     AuthModule,
-    CloudinaryModule,
+    CloudinaryModule, 
     ServicePackageModule,
     BranchModule,
     PaymentModule,
+    ChatbotModule,
   ],
   controllers: [AppController],
   providers: [

@@ -11,6 +11,10 @@ export class ServiceTypeController {
   async findAllType(): Promise<ServicePackageType[]>{
     return this.typeService.findAll()
   }
+  @Get("/:id")
+  async findTypeById(@Param("id") typeId: number): Promise<ServicePackageType>{
+    return this.typeService.findOneById(typeId)
+  }
 
   @Post()
   async createType(@Body() createTypeDto: CreateServiceTypeDto): Promise<ServicePackageType>{

@@ -1,4 +1,4 @@
-import { Controller, Get } from "@nestjs/common";
+import { Controller, Get, Param } from "@nestjs/common";
 import { FitnessBenefitService } from "../services/fitnessBenefit.service";
 import { FitnessBenefits } from "../repositories/fitnessBenefit.entity";
 
@@ -12,6 +12,11 @@ export class FitnessBenefitsController{
     @Get()
     async findAll(): Promise<FitnessBenefits[]> {
         return await this.fitnessBenefitService.findAll()
+    }
+    
+    @Get(':fitnessPackageId')
+    async findBenefitByFitnessPackageId(@Param('fitnessPackageId') fitnessPackageId: number): Promise<FitnessBenefits[]> {
+        return await this.fitnessBenefitService.findBenefitByFitnessPackageId(fitnessPackageId)
     }
 
 

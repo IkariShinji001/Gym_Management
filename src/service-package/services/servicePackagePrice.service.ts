@@ -25,10 +25,16 @@ export class ServicePackagePriceService implements IServicePackagePriceService {
       relations: ['servicePackage', 'packageDuration'],
     });
   }
-  findByServicePackage(
+  async findByServicePackage(
     servicePackageId: number,
   ): Promise<ServicePackagePrice[]> {
-    throw new Error('Method not implemented.');
+    const packagePrices = await this.packagePriceRepository.find({
+      where: { servicePackage: { id: servicePackageId } },
+      relations: ['packageDuration'],
+    });
+    console.log(servicePackageId);
+    console.log(packagePrices);
+    return packagePrices;
   }
 
   async createPackagePrice(
@@ -38,6 +44,16 @@ export class ServicePackagePriceService implements IServicePackagePriceService {
     const packageDuration = await this.packageDurationService.findOneById(
       createPackagePriceDto.packageDurationId,
     );
+    if (!packageDuration) {
+      console.log(
+        `--- Duration with ID: ${createPackagePriceDto.packageDurationId} not found ---`,
+      );
+      throw new HttpException(
+        `Duration with ID: ${createPackagePriceDto.packageDurationId} not found`,
+        400,
+      );
+    }
+
     const createdPP = await this.packagePriceRepository.create(
       createPackagePriceDto,
     );
@@ -57,9 +73,7 @@ export class ServicePackagePriceService implements IServicePackagePriceService {
       where: { id: packagePriceId },
     });
     if (!existedPrice) {
-      console.log(
-        `--- Price with ID: ${packagePriceId} not found ---`,
-      );
+      console.log(`--- Price with ID: ${packagePriceId} not found ---`);
       throw new HttpException(
         `Price with ID: ${packagePriceId} not found`,
         400,

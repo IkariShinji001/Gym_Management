@@ -29,7 +29,7 @@ export class FitnessPackageController {
   async getAllServicePackage(): Promise<FitnessPackage[]> {
     return this.fitnessPackageService.findAll();
   }
-  
+
   @Get('/detail')
   async getAllDetail() {
     return this.fitnessPackageService.getAllFitnessPackagesWithDetails();
@@ -39,7 +39,11 @@ export class FitnessPackageController {
   async getByType(@Param('typeId') typeId: number): Promise<FitnessPackage[]> {
     return await this.fitnessPackageService.findByType(typeId);
   }
-
+  @Get('/:fitnessId')
+  async getFitnessPackageById(id) {
+    return await this.fitnessPackageService.findOneFitness(id);
+  }
+  
   @Post()
   async createServicePackage(
     @Body() createAllFitnessDto: CreateAllFitnessServicePackageDto,

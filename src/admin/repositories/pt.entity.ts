@@ -31,13 +31,16 @@ export class Pt {
   @Column({ nullable: false })
   hips: string;
 
-  @OneToMany(() => PtImages, (PtImages) => PtImages.pt)
+  @Column({ nullable: false })
+  fbLink: string;
+
+  @OneToMany(() => PtImages, (PtImages) => PtImages.pt,  {cascade: true, onDelete: 'CASCADE'})
   images: PtImages[];
 
-  @OneToMany(() => PtPackages,(ptPackage) => ptPackage.pt)
+  @OneToMany(() => PtPackages, (ptPackage) => ptPackage.pt)
   ptPackages: PtPackages
 
-  @OneToOne(() => Profile)
+  @OneToOne(() => Profile,  {cascade: true, onDelete: 'CASCADE'})
   @JoinColumn()
   profile: Profile;
 }

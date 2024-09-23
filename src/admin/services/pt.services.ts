@@ -7,13 +7,16 @@ import { Profile } from '../repositories/profile.entity';
 import { ProfileService } from './profile.services';
 import { CreateProfileDto } from '../dtos/profile.dto';
 import { IPtService } from '../interfaces/pt.service.interface';
+import { createImagesDto } from '../dtos/createImages.dto';
+import { PtImagesService } from './ptImages.services';
 
-Injectable();
+@Injectable()
 export class PtService implements IPtService {
   constructor(
     @InjectRepository(Pt)
     private ptRepository: Repository<Pt>,
     private profileService: ProfileService,
+    private imageService: PtImagesService,
   ) {}
 
   async findAll(): Promise<Pt[]> {
@@ -24,26 +27,50 @@ export class PtService implements IPtService {
   async findOne(id: number): Promise<Pt> {
     return await this.ptRepository.findOne({
       where: { id },
+      relations: ['images', 'profile'],
     });
   }
-  async create(newProfile: CreateProfileDto, ptInfo: CreatePtDto): Promise<Pt> {
+  async create(
+    newProfile: CreateProfileDto,
+    ptInfo: CreatePtDto,
+    imageDtoList: createImagesDto[],
+  ): Promise<Pt> {
     const createdProfile = await this.profileService.create(newProfile);
     const ceratedPt = this.ptRepository.create({
       ...ptInfo,
       profile: createdProfile,
     });
-    return await this.ptRepository.save(ceratedPt);
+    const savedPt = await this.ptRepository.save(ceratedPt);
+    for (const imageDto of imageDtoList) {
+      const image = await this.imageService.addImage(
+        imageDto.imageUrl,
+        savedPt.id,
+      );
+    }
+    return savedPt;
   }
   async update(id: number, updatePt: UpdatePtDto): Promise<Pt> {
     await this.ptRepository.update(id, updatePt);
     return this.ptRepository.findOne({ where: { id } });
   }
+
   async delete(id: number): Promise<void> {
-    const deletedPt = await this.ptRepository.findOne({
+    const pt = await this.ptRepository.findOne({
       where: { id },
-      relations: ['profile'],
+      relations: ['images', 'profile'],
     });
-    await this.ptRepository.delete(deletedPt);
-    await this.profileService.delete(deletedPt.profile.id);
+
+    if (!pt) {
+      throw new Error('Pt not found');
+    }
+
+    // xoá các ảnh liên quan
+    for (const image of pt.images) {
+      await this.imageService.delete(image.id);
+    }
+    // XOá profile
+    await this.profileService.delete(pt.profile.id);
+    // xoá entity pt
+    await this.ptRepository.remove(pt);
   }
 }

@@ -11,7 +11,10 @@ export class ServicePackageController {
   async getAllServicePackage(): Promise<ServicePackages[]> {
     return this.servicePackageService.findAll();
   }
-
+  @Get("/:id")
+  async getOneServicePackage(@Param("id") id:number): Promise<ServicePackages> {
+    return this.servicePackageService.findOneById(id);
+  }
   @Post()
   async createServicePackage(
     @Body() newServicePackage: CreateServicePackageDto,

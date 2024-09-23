@@ -16,4 +16,8 @@ export class PackagePriceController {
     await this.packagePriceService.deletePackagePrice(id)
   }
 
+  @Get("/:id")
+  async findByServicePackage(@Param('id') id:number): Promise<ServicePackagePrice[]> {
+    return await this.packagePriceService.findByServicePackage(id)
+  }
 }

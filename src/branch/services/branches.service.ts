@@ -11,10 +11,14 @@ export class BranchesService implements IBranchService {
     @InjectRepository(Branches)
     private branchesRepository: Repository<Branches>,
   ) {}
-
   async findAll(): Promise<Branches[]> {
     return await this.branchesRepository.find();
   }
+
+  async countBranch(): Promise<{ num_branches: number }> {
+    const counted = await this.branchesRepository.count();
+    return { "num_branches": counted };
+}
   async findOne(id: number): Promise<Branches> {
     return await this.branchesRepository.findOne({ where: { id: id } });
   }

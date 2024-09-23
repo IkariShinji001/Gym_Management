@@ -20,8 +20,11 @@ export class ServiceTypeService implements IServiceTypeService {
     });
   }
 
-  async findOneById(typeId: number): Promise<ServicePackageType> {
-    return await this.serviceTypeRepository.findOneBy({id: typeId });
+   async findOneById(id: number): Promise<ServicePackageType> {
+    return await this.serviceTypeRepository.findOne({
+      where: { id },
+      relations:['servicePackages'],
+   });
   }
 
   async create(
