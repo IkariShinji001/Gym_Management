@@ -26,6 +26,8 @@ async function bootstrap() {
       protoPath: [
         join(__dirname, './admin/protos/admin.proto'),
         join(__dirname, './user/protos/user.proto'),
+        join(__dirname, './user/protos/voucher.proto'),
+        join(__dirname, './service-package/protos/servicePackage.proto'),
       ],
       url: 'localhost:5000',
     },

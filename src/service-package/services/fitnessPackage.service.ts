@@ -32,6 +32,8 @@ export class FitnessPackageService implements IFitnessPackageService {
     const fitnessPackages = await this.fitnessPackageRepository
       .createQueryBuilder('fitnessPackage')
       .leftJoinAndSelect('fitnessPackage.servicePackage', 'servicePackage')
+      .leftJoinAndSelect('servicePackage.serviceType', 'ServicePackageType')
+
       .leftJoinAndSelect(
         'servicePackage.servicePackagePrices',
         'servicePackagePrice',
@@ -42,9 +44,37 @@ export class FitnessPackageService implements IFitnessPackageService {
       )
       .leftJoinAndSelect('fitnessPackage.fitnessBenefits', 'fitnessBenefits')
       .leftJoinAndSelect('fitnessBenefits.packageBenefit', 'packageBenefit')
+
       .getMany();
 
     return fitnessPackages;
+  }
+
+  async getAllFitnessPackagesWithDetailsById(
+    id: number,
+  ): Promise<FitnessPackage> {
+    const fitnessPackage = await this.fitnessPackageRepository
+      .createQueryBuilder('fitnessPackage')
+      .leftJoinAndSelect('fitnessPackage.servicePackage', 'servicePackage')
+      .leftJoinAndSelect('servicePackage.serviceType', 'serviceType')
+      .leftJoinAndSelect(
+        'servicePackage.servicePackagePrices',
+        'servicePackagePrice',
+      )
+      .leftJoinAndSelect(
+        'servicePackagePrice.packageDuration',
+        'packageDuration',
+      )
+      .leftJoinAndSelect('fitnessPackage.fitnessBenefits', 'fitnessBenefits')
+      .leftJoinAndSelect('fitnessBenefits.packageBenefit', 'packageBenefit')
+      .where('fitnessPackage.id = :id', { id })
+      .getOne();
+
+    if (!fitnessPackage) {
+      throw new NotFoundException(`Fitness Package with ID ${id} not found`);
+    }
+
+    return fitnessPackage;
   }
 
   async findOneFitness(fitnessId: number): Promise<FitnessPackage> {
@@ -83,10 +113,10 @@ export class FitnessPackageService implements IFitnessPackageService {
     const {
       createFitnessPackageDto,
       createServicePackageDto,
-      createPackagePriceDto,
+      createPackagePriceDtoList,
       createNewBenefitList,
-      updateBenefitList,
     } = createAllFitnessDto;
+
     const savedSP = await this.servicePackageService.create(
       createServicePackageDto,
     );
@@ -96,10 +126,10 @@ export class FitnessPackageService implements IFitnessPackageService {
       servicePackage: savedSP,
     });
 
-    if (createPackagePriceDto) {
-      for (var i = 0; i < createPackagePriceDto.length; i++) {
+    if (createPackagePriceDtoList) {
+      for (var i = 0; i < createPackagePriceDtoList.length; i++) {
         const res = await this.packagePriceService.createPackagePrice(
-          createPackagePriceDto[i],
+          createPackagePriceDtoList[i],
           savedSP,
         );
       }
@@ -108,14 +138,6 @@ export class FitnessPackageService implements IFitnessPackageService {
     const savedFitness =
       await this.fitnessPackageRepository.save(createdFitness);
 
-    if (updateBenefitList) {
-      for (var i = 0; i < updateBenefitList.length; i++) {
-        const savedBenefit = await this.benefitService.findOneById(
-          updateBenefitList[i].id,
-        );
-        await this.fitnessBefefitService.createFB(savedFitness, savedBenefit);
-      }
-    }
     if (createNewBenefitList) {
       for (var i = 0; i < createNewBenefitList.length; i++) {
         const savedBenefit = await this.benefitService.create(
@@ -124,7 +146,11 @@ export class FitnessPackageService implements IFitnessPackageService {
         await this.fitnessBefefitService.createFB(savedFitness, savedBenefit);
       }
     }
-    return savedFitness;
+
+    const resultDetail = await this.getAllFitnessPackagesWithDetailsById(
+      savedFitness.id,
+    );
+    return resultDetail;
   }
 
   // ======== UPDATE METHOD =========
@@ -133,13 +159,12 @@ export class FitnessPackageService implements IFitnessPackageService {
     updateAllFitnessDto: UpdateAllFitnessServicePackageDto,
   ): Promise<FitnessPackage> {
     const {
-      priceId,
       updateFitnessPackageDto,
       updateServicePackageDto,
-      updatePackagePriceDto,
-      updateBenefitList,
+      updatePackagePriceDtoList,
       updateNewBenefitList,
     } = updateAllFitnessDto;
+
     const updatedSP = await this.servicePackageService.update(
       updateFitnessPackageDto.servicePackageId,
       updateServicePackageDto,
@@ -160,24 +185,13 @@ export class FitnessPackageService implements IFitnessPackageService {
       servicePackage: updatedSP,
     });
 
-   
-
-    if (updatePackagePriceDto) {
-      for (var i = 0; i < updatePackagePriceDto.length; i++) {
+    if (updatePackagePriceDtoList) {
+      for (var i = 0; i < updatePackagePriceDtoList.length; i++) {
         const packagePrice = await this.packagePriceService.updatePackagePrice(
-          updatePackagePriceDto[i].priceId,
-          updatePackagePriceDto[i],
+          updatePackagePriceDtoList[i].priceId,
+          updatePackagePriceDtoList[i],
           updatedSP,
         );
-      }
-    }
-
-    if (updateBenefitList) {
-      for (var i = 0; i < updateBenefitList.length; i++) {
-        const savedBenefit = await this.benefitService.findOneById(
-          updateBenefitList[i].id,
-        );
-        await this.fitnessBefefitService.createFB(savedFitness, savedBenefit);
       }
     }
 
@@ -190,7 +204,10 @@ export class FitnessPackageService implements IFitnessPackageService {
       }
     }
 
-    return savedFitness;
+    const resultDetail = await this.getAllFitnessPackagesWithDetailsById(
+      savedFitness.id,
+    );
+    return resultDetail;
   }
 
   // ======== DELETE METHOD =========

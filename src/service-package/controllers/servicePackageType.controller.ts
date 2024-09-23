@@ -1,7 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { ServiceTypeService } from '../services/servicePackageType.service';
 import { ServicePackageType } from '../repositories/servicePackageType.entity';
-import { CreateServiceTypeDto } from '../dtos/servicePackageType.dto';
+import { CreateServiceTypeDto, UpdateServiceTypeDto } from '../dtos/servicePackageType.dto';
 
 @Controller('/service-package-types')
 export class ServiceTypeController {
@@ -21,8 +21,13 @@ export class ServiceTypeController {
     return await this.typeService.create(createTypeDto)
   }
 
-  @Delete("/:id")
-  async deleteType(@Param("id") typeId: number): Promise<void>{
+  @Patch("/:typeId")
+  async updateType(@Param('typeId') typeId: number,  updateServiceTypeDto:UpdateServiceTypeDto): Promise<ServicePackageType>{
+    return await this.typeService.update(typeId, updateServiceTypeDto)
+  }
+
+  @Delete("/:typeId")
+  async deleteType(@Param("typeId") typeId: number): Promise<void>{
     await this.typeService.delete(typeId)
   }
 }

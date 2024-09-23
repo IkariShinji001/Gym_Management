@@ -6,9 +6,10 @@ export class CreateFitnessPackageDto {
   coverImageUrl: string;
 
   @IsNumber()
-  servicePackageId: number
+  servicePackageId: number;
 }
 
-export class UpdateFitnessPackageDto extends PartialType(
-  CreateFitnessPackageDto,
-) {}
+export class UpdateFitnessPackageDto {
+  coverImageUrl: Partial<string>;
+  servicePackageId: Partial<number>;
+}

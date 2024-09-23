@@ -1,5 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { CreatePackageBenefitsDto } from '../dtos/benefitPackage.dto';
+import { HttpException, Injectable } from '@nestjs/common';
+import {
+  CreatePackageBenefitsDto,
+  UpdatePackageBenefitsDto,
+} from '../dtos/benefitPackage.dto';
 import { IBenefitPackageService } from '../interfaces/benefitPackage.service.interface';
 import { PackageBenefits } from '../repositories/packageBenefit.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -38,6 +41,22 @@ export class PackageBenefitService implements IBenefitPackageService {
       listBenefit.push(savedBenefit);
     }
     return listBenefit;
+  }
+
+  async update(
+    benefitId: number,
+    updatePackageBenefitDto: UpdatePackageBenefitsDto,
+  ): Promise<PackageBenefits> {
+    const existedBenefit = await this.benefitRepository.findOne({
+      where: { id: benefitId },
+    });
+    if (!existedBenefit) {
+      console.log(`Benefit with ID: ${benefitId} not found`);
+      throw new HttpException(`Benefit with ID: ${benefitId} not found`, 400);
+    }
+    Object.assign(existedBenefit, updatePackageBenefitDto);
+
+    return await this.benefitRepository.save(existedBenefit);
   }
 
   async deleteBenefit(id: number) {

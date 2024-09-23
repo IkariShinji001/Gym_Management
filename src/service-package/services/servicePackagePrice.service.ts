@@ -10,6 +10,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ServicePackages } from '../repositories/servicePackage.entity';
 import { PackageDurationService } from './packageDuration.service';
+import {
+  IServicePackagePrice,
+  ServicePackagePriceList,
+  ServicePackagePriceListIds,
+} from 'src/shared/interfaces/grpc/servicePackage/servicePackage.interface';
 
 @Injectable()
 export class ServicePackagePriceService implements IServicePackagePriceService {
@@ -25,16 +30,38 @@ export class ServicePackagePriceService implements IServicePackagePriceService {
       relations: ['servicePackage', 'packageDuration'],
     });
   }
+
+  async getAllByListIds(
+    listIds: ServicePackagePriceListIds,
+  ): Promise<ServicePackagePriceList> {
+    const res: IServicePackagePrice[] = [];
+    let final; // Initialize res as an array of ServicePackagePrice
+
+    for (const listId of listIds.servicePackagePriceListIds) {
+      const servicePackagePrices = await this.findByServicePackage(listId.id);
+
+      const mappedPrices = servicePackagePrices.map((spr) => ({
+        id: spr.id,
+        price: spr.price,
+        servicePackageName: spr.servicePackage.name,
+        duration: spr.packageDuration.duration,
+        durationType: spr.packageDuration.durationType, // Cast to DurationType
+      }));
+
+      // Push mapped prices to the res array
+      res.push(...mappedPrices);
+      final = { servicePackagePriceList: res };
+    }
+
+    return final; // Return the final result
+  }
   async findByServicePackage(
     servicePackageId: number,
   ): Promise<ServicePackagePrice[]> {
-    const packagePrices = await this.packagePriceRepository.find({
-      where: { servicePackage: { id: servicePackageId } },
-      relations: ['packageDuration'],
+    return await this.packagePriceRepository.find({
+      where: { id: servicePackageId },
+      relations: ['servicePackage', 'packageDuration'],
     });
-    console.log(servicePackageId);
-    console.log(packagePrices);
-    return packagePrices;
   }
 
   async createPackagePrice(
@@ -73,11 +100,7 @@ export class ServicePackagePriceService implements IServicePackagePriceService {
       where: { id: packagePriceId },
     });
     if (!existedPrice) {
-      console.log(`--- Price with ID: ${packagePriceId} not found ---`);
-      throw new HttpException(
-        `Price with ID: ${packagePriceId} not found`,
-        400,
-      );
+      return await this.createPackagePrice(updatePackagePriceDto, existedSP)
     }
 
     const existedDuration = await this.packageDurationService.findOneById(

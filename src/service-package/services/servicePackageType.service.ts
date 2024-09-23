@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import {
   CreateServiceTypeDto,
   UpdateServiceTypeDto,
@@ -16,7 +16,7 @@ export class ServiceTypeService implements IServiceTypeService {
   ) {}
   async findAll(): Promise<ServicePackageType[]> {
     return await this.serviceTypeRepository.find({
-      relations:['servicePackages']
+      relations: ['servicePackages'],
     });
   }
 
@@ -30,16 +30,28 @@ export class ServiceTypeService implements IServiceTypeService {
   async create(
     createServiceTypeDto: CreateServiceTypeDto,
   ): Promise<ServicePackageType> {
-    const createdType =  this.serviceTypeRepository.create(createServiceTypeDto)
-    return await this.serviceTypeRepository.save(createdType)
+    const createdType = this.serviceTypeRepository.create(createServiceTypeDto);
+    return await this.serviceTypeRepository.save(createdType);
   }
-  update(
+
+  async update(
     typeId: number,
-    updateServiceTypeDto: UpdateServiceTypeDto,
+    updateTypeDto: UpdateServiceTypeDto,
   ): Promise<ServicePackageType> {
-    throw new Error('Method not implemented.');
+    const existedType = await this.serviceTypeRepository.findOne({
+      where: { id: typeId },
+    });
+    if (!existedType) {
+      throw new HttpException(
+        `servicePackage Type with ID: ${typeId} not found`,
+        400,
+      );
+    }
+    Object.assign(existedType, updateTypeDto);
+    return await this.serviceTypeRepository.save(existedType)
   }
+
   async delete(typeId: number): Promise<void> {
-    await this.serviceTypeRepository.delete(typeId)
+    await this.serviceTypeRepository.delete(typeId);
   }
 }

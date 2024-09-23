@@ -7,15 +7,21 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { HistoryEntryTime } from '../repositories/historyEntryTime.entity';
 import * as moment from 'moment-timezone';
+import { ConfigService } from '@nestjs/config';
+import Stripe from 'stripe';
 
 @Injectable()
 export class UserService implements IUserService {
+  private stripe: Stripe;
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
     @InjectRepository(HistoryEntryTime)
     private historyEntryTimeRepository: Repository<HistoryEntryTime>,
-  ) {}
+    private configService: ConfigService,
+  ) {
+    this.stripe = new Stripe(configService.get('STRIPE_SECRET_KEY'));
+  }
 
   async findOneByUserId(id: number): Promise<User> {
     return await this.userRepository.findOne({ where: { id: id } });
@@ -65,7 +71,16 @@ export class UserService implements IUserService {
     }
 
     newUser.password = hashedPassword;
-    const createdUser = this.userRepository.create(newUser);
+
+    const stripeCustomer = await this.stripe.customers.create({
+      name: newUser.fullName,
+      email: newUser.email,
+    });
+
+    const user = { ...newUser, customerStripeId: stripeCustomer.id };
+
+    const createdUser = this.userRepository.create(user);
+
     return await this.userRepository.save(createdUser);
   }
   updateUser(id: number, updateUser: UpdateUserDto): Promise<User> {

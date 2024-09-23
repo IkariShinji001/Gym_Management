@@ -6,7 +6,7 @@ import {
 import { IPackageDurationService } from '../interfaces/packageDuration.service.interface';
 import { PackageDuration } from '../repositories/packageDuration.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { And, Repository } from 'typeorm';
 
 @Injectable()
 export class PackageDurationService implements IPackageDurationService {
@@ -21,9 +21,26 @@ export class PackageDurationService implements IPackageDurationService {
   async findOneById(id: number): Promise<PackageDuration> {
     return await this.packageDurationRepository.findOneBy({ id });
   }
+
+  async findDuplicateDuration(
+    createPackageDurationDto: CreatePackageDurationDto,
+  ): Promise<boolean> {
+    const clone = await this.packageDurationRepository.findOne({
+      where: {
+        duration: createPackageDurationDto.duration,
+        durationType: createPackageDurationDto.durationType,
+      },
+    });
+
+    return clone !== null;
+  }
   async createPackageDuration(
     createPackageDurationDto: CreatePackageDurationDto,
   ): Promise<PackageDuration> {
+
+    if(this.findDuplicateDuration(createPackageDurationDto)){
+      
+    }
     const createdDuration = this.packageDurationRepository.create(
       createPackageDurationDto,
     );

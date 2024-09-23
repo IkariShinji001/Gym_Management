@@ -13,13 +13,6 @@ import {
   CreateAllFitnessServicePackageDto,
   UpdateAllFitnessServicePackageDto,
 } from '../dtos/allFitnessServicePackage.dto';
-import { UpdatePackageDurationDto } from '../dtos/packageDuration.dto';
-import { PackageDuration } from '../repositories/packageDuration.entity';
-import {
-  CreateFitnessPackageDto,
-  UpdateFitnessPackageDto,
-} from '../dtos/fitnessPackage.dto';
-import { UpdateServicePackageDto } from '../dtos/servicePackage.dto';
 
 @Controller('/fitness-packages')
 export class FitnessPackageController {
