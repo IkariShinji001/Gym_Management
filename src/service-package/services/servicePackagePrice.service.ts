@@ -59,7 +59,7 @@ export class ServicePackagePriceService implements IServicePackagePriceService {
     servicePackageId: number,
   ): Promise<ServicePackagePrice[]> {
     return await this.packagePriceRepository.find({
-      where: { id: servicePackageId },
+      where: { servicePackage: { id: servicePackageId } },
       relations: ['servicePackage', 'packageDuration'],
     });
   }
