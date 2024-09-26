@@ -100,7 +100,7 @@ export class ServicePackagePriceService implements IServicePackagePriceService {
       where: { id: packagePriceId },
     });
     if (!existedPrice) {
-      return await this.createPackagePrice(updatePackagePriceDto, existedSP)
+      return await this.createPackagePrice(updatePackagePriceDto, existedSP);
     }
 
     const existedDuration = await this.packageDurationService.findOneById(
