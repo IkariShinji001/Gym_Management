@@ -21,6 +21,8 @@ import { BranchModule } from './branch/branch.module';
 import { StripeModule } from './stripe/stripe.module';
 import { MailModule } from './mail/mail.module';
 import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
+import { ChatbotModule } from './chatbot/chatbot.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -29,6 +31,7 @@ import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
     TypeOrmModule.forRootAsync({
       useClass: DatabaseConfigService,
     }),
+    AdminModule,
     UserModule,
     BillModule,
     AdminModule,
@@ -36,12 +39,9 @@ import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
     FacilitiesModule,
     SharedModule,
     AuthModule,
-    CloudinaryModule,
+    CloudinaryModule, 
     ServicePackageModule,
     BranchModule,
-    StripeModule,
-    MailModule,
-    RabbitmqModule,
   ],
   controllers: [AppController],
   providers: [

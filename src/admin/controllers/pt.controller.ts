@@ -4,6 +4,7 @@ import { Pt } from "../repositories/pt.entity";
 import { PtService } from "../services/pt.services";
 import { CreatePtProfileDto } from "../dtos/createprofilept.dto";
 import { UpdatePtDto } from "../dtos/pt.dto";
+import { PtImagesService } from "../services/ptImages.services";
 
 
 @Controller('/pts')
@@ -19,9 +20,9 @@ export class PtController {
         return await this.ptService.findOne(id);
     }
     @Post()
-    async createPt(@Body() createPtProfilePtDto: CreatePtProfileDto): Promise<Pt> {
-        const { createProfileDto, createPtDto } = createPtProfilePtDto;
-        return await this.ptService.create(createProfileDto, createPtDto);
+    async create(@Body() createPtProfilePtDto: CreatePtProfileDto): Promise<Pt> {
+        const { createProfileDto, createPtDto, createImagesDto } = createPtProfilePtDto;
+        return await this.ptService.create(createProfileDto, createPtDto, createImagesDto);
     }
     @Patch(':id')
     async updatePt(@Param('id') id:number, @Body() updatePtDto: UpdatePtDto): Promise<Pt> {

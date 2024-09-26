@@ -29,6 +29,12 @@ export class FitnessBenefitService implements IFitnessBenefitService {
       relations: ['packageBenefit', 'fitnessPackage'],
     });
   }
+  async findBenefitByFitnessPackageId(fitnessPackageId: number): Promise<FitnessBenefits[]> {
+    return await this.fitnessBenefitRepository.find({
+      where: { fitnessPackage:{ id: fitnessPackageId} },
+      relations: ['packageBenefit', 'fitnessPackage'],
+    });
+  }
   async createFB(
     fitnessPackage: FitnessPackage,
     packageBenefit: PackageBenefits,

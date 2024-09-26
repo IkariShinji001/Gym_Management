@@ -10,11 +10,15 @@ import {
 export class FitnessBenefitsController {
   constructor(private fitnessBenefitService: FitnessBenefitService) {}
 
-  @Get()
-  async findAll(): Promise<FitnessBenefits[]> {
-    return await this.fitnessBenefitService.findAll();
-  }
-
+    @Get()
+    async findAll(): Promise<FitnessBenefits[]> {
+        return await this.fitnessBenefitService.findAll()
+    }
+    
+    @Get(':fitnessPackageId')
+    async findBenefitByFitnessPackageId(@Param('fitnessPackageId') fitnessPackageId: number): Promise<FitnessBenefits[]> {
+        return await this.fitnessBenefitService.findBenefitByFitnessPackageId(fitnessPackageId)
+    }
   @Post('/create-list')
   async create(
     @Body()
