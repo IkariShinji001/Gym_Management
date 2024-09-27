@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import * as fs from 'fs';
+import { join } from 'path';
 @Injectable()
 export class DatabaseConfigService implements TypeOrmOptionsFactory {
   constructor(private configService: ConfigService) {}
@@ -21,7 +22,7 @@ export class DatabaseConfigService implements TypeOrmOptionsFactory {
       namingStrategy: new SnakeNamingStrategy(),
       ssl: {
         rejectUnauthorized: true,
-        ca: fs.readFileSync('../../ca.pem').toString(),
+        ca: fs.readFileSync(join(__dirname, '../../../ca.pem')).toString(),
       },
     };
   }
