@@ -38,12 +38,17 @@ export class FacilitiesController {
     } else return await this.facilitiesService.findAll();
   }
 
-  @Get('findFacilityIsFinishedTrue')
+  @Get('findFacilitiesByBranchId/:id')
+  async findFacilitiesByBranchId(@Param('id') id: number): Promise<Facilities[]> {
+    return await this.facilitiesService.findFacilitiesByBranchId(id);
+  }
+
+  @Get('find-facilities-is-finished-true')
   async findFacilityIsFinishedTrue(): Promise<Facilities[]> {
     return this.facilitiesService.findFacilityIsFinishedTrue();
   }
 
-  @Get('checkFacilityIsFinishedIsFalse/:id')
+  @Get('check-facility-is-finished-is-false/:id')
   async checkFacilityIsFinishedIsFalse(
     @Param('id') id: number,
   ): Promise<Facilities> {

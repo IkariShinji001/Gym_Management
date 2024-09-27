@@ -3,6 +3,7 @@ import { UserService } from './../services/user.service';
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { CreateUserDto } from '../dtos/user.dto';
 import { parseDateFromMMDDYYYY } from '../../shared/formatDate';
+import { ListUsersId } from '../interfaces/userService.interface';
 
 @Controller('/users')
 export class UserController {
@@ -16,6 +17,11 @@ export class UserController {
   @GrpcMethod('UserService', 'FindOneUserById')
   async FindOneUserByUserId(userId: { userId: number }) {
     return await this.userService.findOneByUserId(userId.userId);
+  }
+
+  @GrpcMethod('UserService', 'FindListUsersNameByListUsersId')
+  async FindListUsersNameByListUsersId(listUsersId: ListUsersId) {
+    return await this.userService.FindListUsersNameByListUsersId(listUsersId);
   }
 
   @Get('/:id')

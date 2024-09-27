@@ -13,3 +13,12 @@ export interface IUserService {
     endDate: Date,
   ): Promise<HistoryEntryTime[]>;
 }
+
+interface userId {
+  id: number;
+}
+export interface ListUsersId {
+  ListUsersId: userId[];
+}
+
+

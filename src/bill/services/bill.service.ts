@@ -47,7 +47,7 @@ export class BillService {
     this.voucherService =
       this.client.getService<VoucherServiceClient>('VoucherService');
   }
-
+  
   async getVoucherById(id: number) {
     return this.voucherService.FindVoucherById({ id });
   }
@@ -191,7 +191,6 @@ export class BillService {
 
     const getTimeNow = (): string => {
       const now = new Date();
-
       const day = String(now.getDate()).padStart(2, '0');
       const month = String(now.getMonth() + 1).padStart(2, '0');
       const year = now.getFullYear();
@@ -340,7 +339,7 @@ export class BillService {
         const billDetail = this.billDetailRepository.create({
           servicePackagePriceId: packagePrice.servicePackagePriceList[i].id,
           price: packagePrice.servicePackagePriceList[i].price,
-          startEffective: new Date(getTimeNow()),
+          startEffective: new Date(Date.now()),
           endEffective: new Date(
             getEndTime(
               new Date(),

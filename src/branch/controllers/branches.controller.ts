@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/commo
 import { CreateBranchDto, UpdateBrachDto } from '../dtos/branches.dto';
 import { BranchesService } from '../services/branches.service';
 import { Branches } from '../repositories/branches.entity';
+import { GrpcMethod } from '@nestjs/microservices';
 
 @Controller('/branches')
 export class BranchesController {
@@ -18,8 +19,13 @@ export class BranchesController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number ): Promise<Branches> {
-    return await this.branchesService.findOne(id);
+  async findById(@Param('id') id: number ): Promise<Branches> {
+    return await this.branchesService.findById(id);
+  }
+
+  @GrpcMethod('BranchService', 'findBranchById')
+  async findBranchById(branchId: {id: number} ): Promise<Branches> {
+    return await this.branchesService.findBranchById(branchId);
   }
 
   @Patch(':id')

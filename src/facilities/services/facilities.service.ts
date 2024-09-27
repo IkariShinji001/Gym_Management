@@ -1,24 +1,51 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { Facilities } from '../repositories/facilities.entity';
 import { Like, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IFacilitiesService } from '../interfaces/facilities.service.interface';
 import { CreateFacilityDto, updateFacilityDto } from '../dtos/facilities.dto';
+import { ClientGrpc } from '@nestjs/microservices';
+import { BranchServiceClient } from 'src/shared/interfaces/grpc/branch/branchServiceClient.interface';
+import { BranchId } from 'src/shared/interfaces/grpc/branch/branchService.interface';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
-export class FacilitiesService implements IFacilitiesService {
+export class FacilitiesService implements IFacilitiesService, OnModuleInit {
+  private branchService: BranchServiceClient;
+
   constructor(
+    @Inject('SERVER') private client: ClientGrpc,
     @InjectRepository(Facilities)
     private facilitiesRepository: Repository<Facilities>,
   ) {}
+  onModuleInit() {
+    this.branchService =
+      this.client.getService<BranchServiceClient>('BranchService');
+  }
 
   async findAll(): Promise<Facilities[]> {
     return await this.facilitiesRepository.find();
   }
 
+  async findNameBranchById(branchId: BranchId) {
+    return this.branchService.findBranchById(branchId);
+  }
+
   async create(newFacility: CreateFacilityDto): Promise<Facilities> {
     const facility = this.facilitiesRepository.create(newFacility);
-    return await this.facilitiesRepository.save(facility);
+    console.log(facility)
+    const branchId = {
+      id: facility.branchId,
+    };
+    const nameBranch = await firstValueFrom( await this.findNameBranchById(branchId));
+    console.log(facility)
+    console.log(nameBranch)
+    const facilityNew = {
+      ...facility,
+      nameBranch: nameBranch.name,
+    }
+    console.log(facilityNew)
+    return await this.facilitiesRepository.save(facilityNew);
   }
 
   async update(
@@ -35,6 +62,12 @@ export class FacilitiesService implements IFacilitiesService {
         name: Like(`%${name}%`), // Sử dụng toán tử ilike để tìm kiếm không phân biệt chữ hoa thường
       },
     });
+    return facilities;
+  }
+
+  async findFacilitiesByBranchId(id: number): Promise<Facilities[]> {
+    console.log(id)
+    const facilities = this.facilitiesRepository.find({where: {branchId: id}})
     return facilities;
   }
 
@@ -62,7 +95,6 @@ export class FacilitiesService implements IFacilitiesService {
     if (data.length === 0) {
       data = await this.facilitiesRepository.find();
     }
-
     return data;
   }
 

@@ -9,3 +9,7 @@ export interface IFacilitiesService {
   delete(id: number): Promise<void>;
   findByName(name: string): Promise<Facilities[]>;
 }
+
+export interface userName {
+  name: string;
+}

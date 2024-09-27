@@ -25,6 +25,4 @@ export class ServicePackageController {
   async deleteSP(@Param("id") id:number){
     await this.servicePackageService.delete(id)
   }
-
-  
 }

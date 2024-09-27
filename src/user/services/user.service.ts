@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { IUserService } from '../interfaces/userService.interface';
+import { IUserService, ListUsersId } from '../interfaces/userService.interface';
 import { CreateUserDto, UpdateUserDto } from '../dtos/user.dto';
 import { User } from '../repositories/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -58,6 +58,26 @@ export class UserService implements IUserService {
 
   async findOneByUsername(username: string): Promise<User> {
     return await this.userRepository.findOne({ where: { username } });
+  }
+
+  async FindListUsersNameByListUsersId(listUsersId: ListUsersId) {
+    if (!listUsersId || !Array.isArray(listUsersId.ListUsersId)) {
+      throw new Error(
+        'Invalid input: listUsersId.ListUsersId should be an array',
+      );
+    }
+    const userIds = listUsersId.ListUsersId.map((user) => user.id);
+    //Truy vấn để lấy dánh sách tên user dựa trên userId
+    const usersName = await this.userRepository
+      .createQueryBuilder('user')
+      .select('user.fullName', 'username')
+      .where('user.id IN (:...userIds)', { userIds })
+      .getRawMany();
+    const listUsersName = {
+      ListUsersName: usersName,
+    };
+    console.log(listUsersName);
+    return listUsersName;
   }
 
   async createUser(newUser: CreateUserDto): Promise<User> {

@@ -22,8 +22,23 @@ export class BranchesService implements IBranchService {
       .getMany();
     return branchs;
   }
-  async findOne(id: number): Promise<Branches> {
-    return await this.branchesRepository.findOne({ where: { id: id } });
+
+  async findById(id: number): Promise<Branches> {
+    return await this.branchesRepository
+      .createQueryBuilder('branch')
+      .where('branch.id = :id', { id })
+      .select('branch.name')
+      .getOne();
+  }
+
+  async findBranchById(branchId: { id: number }): Promise<Branches> {
+    const id = branchId.id;
+    console.log(id)
+    return await this.branchesRepository
+      .createQueryBuilder('branch')
+      .where('branch.id = :id', { id })
+      .select('branch.name')
+      .getOne();
   }
 
   async findDetailById(id: number): Promise<Branches> {
@@ -94,7 +109,7 @@ export class BranchesService implements IBranchService {
       .createQueryBuilder('branch')
       .leftJoinAndSelect('branch.district', 'district')
       .leftJoinAndSelect('district.province', 'province')
-      .where('district.provinceId = :provinceId', {provinceId})
+      .where('district.provinceId = :provinceId', { provinceId })
       .getMany();
     return branches;
   }
