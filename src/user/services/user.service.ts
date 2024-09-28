@@ -83,9 +83,12 @@ export class UserService implements IUserService {
 
     return await this.userRepository.save(createdUser);
   }
-  updateUser(id: number, updateUser: UpdateUserDto): Promise<User> {
-    throw new Error('Method not implemented.');
+
+  async updateUser(id: number, updateUser: UpdateUserDto): Promise<User> {
+    await this.userRepository.update(id, updateUser);
+    return await this.userRepository.findOne({ where: { id } });
   }
+
   deleteUser(id: number): Promise<void> {
     throw new Error('Method not implemented.');
   }

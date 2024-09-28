@@ -1,5 +1,5 @@
 import { VoucherService } from './../services/voucher.service';
-import { Body, Controller, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import { DiscountType } from '../repositories/voucher.entity';
 
@@ -24,5 +24,10 @@ export class VoucherController {
     },
   ) {
     return await this.voucherService.createVoucher(id, voucher);
+  }
+
+  @Get('/users/:id')
+  async getVoucherByUserId(@Param('id') id: number) {
+    return await this.voucherService.getVoucherByUserId(id);
   }
 }

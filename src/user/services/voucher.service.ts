@@ -66,8 +66,17 @@ export class VoucherService {
       ...voucher,
       couponStripeId: coupon.id,
     });
-    await this.voucherRepository.save(newVoucher);
+    await this.voucherRepository.save({ ...newVoucher, user });
     return newVoucher;
+  }
+
+  async getVoucherByUserId(userId: number) {
+    const vouchers = await this.voucherRepository
+      .createQueryBuilder('voucher')
+      .leftJoin('voucher.user', 'user')
+      .where('user.id = :userId', { userId })
+      .getMany();
+    return vouchers;
   }
 
   async checkVoucherIsValid(

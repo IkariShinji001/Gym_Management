@@ -121,6 +121,9 @@ export class BillService {
       return [];
     }
 
+    if (results.length === 0) {
+      return [];
+    }
     const billDetailActive = results.flatMap((bill) => bill.billDetails);
     const listId = billDetailActive.map((billDetail) => {
       return {

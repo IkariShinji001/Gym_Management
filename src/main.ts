@@ -15,6 +15,10 @@ async function bootstrap() {
       'http://localhost:8989',
       'http://localhost:6868',
       'http://0.0.0.0:5005',
+      'https://ikarishinji001.github.io/GYM_CLIENT_DEPLOY/',
+      'https://ikarishinji001.github.io',
+      'https://gym-client-deploy-8nwjhv3q0-ikarishinji001s-projects.vercel.app',
+      'https://gym-client-deploy.onrender.com',
     ],
     credentials: true,
   });
