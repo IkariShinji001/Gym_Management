@@ -18,6 +18,15 @@ export class PtPackagesController {
     return await this.ptPackagesService.getAllPPDetail()
   }
 
+  @Get('/getAll')
+  async getAll(): Promise<PtPackages[]> {
+    return await this.ptPackagesService.getAll();
+  }
+  @Get("/:id")
+  async getPPById(@Param("id") ptPackageId: number): Promise<PtPackages>{
+    return await this.ptPackagesService.getById(ptPackageId);
+  }
+
   @Post()
   async createPP(@Body()  createAllPPDto: CreateAllPtPackagesDto): Promise<PtPackages> {
     return await this.ptPackagesService.create(createAllPPDto)

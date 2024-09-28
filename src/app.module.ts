@@ -19,6 +19,10 @@ import { CloudinaryProvider } from './cloudinary/cloudinary';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { BranchModule } from './branch/branch.module';
 import { StripeModule } from './stripe/stripe.module';
+import { MailModule } from './mail/mail.module';
+import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
+import { ChatbotModule } from './chatbot/chatbot.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -27,6 +31,7 @@ import { StripeModule } from './stripe/stripe.module';
     TypeOrmModule.forRootAsync({
       useClass: DatabaseConfigService,
     }),
+    AdminModule,
     UserModule,
     BillModule,
     AdminModule,
@@ -34,10 +39,9 @@ import { StripeModule } from './stripe/stripe.module';
     FacilitiesModule,
     SharedModule,
     AuthModule,
-    CloudinaryModule,
+    CloudinaryModule, 
     ServicePackageModule,
     BranchModule,
-    StripeModule,
   ],
   controllers: [AppController],
   providers: [

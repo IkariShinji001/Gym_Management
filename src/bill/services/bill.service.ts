@@ -118,6 +118,9 @@ export class BillService {
       })
       .getMany();
 
+    if (results.length === 0) {
+      return [];
+    }
     const billDetailActive = results.flatMap((bill) => bill.billDetails);
     const listId = billDetailActive.map((billDetail) => {
       return {

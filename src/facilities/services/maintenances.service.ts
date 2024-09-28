@@ -46,14 +46,7 @@ export class MaintenancesService implements IMaintenanacesService {
     id: number,
     updateMaintenance: UpdateMaintenanceDto,
   ): Promise<Maintenances> {
-    const facilityId = updateMaintenance.facilityIds[0];
-    const maintenanceToUpdate = {
-      facilityId: facilityId,
-      date: updateMaintenance.date,
-      description: updateMaintenance.description,
-      isFinished: updateMaintenance.isFinished,
-    };
-    await this.maintenancesRepository.update(id, maintenanceToUpdate);
+    await this.maintenancesRepository.update(id, updateMaintenance);
     return this.maintenancesRepository.findOne({ where: { id } });
   }
 

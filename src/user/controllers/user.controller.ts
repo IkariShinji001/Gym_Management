@@ -1,7 +1,15 @@
 import { GrpcMethod } from '@nestjs/microservices';
 import { UserService } from './../services/user.service';
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
-import { CreateUserDto } from '../dtos/user.dto';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
+import { CreateUserDto, UpdateUserDto } from '../dtos/user.dto';
 import { parseDateFromMMDDYYYY } from '../../shared/formatDate';
 import { ListUsersId } from '../interfaces/userService.interface';
 
@@ -33,6 +41,14 @@ export class UserController {
   @Get('/username')
   async getUserByUsername(@Query('username') username: string) {
     return await this.userService.findOneByUsername(username);
+  }
+
+  @Patch('/:id')
+  async updateUser(
+    @Param('id') id: number,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return await this.userService.updateUser(id, updateUserDto);
   }
 
   @Post()

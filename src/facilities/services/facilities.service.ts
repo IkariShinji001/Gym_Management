@@ -92,6 +92,8 @@ export class FacilitiesService implements IFacilitiesService, OnModuleInit {
       })
       .getMany();
 
+    console.log(data);
+
     if (data.length === 0) {
       data = await this.facilitiesRepository.find();
     }

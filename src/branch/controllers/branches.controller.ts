@@ -17,6 +17,11 @@ export class BranchesController {
   async findAll(): Promise<Branches[]> {
     return await this.branchesService.findAll();
   }
+  @Get('/count')
+  async countBranch(): Promise<{ num_branches: number }> {
+    console.log('count all branches');
+    return await this.branchesService.countBranch();
+  }
 
   @Get(':id')
   async findById(@Param('id') id: number ): Promise<Branches> {

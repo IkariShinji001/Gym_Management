@@ -15,12 +15,12 @@ export class BranchesService implements IBranchService {
   ) {}
   async findAll(): Promise<Branches[]> {
     // return await this.branchesRepository.find({relations: ['district']});
-    const branchs = this.branchesRepository
+    const branches = this.branchesRepository
       .createQueryBuilder('branch')
       .leftJoinAndSelect('branch.district', 'district')
       .leftJoinAndSelect('district.province', 'province')
       .getMany();
-    return branchs;
+    return branches;
   }
 
   async findById(id: number): Promise<Branches> {
@@ -49,6 +49,14 @@ export class BranchesService implements IBranchService {
       .where('branch.id = :id', { id })
       .getOne();
     return branch;
+  }
+
+  async countBranch(): Promise<{ num_branches: number }> {
+    const counted = await this.branchesRepository.count();
+    return { "num_branches": counted };
+}
+  async findOne(id: number): Promise<Branches> {
+    return await this.branchesRepository.findOne({ where: { id: id } });
   }
   async create(newBranch: CreateBranchDto): Promise<Branches> {
     const existedDistrict = await this.districtsService.findOne(

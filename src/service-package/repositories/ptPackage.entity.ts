@@ -17,11 +17,13 @@ export class PtPackages {
   @Column({ nullable: false })
   maxClients: number;
 
+  @Column({ default: 0 })
+  currentClients: number;
+
   @OneToOne(() => ServicePackages)
   @JoinColumn()
   servicePackage: ServicePackages;
 
   @ManyToOne(() => Pt, (pt) => pt.ptPackages)
-  pt: Pt
+  pt: Pt; 
 }
-

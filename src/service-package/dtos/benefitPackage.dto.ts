@@ -5,7 +5,7 @@ export class CreatePackageBenefitsDto {
   description: string;
 }
 
-export class UpdateExistedBenefitsDto {
+export class UpdatePackageBenefitsDto {
   id: Partial<number>;
   description: Partial<string>;
 }

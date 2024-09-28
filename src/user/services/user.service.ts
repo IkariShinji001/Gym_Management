@@ -61,22 +61,25 @@ export class UserService implements IUserService {
   }
 
   async FindListUsersNameByListUsersId(listUsersId: ListUsersId) {
-    if (!listUsersId || !Array.isArray(listUsersId.ListUsersId)) {
-      throw new Error(
-        'Invalid input: listUsersId.ListUsersId should be an array',
-      );
-    }
     const userIds = listUsersId.ListUsersId.map((user) => user.id);
+    console.log(userIds);
     //Truy vấn để lấy dánh sách tên user dựa trên userId
     const usersName = await this.userRepository
       .createQueryBuilder('user')
       .select('user.fullName', 'username')
+      .addSelect('user.id', 'id')
       .where('user.id IN (:...userIds)', { userIds })
       .getRawMany();
+
+    // Sắp xếp lại mảng usersName dựa trên thứ tự của userIds
+    const sortedUsersName = userIds.map((id) =>
+      usersName.find((user) => user.id === id),
+    );
+    console.log(sortedUsersName);
+    console.log(usersName);
     const listUsersName = {
-      ListUsersName: usersName,
+      ListUsersName: sortedUsersName,
     };
-    console.log(listUsersName);
     return listUsersName;
   }
 
@@ -103,9 +106,12 @@ export class UserService implements IUserService {
 
     return await this.userRepository.save(createdUser);
   }
-  updateUser(id: number, updateUser: UpdateUserDto): Promise<User> {
-    throw new Error('Method not implemented.');
+
+  async updateUser(id: number, updateUser: UpdateUserDto): Promise<User> {
+    await this.userRepository.update(id, updateUser);
+    return await this.userRepository.findOne({ where: { id } });
   }
+
   deleteUser(id: number): Promise<void> {
     throw new Error('Method not implemented.');
   }

@@ -132,16 +132,31 @@ export class RevenueBillsService {
     return ChartData;
   }
 
-  async getTop10UsersBySpending(): Promise<ChartData> {
+  async getTop10UsersBySpendingOfYear(year: number) {
+    const startOfYear = moment(`${year}-01-01`)
+      .startOf('year')
+      .format('YYYY-MM-DD HH:mm:ss');
+    const endOfYear = moment(`${year}-12-31`)
+      .endOf('year')
+      .format('YYYY-MM-DD HH:mm:ss');
     const topUsersId = await this.billRepository
       .createQueryBuilder('bill')
       .select('bill.userId', 'userId')
-      .addSelect('SUM(bill.finalAmount)', 'totalSpent')
-      .where('bill.status = :status', { status: 'PAID' })
+      .addSelect('SUM(bill.finalAmount)', 'totalspent')
+      .where('bill.createAt BETWEEN :startOfYear and :endOfYear', {
+        startOfYear,
+        endOfYear,
+      })
+      .andWhere('bill.status = :status', { status: 'PAID' })
       .groupBy('bill.userId')
-      .orderBy('"totalSpent"', 'DESC')
+      .orderBy('totalspent', 'DESC') // Sắp xếp theo tổng chi tiêu giảm dần
+      .addOrderBy('MIN(bill.createAt)', 'ASC') // Sắp xếp theo thời gian tạo tăng dần
       .limit(10)
       .getRawMany();
+
+    if (topUsersId.length === 0) {
+      return 0;
+    }
 
     const UsersId = topUsersId.map((user) => {
       return { id: user.userId };
@@ -150,6 +165,7 @@ export class RevenueBillsService {
     const listUsersId = {
       ListUsersId: UsersId,
     };
+
     const nameUsers: ListUsersName = await firstValueFrom(
       this.userService.FindListUsersNameByListUsersId(listUsersId),
     );
@@ -157,8 +173,7 @@ export class RevenueBillsService {
     const listUsersName = nameUsers.ListUsersName;
     console.log(listUsersName);
     const labels = listUsersName.map((user) => user.username);
-    const data = topUsersId.map((user) => user.totalSpent);
-
+    const data = topUsersId.map((user) => user.totalspent);
     const chartData = {
       labels,
       datasets: [
@@ -171,7 +186,62 @@ export class RevenueBillsService {
     return chartData;
   }
 
-  async getTopPurchasedPackagesOfYear(year: number): Promise<ChartData> {
+  async getTop10UsersBySpendingOfMonth(month: number, year: number) {
+    const startOfMonth = moment(`${year}-${month}-01`)
+      .startOf('month')
+      .format('YYYY-MM-DD HH:mm:ss');
+    const endOfMonth = moment(`${year}-${month}-01`)
+      .endOf('month')
+      .format('YYYY-MM-DD HH:mm:ss');
+    const topUsersId = await this.billRepository
+      .createQueryBuilder('bill')
+      .select('bill.userId', 'userId')
+      .addSelect('SUM(bill.finalAmount)', 'totalspent')
+      .where('bill.createAt BETWEEN :startOfMonth and :endOfMonth', {
+        startOfMonth,
+        endOfMonth,
+      })
+      .andWhere('bill.status = :status', { status: 'PAID' })
+      .groupBy('bill.userId')
+      .orderBy('totalspent', 'DESC') // Sắp xếp theo tổng chi tiêu giảm dần
+      .addOrderBy('MIN(bill.createAt)', 'ASC') // Sắp xếp theo thời gian tạo tăng dần
+      .limit(10)
+      .getRawMany();
+
+    if (topUsersId.length === 0) {
+      return 0;
+    }
+
+    const UsersId = topUsersId.map((user) => {
+      return { id: user.userId };
+    });
+
+    console.log(UsersId);
+
+    const listUsersId = {
+      ListUsersId: UsersId,
+    };
+
+    const nameUsers: ListUsersName = await firstValueFrom(
+      this.userService.FindListUsersNameByListUsersId(listUsersId),
+    );
+    const listUsersName = nameUsers.ListUsersName;
+    console.log(listUsersName);
+    const labels = listUsersName.map((user) => user.username);
+    const data = topUsersId.map((user) => user.totalspent);
+    const chartData = {
+      labels,
+      datasets: [
+        {
+          data,
+        },
+      ],
+    };
+
+    return chartData;
+  }
+
+  async getTopPurchasedPackagesOfYear(year: number) {
     const startOfYear = moment(`${year}-01-01`)
       .startOf('year')
       .format('YYYY-MM-DD HH:mm:ss');
@@ -187,12 +257,18 @@ export class RevenueBillsService {
         startOfYear,
         endOfYear,
       })
-      .andWhere('bill.status = :status', {status: 'PAID'})
+      .andWhere('bill.status = :status', { status: 'PAID' })
       .groupBy('billDetail.servicePackagePriceId')
       .orderBy('purchasecount', 'DESC')
       .limit(5)
       .getRawMany();
+      
     console.log(topPackages);
+
+    if (topPackages.length === 0) {
+      return 0;
+    }
+
     const servicePackageIds = topPackages.map((packageService) => {
       return { id: packageService.servicePackageId };
     });
@@ -240,10 +316,7 @@ export class RevenueBillsService {
     return ChartData;
   }
 
-  async getTopPurchasedPackagesOfMonth(
-    month: number,
-    year: number,
-  ): Promise<ChartData> {
+  async getTopPurchasedPackagesOfMonth(month: number, year: number) {
     const startOfMonth = moment(`${year}-${month}-01`)
       .startOf('month')
       .format('YYYY-MM-DD HH:mm:ss');
@@ -267,14 +340,33 @@ export class RevenueBillsService {
 
     console.log(topPackages);
 
-    const ServicePackageIds = topPackages.map((servicePackage) => {return {id: servicePackage.servicePackageId}})
-      const listServicePackageIds = {
-        servicePackagePriceListIds: ServicePackageIds
-      }
+    if (topPackages.length === 0) {
+      return 0;
+    }
+
+    const ServicePackageIds = topPackages.map((servicePackage) => {
+      return { id: servicePackage.servicePackageId };
+    });
+    const listServicePackageIds = {
+      servicePackagePriceListIds: ServicePackageIds,
+    };
     const ServicePackages: ServicePackagePriceList = await firstValueFrom(
-      this.servicePackagePriceService.FindServicePackagePriceByListIds(listServicePackageIds)
-    )
-    const nameServicePackages = ServicePackages.servicePackagePriceList.map((servicePackage) => {return {name: servicePackage.servicePackageName + ' ' + servicePackage.duration + ' ' + servicePackage.durationType}})
+      this.servicePackagePriceService.FindServicePackagePriceByListIds(
+        listServicePackageIds,
+      ),
+    );
+    const nameServicePackages = ServicePackages.servicePackagePriceList.map(
+      (servicePackage) => {
+        return {
+          name:
+            servicePackage.servicePackageName +
+            ' ' +
+            servicePackage.duration +
+            ' ' +
+            servicePackage.durationType,
+        };
+      },
+    );
 
     const labels = nameServicePackages.map(
       (servicePackage) => servicePackage.name,

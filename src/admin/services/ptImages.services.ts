@@ -1,30 +1,31 @@
 import { Injectable } from '@nestjs/common';
+import { IPtImagesService } from '../interfaces/ptImages.service.interface';
 import { PtImages } from '../repositories/ptImages.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { IPtImagesService } from '../interfaces/ptImages.service.interface';
-import { PtService } from './pt.services';
+import { Pt } from '../repositories/pt.entity';
 
-Injectable();
+@Injectable()
 export class PtImagesService implements IPtImagesService {
   constructor(
     @InjectRepository(PtImages)
     private ptImagesRepository: Repository<PtImages>,
-    private PtService: PtService,
+
+    @InjectRepository(Pt)
+    private ptRepository: Repository<Pt>,
   ) {}
 
   async findAll(): Promise<PtImages[]> {
     return await this.ptImagesRepository.find({
       relations: ['pt'],
-    }); 
+    });
   }
- 
+
   async addImage(imageUrl: string, idPt: number): Promise<PtImages> {
-    const existedPt = await this.PtService.findOne(idPt);
+    const existedPt = await this.ptRepository.findOne({ where: { id: idPt } });
     if (!existedPt) {
       throw new Error('Pt not found');
     }
-    console.log(imageUrl);
     const newIm = this.ptImagesRepository.create({
       imageUrl: imageUrl,
       pt: existedPt,
@@ -34,6 +35,5 @@ export class PtImagesService implements IPtImagesService {
 
   async delete(id: number): Promise<void> {
     await this.ptImagesRepository.delete(id);
-    return;
   }
 }

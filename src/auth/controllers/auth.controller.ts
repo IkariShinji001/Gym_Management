@@ -31,7 +31,10 @@ export class AuthController {
         maxAge: 3600000,
       });
 
-      res.status(200).json({ message: 'Đăng nhập thành công' });
+      res.status(200).json({
+        message: 'Đăng nhập thành công',
+        ...accessToken,
+      });
     } catch (error) {
       console.log(error);
       res.status(500).json({ error: error.message });
@@ -46,6 +49,12 @@ export class AuthController {
     return user;
   }
 
+  @Public()
+  @Post('/verify/access/face-reconition')
+  async verifyAccessFace(@Body() data: { username: string; password: string }) {
+    const { username, password } = data;
+    return await this.authService.verifyAccessFace(username, password);
+  }
   @Public()
   @Post('/user/login')
   async loginUser(

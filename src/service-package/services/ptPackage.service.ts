@@ -26,7 +26,33 @@ export class PtPackagesService implements IPtPackageService {
       relations: ['servicePackage', 'pt'],
     });
   }
+  async getAll(): Promise<PtPackages[]> {
+    const ptPackages = await this.ptPackageRepository
+      .createQueryBuilder('ptPackage')
+      .leftJoinAndSelect('ptPackage.pt', 'pt')
+      .leftJoinAndSelect('pt.profile', 'profile')
+      .leftJoinAndSelect('pt.images', 'ptImages')
+      .leftJoinAndSelect('ptPackage.servicePackage', 'servicePackage')
+      .leftJoinAndSelect('servicePackage.servicePackagePrices', 'servicePackagePrice')
+      .leftJoinAndSelect('servicePackagePrice.packageDuration', 'packageDuration')
+      .getMany();
 
+    return ptPackages;
+  }
+  async getById(id: number): Promise<PtPackages> {
+    const ptPackage = await this.ptPackageRepository
+      .createQueryBuilder('ptPackage')
+      .leftJoinAndSelect('ptPackage.pt', 'pt')
+      .leftJoinAndSelect('pt.profile', 'profile')
+      .leftJoinAndSelect('pt.images', 'ptImages')
+      .leftJoinAndSelect('ptPackage.servicePackage', 'servicePackage')
+      .leftJoinAndSelect('servicePackage.servicePackagePrices', 'servicePackagePrice')
+      .leftJoinAndSelect('servicePackagePrice.packageDuration', 'packageDuration')
+      .where('ptPackage.id = :id', { id })
+      .getOne();
+  
+    return ptPackage;
+  }
   async getAllPPDetail() {
     const ptPackages = await this.ptPackageRepository
       .createQueryBuilder('ptPackage')

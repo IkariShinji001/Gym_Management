@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { ServicePackagePriceService } from '../services/servicePackagePrice.service';
 import { ServicePackagePrice } from '../repositories/servicePackagePrice.entity';
 import { GrpcMethod } from '@nestjs/microservices';
@@ -15,6 +15,15 @@ export class PackagePriceController {
     return PackagePriceList;
   }
 
+  @Post('/get-by-list-ids')
+  async GetServicePackagePriceByListIds(
+    @Body() listId: ServicePackagePriceListIds,
+  ) {
+    const PackagePriceList =
+      await this.packagePriceService.getAllByListIds(listId);
+    return PackagePriceList;
+  }
+
   @Get()
   async getAllPackagePrice(): Promise<ServicePackagePrice[]> {
     return await this.packagePriceService.findAll();
@@ -23,5 +32,12 @@ export class PackagePriceController {
   @Delete('/:id')
   async delete(@Param('id') id: number) {
     await this.packagePriceService.deletePackagePrice(id);
+  }
+
+  @Get('/:id')
+  async findByServicePackage(
+    @Param('id') id: number,
+  ): Promise<ServicePackagePrice[]> {
+    return await this.packagePriceService.findByServicePackage(id);
   }
 }

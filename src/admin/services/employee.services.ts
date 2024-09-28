@@ -55,7 +55,7 @@ export class EmployeeService implements IEmployeeService {
     id: number,
     updateEmployee: UpdateEmployeeDto,
   ): Promise<Employees> {
-    const res=    await this.employeeRepository.update(id, updateEmployee);
+    const res = await this.employeeRepository.update(id, updateEmployee);
     console.log(res);
     return this.employeeRepository.findOne({ where: { id } });
   }
