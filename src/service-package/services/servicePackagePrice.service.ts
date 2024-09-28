@@ -59,6 +59,14 @@ export class ServicePackagePriceService implements IServicePackagePriceService {
     servicePackageId: number,
   ): Promise<ServicePackagePrice[]> {
     return await this.packagePriceRepository.find({
+      where: { id: servicePackageId },
+      relations: ['servicePackage', 'packageDuration'],
+    });
+  }
+  async findByServicePackageId(
+    servicePackageId: number,
+  ): Promise<ServicePackagePrice[]> {
+    return await this.packagePriceRepository.find({
       where: { servicePackage: { id: servicePackageId } },
       relations: ['servicePackage', 'packageDuration'],
     });
