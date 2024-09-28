@@ -117,6 +117,9 @@ export class BillService {
         now,
       })
       .getMany();
+    if(results.length === 0) {
+      return [];
+    }
 
     if (results.length === 0) {
       return [];
