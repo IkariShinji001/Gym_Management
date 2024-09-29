@@ -37,7 +37,7 @@ export class User {
   @Column()
   customerStripeId: string;
 
-  @Column({ type: 'uuid', unique: true })
+  @Column({ unique: true })
   referralCode: string;
 
   @BeforeInsert()
