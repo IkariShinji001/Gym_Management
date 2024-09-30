@@ -1,18 +1,29 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { IBranchService } from '../interfaces/branches.service.interface';
 import { CreateBranchDto, UpdateBrachDto } from '../dtos/branches.dto';
 import { Branches } from '../repositories/branches.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DistrictsService } from '../services/districts.service';
+import { FacilityServiceClient } from 'src/shared/interfaces/grpc/facility/facilityServiceClient.interface';
+import { ClientGrpc } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
-export class BranchesService implements IBranchService {
+export class BranchesService implements IBranchService, OnModuleInit {
+  private facilitiesService: FacilityServiceClient;
   constructor(
+    @Inject('SERVER')
+    private client: ClientGrpc,
     @InjectRepository(Branches)
     private branchesRepository: Repository<Branches>,
     private districtsService: DistrictsService,
   ) {}
+  onModuleInit() {
+    this.facilitiesService =
+      this.client.getService<FacilityServiceClient>('FacilityService');
+  }
+
   async findAll(): Promise<Branches[]> {
     // return await this.branchesRepository.find({relations: ['district']});
     const branches = this.branchesRepository
@@ -33,7 +44,7 @@ export class BranchesService implements IBranchService {
 
   async findBranchById(branchId: { id: number }): Promise<Branches> {
     const id = branchId.id;
-    console.log(id)
+    console.log(id);
     return await this.branchesRepository
       .createQueryBuilder('branch')
       .where('branch.id = :id', { id })
@@ -53,8 +64,8 @@ export class BranchesService implements IBranchService {
 
   async countBranch(): Promise<{ num_branches: number }> {
     const counted = await this.branchesRepository.count();
-    return { "num_branches": counted };
-}
+    return { num_branches: counted };
+  }
   async findOne(id: number): Promise<Branches> {
     return await this.branchesRepository.findOne({ where: { id: id } });
   }
@@ -107,8 +118,18 @@ export class BranchesService implements IBranchService {
     await this.branchesRepository.update(id, changes);
     return await this.findDetailById(id);
   }
-  async delete(id: number): Promise<void> {
-    const branch = await this.branchesRepository.findOne({ where: { id } });
+
+  async delete(BranchId: number): Promise<void> {
+    const branch = await this.branchesRepository.findOne({
+      where: { id: BranchId },
+    });
+    const branchId = {
+      id: BranchId,
+    }
+    const res = await firstValueFrom(
+      this.facilitiesService.deleteFacilitiesByBranchId(branchId),
+    );
+    console.log(res);
     await this.branchesRepository.delete(branch);
   }
 

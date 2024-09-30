@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package SERVER;
+
+service FacilityService {
+    rpc deleteFacilitiesByBranchId(BranchId) returns (returnMsg) {};
+}
+
+message BranchId {
+    int32 id = 1;
+}
+
+message returnMsg {
+    string msg = 1;
+}

@@ -20,7 +20,7 @@ export class Branches {
   address: string;
 
   @Column({ nullable: false })
-  phoneNumber: number;
+  phoneNumber: string;
 
   @Column({ type: 'time', nullable: false })
   openTime: string;

@@ -9,7 +9,7 @@ export class CreateBranchDto {
   address: string;
 
   @IsNumber()
-  phoneNumber: number;
+  phoneNumber: string;
 
   @IsString()
   openTime: string;

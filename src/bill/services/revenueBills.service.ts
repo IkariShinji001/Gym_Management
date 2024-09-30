@@ -334,7 +334,7 @@ export class RevenueBillsService {
       })
       .andWhere('bill.status = :status', { status: 'PAID' })
       .groupBy('billDetail.servicePackagePriceId')
-      .orderBy('purchasecount')
+      .orderBy('purchasecount', 'DESC')
       .limit(5)
       .getRawMany();
 

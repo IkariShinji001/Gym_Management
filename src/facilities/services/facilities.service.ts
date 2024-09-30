@@ -33,19 +33,33 @@ export class FacilitiesService implements IFacilitiesService, OnModuleInit {
 
   async create(newFacility: CreateFacilityDto): Promise<Facilities> {
     const facility = this.facilitiesRepository.create(newFacility);
-    console.log(facility)
+    console.log(facility);
     const branchId = {
       id: facility.branchId,
     };
-    const nameBranch = await firstValueFrom( await this.findNameBranchById(branchId));
-    console.log(facility)
-    console.log(nameBranch)
+    const nameBranch = await firstValueFrom(
+      await this.findNameBranchById(branchId),
+    );
+    console.log(facility);
+    console.log(nameBranch);
     const facilityNew = {
       ...facility,
       nameBranch: nameBranch.name,
-    }
-    console.log(facilityNew)
+    };
+    console.log(facilityNew);
     return await this.facilitiesRepository.save(facilityNew);
+  }
+
+  async deleteFacilitiesByBranchId(id: number) {
+    console.log(id);
+    const facilities = await this.facilitiesRepository.find({
+      where: { branchId: id },
+    });
+    console.log(facilities);
+    for (const facility of facilities) {
+      await this.facilitiesRepository.delete(facility);
+    }
+    return { msg: 'Xóa thành công' };
   }
 
   async update(
@@ -66,8 +80,10 @@ export class FacilitiesService implements IFacilitiesService, OnModuleInit {
   }
 
   async findFacilitiesByBranchId(id: number): Promise<Facilities[]> {
-    console.log(id)
-    const facilities = this.facilitiesRepository.find({where: {branchId: id}})
+    console.log(id);
+    const facilities = this.facilitiesRepository.find({
+      where: { branchId: id },
+    });
     return facilities;
   }
 
