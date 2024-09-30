@@ -7,7 +7,7 @@ import {
   CreateSupplementProductDto,
   updateSupplementProductDto,
 } from '../dtos/supplementProduct.dto';
-import { SProductType } from '../repositories/sProductType.entity';
+import { SupplementProductType } from '../repositories/sProductType.entity';
 
 @Injectable()
 export class SupplementProductService implements ISupplementProductService {
@@ -15,8 +15,8 @@ export class SupplementProductService implements ISupplementProductService {
     @InjectRepository(SupplementProduct)
     private supplementProductRepository: Repository<SupplementProduct>,
 
-    @InjectRepository(SProductType)
-    private sProductTypeRepository: Repository<SProductType>,
+    @InjectRepository(SupplementProductType)
+    private sProductTypeRepository: Repository<SupplementProductType>,
   ) {}
 
   async findByName(name: string): Promise<SupplementProduct[]> {

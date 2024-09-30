@@ -15,6 +15,8 @@ async function bootstrap() {
       'http://localhost:8989',
       'http://localhost:6868',
       'http://0.0.0.0:5005',
+      'https://ikarishinji001.github.io/GYM_CLIENT_DEPLOY/',
+      'https://ikarishinji001.github.io',
     ],
     credentials: true,
   });

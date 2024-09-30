@@ -36,8 +36,8 @@ export class UserService implements IUserService {
     const queryBuilder = this.userRepository.createQueryBuilder('user');
 
     queryBuilder
-      .select(['user.email', 'user.fullName', 'user.gender']) // Use double quotes
-      .orderBy('"user"."email"', pageOptionsDto.order) // Use validated order
+      .select(['user.email', 'user.fullName', 'user.gender']) 
+      .orderBy('"user"."email"', pageOptionsDto.order)
       .skip((pageOptionsDto.page - 1) * pageOptionsDto.take)
       .take(pageOptionsDto.take);
 
@@ -52,13 +52,13 @@ export class UserService implements IUserService {
 
   async getAllUserEmailPerPageByGender(
     pageOptionsDto: PageOptionsDto,
-    gender: boolean
+    gender: boolean,
   ): Promise<PageDto<User>> {
     const queryBuilder = this.userRepository.createQueryBuilder('user');
 
     queryBuilder
       .select(['user.email', 'user.fullName', 'user.gender']) // Use double quotes
-      .where('user.gender = :gender', {gender})
+      .where('user.gender = :gender', { gender })
       .orderBy('"user"."email"', pageOptionsDto.order) // Use validated order
       .skip((pageOptionsDto.page - 1) * pageOptionsDto.take)
       .take(pageOptionsDto.take);
@@ -132,9 +132,11 @@ export class UserService implements IUserService {
 
     return await this.userRepository.save(createdUser);
   }
-  updateUser(id: number, updateUser: UpdateUserDto): Promise<User> {
-    throw new Error('Method not implemented.');
+  async updateUser(id: number, updateUser: UpdateUserDto): Promise<User> {
+    await this.userRepository.update(id, updateUser);
+    return await this.userRepository.findOne({ where: { id } });
   }
+
   deleteUser(id: number): Promise<void> {
     throw new Error('Method not implemented.');
   }

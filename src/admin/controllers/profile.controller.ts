@@ -32,7 +32,7 @@ export class ProfileController {
   ): Promise<Profile> {
     return await this.profileService.create(createProfileDto);
   }
-  
+
   @Patch(':id')
   async updateProfile(
     @Param('id') id: number,
@@ -51,7 +51,7 @@ export class ProfileController {
     return await this.profileService.findByPhoneNumber(phoneNumber);
   }
 
-  @GrpcMethod('ProfileService', 'FindProfileByEmail')
+  @GrpcMethod('AdminService', 'FindAdminByEmail')
   async findProfileByEmail(data: { email: string }) {
     return await this.profileService.findOneByEmail(data);
   }

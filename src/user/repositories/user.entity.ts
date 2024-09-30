@@ -41,9 +41,8 @@ export class User {
   referralCode: string;
 
   @BeforeInsert()
-  @BeforeInsert()
   generateCode() {
-    this.referralCode = uuidv4();
+    this.referralCode = uuidv4().replace(/-/g, '').slice(0, 6);
   }
 
   @OneToMany(
