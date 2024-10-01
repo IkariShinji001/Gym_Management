@@ -117,6 +117,9 @@ export class BillService {
         now,
       })
       .getMany();
+    if(results.length === 0) {
+      return [];
+    }
 
     if (results.length === 0) {
       return [];
@@ -343,7 +346,7 @@ export class BillService {
         const billDetail = this.billDetailRepository.create({
           servicePackagePriceId: packagePrice.servicePackagePriceList[i].id,
           price: packagePrice.servicePackagePriceList[i].price,
-          startEffective: new Date(getTimeNow()),
+          startEffective: new Date(Date.now()),
           endEffective: new Date(
             getEndTime(
               new Date(),
