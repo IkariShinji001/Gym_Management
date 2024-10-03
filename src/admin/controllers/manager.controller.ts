@@ -13,12 +13,15 @@ export class ManagerController {
 
     @Get()
     async getManagers() {
-        console.log('getManagers');
         return await this.managerService.findAll();
     }
     @Get(':id')
     async getOneManager(@Param('id') id: number) {
         return await this.managerService.findOne(id);
+    }
+    @Get('/profile/:id')
+    async findByProfileId(@Param('id') id: number) {
+        return await this.managerService.findByProfileId(id);
     }
     @Post()
     async create(@Body() createProfileDto: CreateProfileDto) {
@@ -33,5 +36,9 @@ export class ManagerController {
     @Get(':id/employees')
     async getEmployeesByManagerId(@Param('id') id: number) {
         return await this.managerService.FindAllEmployeesByManagerId(id);
+    }
+    @Get(':id/pts')
+    async getPtsByManagerId(@Param('id') id: number) {
+        return await this.managerService.FindAllPtsByManagerId(id);
     }
 }

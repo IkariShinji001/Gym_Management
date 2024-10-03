@@ -5,7 +5,7 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from 'typeorm';
+import { Like, Not, Repository } from 'typeorm';
 import { IProfileService } from '../interfaces/profile.service.interface';
 import { CreateProfileDto, updateProfileDto } from '../dtos/profile.dto';
 import { Profile } from '../repositories/profile.entity';
@@ -28,7 +28,6 @@ export class ProfileService implements IProfileService {
   async findOne(id: number): Promise<Profile> {
     return await this.profileRepository.findOne({ where: { id } });
   }
-  // validate EMAIL
   async create(createProfileDto: CreateProfileDto): Promise<Profile> {
     // Kiểm tra xem email đã tồn tại chưa
     const existingEmail = await this.profileRepository.findOneBy({
@@ -37,13 +36,6 @@ export class ProfileService implements IProfileService {
     if (existingEmail) {
       throw new BadRequestException('Đã tồn tại email này!');
     }
-    // Kiểm tra xem số điện thoại đã tồn tại chưa
-    // const existingPhoneNumber = await this.profileRepository.findOneBy({
-    //   phoneNumber: createProfileDto.phoneNumber,
-    // });
-    // if (existingPhoneNumber) {
-    //   throw new BadRequestException('Đã tồn tại số điện thoại này!');
-    // }
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(createProfileDto.password, salt);
 
@@ -54,33 +46,36 @@ export class ProfileService implements IProfileService {
   }
 
   async update(id: number, updateProfile: updateProfileDto): Promise<Profile> {
-    // Kiểm tra xem email đã tồn tại chưa
-
+    const profile = await this.profileRepository.findOne({ where: { id } });
     if (updateProfile.email) {
       const existingEmail = await this.profileRepository.findOne({
         where: {
           email: updateProfile.email,
+          id: Not(id), // Điều kiện loại trừ chính profile hiện tại
         },
       });
-
-      console.log(existingEmail);
-      if (existingEmail && existingEmail.email !== updateProfile.email) {
-        console.log('email');
+      if (existingEmail) {
         throw new BadRequestException('Đã tồn tại email này!');
       }
     }
     if (updateProfile.phoneNumber) {
-      // Kiểm tra xem số điện thoại đã tồn tại chưa
       const existingPhoneNumber = await this.profileRepository.findOne({
         where: {
           phoneNumber: updateProfile.phoneNumber,
+          id: Not(id),  // Điều kiện loại trừ chính profile hiện tại
         },
       });
-      if (existingPhoneNumber && existingPhoneNumber.phoneNumber !== updateProfile.phoneNumber) {
-        console.log('phone');
+      if (existingPhoneNumber) {
         throw new BadRequestException('Đã tồn tại số điện thoại này!');
       }
     }
+  
+    if (updateProfile.password) {
+      const salt = bcrypt.genSaltSync(10);
+      const hashedPassword = bcrypt.hashSync(updateProfile.password, salt);
+      updateProfile.password = hashedPassword;
+    }
+    Object.assign(profile, updateProfile);
     await this.profileRepository.update(id, updateProfile);
     return this.profileRepository.findOne({ where: { id } });
   }
@@ -102,5 +97,16 @@ export class ProfileService implements IProfileService {
       },
     });
     return admins;
+  }
+  async changePassword (id: number, password: string, newPassword: string): Promise<Profile> {
+    const profile = await this.profileRepository.findOne({ where: { id } });
+    if (!bcrypt.compareSync(password, profile.password)) {
+      throw new BadRequestException('Mật khẩu không chính xác!');
+    }
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword = bcrypt.hashSync(newPassword, salt);
+    profile.password = hashedPassword;
+    await this.profileRepository.update(id, profile);
+    return this.profileRepository.findOne({ where: { id } });
   }
 }

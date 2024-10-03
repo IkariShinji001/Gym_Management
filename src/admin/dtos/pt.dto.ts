@@ -1,5 +1,5 @@
 import { PartialType } from "@nestjs/mapped-types";
-import { IsString } from "class-validator";
+import { IsNumber, IsString } from "class-validator";
 
 export class CreatePtDto {
   @IsString()
@@ -19,6 +19,9 @@ export class CreatePtDto {
   
   @IsString()
   fbLink: string;
+
+  @IsNumber()
+  managerId: number;
   
 }
 

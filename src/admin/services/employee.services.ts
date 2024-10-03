@@ -30,6 +30,12 @@ export class EmployeeService implements IEmployeeService {
     });
   }
 
+  async findByProfileId(id: number): Promise<Employees> {
+    return await this.employeeRepository.findOne({
+      where: { profile: { id}},
+      relations: ['profile', 'manager'],
+    })
+  }
   async create(
     newProfile: CreateProfileDto,
     newEmployee: CreateEmployeeDto,

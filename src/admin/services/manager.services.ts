@@ -6,7 +6,8 @@ import { IManagerService } from '../interfaces/manager.service.interface';
 import { CreateProfileDto } from '../dtos/profile.dto';
 import { Employees } from '../repositories/employee.entity';
 import { ProfileService } from './profile.services';
-
+import { Pt } from '../repositories/pt.entity';
+import { PtImages } from '../repositories/ptImages.entity';
 
 Injectable();
 export class ManagerService implements IManagerService {
@@ -14,6 +15,7 @@ export class ManagerService implements IManagerService {
     @InjectRepository(Managers)
     private managerRepository: Repository<Managers>,
     private profileService: ProfileService,
+
   ) {}
   async findAll(): Promise<Managers[]> {
     return await this.managerRepository.find({
@@ -26,15 +28,19 @@ export class ManagerService implements IManagerService {
       relations: ['profile'],
     });
   }
+  async findByProfileId(id: number): Promise<Managers> {
+    return await this.managerRepository.findOne({
+      where: { profile: { id } },
+      relations: ['profile'],
+    });
+  }
   async create(newProfile: CreateProfileDto): Promise<Managers> {
-    // Kiểm tra xem email đã tồn tại chưa
     const existingEmail = await this.profileService.findOneByEmail({
       email: newProfile.email,
     });
     if (existingEmail) {
       throw new BadRequestException('Đã tồn tại email này!');
     }
-    console.log('newProfile', newProfile);
     const createdProfile = await this.profileService.create(newProfile);
     const createdManager = this.managerRepository.create({
       profile: createdProfile,
@@ -59,5 +65,12 @@ export class ManagerService implements IManagerService {
       relations: ['employees', 'employees.profile'],
     });
     return manager.employees;
+  }
+  async FindAllPtsByManagerId(id: number): Promise<Pt[]> {
+    const manager = await this.managerRepository.findOne({
+      where: { id },
+      relations: ['pt', 'pt.profile', 'pt.images'],
+    });
+    return manager.pt;
   }
 }

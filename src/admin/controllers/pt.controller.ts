@@ -19,6 +19,10 @@ export class PtController {
     async findOnePt(@Param('id') id: number): Promise<Pt> {
         return await this.ptService.findOne(id);
     }
+    @Get('/profile/:id')
+    async findByProfileId(@Param('id') id: number): Promise<Pt> {
+        return await this.ptService.findByProfileId(id);
+    }
     @Post()
     async create(@Body() createPtProfilePtDto: CreatePtProfileDto): Promise<Pt> {
         const { createProfileDto, createPtDto, createImagesDto } = createPtProfilePtDto;
