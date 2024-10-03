@@ -11,10 +11,31 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto } from '../dtos/user.dto';
 import { parseDateFromMMDDYYYY } from '../../shared/formatDate';
+import { ListUsersId } from '../interfaces/userService.interface';
+import { PageOptionsDto } from 'src/shared/dto/page.options.dto';
+import { User } from '../repositories/user.entity';
+import { PageDto } from 'src/shared/dto/page.dto';
 
 @Controller('/users')
 export class UserController {
   constructor(private userService: UserService) {}
+  @Get('/all-emails-per-page')
+  async getUsers(
+    @Query() pageOptionsDto: PageOptionsDto,
+  ): Promise<PageDto<User>> {
+    return this.userService.getAllUserEmailPerPage(pageOptionsDto);
+  }
+
+  @Get('all-emails-per-page-by-gender')
+  async getAllUserEmailPerPageByGender(
+    @Query() pageOptionsDto: PageOptionsDto,
+    @Query('gender') gender: boolean,
+  ): Promise<PageDto<User>> {
+    return await this.userService.getAllUserEmailPerPageByGender(
+      pageOptionsDto,
+      gender,
+    );
+  }
 
   @GrpcMethod('UserService', 'FindOneUserByUsername')
   async FindOneUserByUsername(username: { username: string }) {
@@ -24,6 +45,11 @@ export class UserController {
   @GrpcMethod('UserService', 'FindOneUserById')
   async FindOneUserByUserId(userId: { userId: number }) {
     return await this.userService.findOneByUserId(userId.userId);
+  }
+
+  @GrpcMethod('UserService', 'FindListUsersNameByListUsersId')
+  async FindListUsersNameByListUsersId(listUsersId: ListUsersId) {
+    return await this.userService.FindListUsersNameByListUsersId(listUsersId);
   }
 
   @Get('/:id')

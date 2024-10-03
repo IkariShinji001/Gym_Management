@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package SERVER;
+
+service BranchService {
+    rpc findBranchById(branchId) returns (Branches) {};
+}
+
+message branchId {
+    int32 id = 1;
+}
+
+message Branches {
+    string name = 1;
+}

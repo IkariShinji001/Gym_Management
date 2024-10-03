@@ -1,7 +1,5 @@
-import { IsArray, IsDate, IsNumber, IsString } from 'class-validator';
+import { IsArray,  IsDate, IsString } from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
-import { Facilities } from '../repositories/facilities.entity';
-
 export class CreateMaintenanceDto {
   @IsString()
   description: string;

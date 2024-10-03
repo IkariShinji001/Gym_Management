@@ -64,7 +64,10 @@ export class ServicePackagePriceService implements IServicePackagePriceService {
       relations: ['servicePackage', 'packageDuration'],
     });
   }
+<<<<<<< HEAD
 
+=======
+>>>>>>> b612fefec3ac11ef8b13c58c393b3dee6fa6ecfa
   async findByServicePackageId(
     servicePackageId: number,
   ): Promise<ServicePackagePrice[]> {

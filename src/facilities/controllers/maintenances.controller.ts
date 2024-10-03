@@ -6,12 +6,14 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { MaintenancesService } from '../services/maintenances.service';
 import { CreateMaintenanceDto } from '../dtos/maintenances.dto';
 import { Maintenances } from '../repositories/maintenances.entity';
 import { UpdateMaintenanceDto } from '../dtos/maintenances.dto';
-import { Facilities } from '../repositories/facilities.entity';
+import { ChartData } from '../interfaces/maintenances.service.interface';
+import { console } from 'inspector';
 
 @Controller('/maintenances')
 export class MaintenancesController {
@@ -29,6 +31,7 @@ export class MaintenancesController {
     @Param('id') id: number,
     @Body() updateMaintenanceDto: UpdateMaintenanceDto,
   ): Promise<Maintenances> {
+    console.log(updateMaintenanceDto)
     return await this.maintenancesService.update(id, updateMaintenanceDto);
   }
 
@@ -37,13 +40,36 @@ export class MaintenancesController {
     return this.maintenancesService.findAll();
   }
 
-  @Get('maintenanceHistory/:id')
-  async maintenanceHistory(@Param('id') id: number): Promise<Maintenances[]> {
-    return await this.maintenancesService.maintenanceHistory(id);
+  @Get('maintenanceHistory/:idFacility')
+  async maintenanceHistory(
+    @Param('idFacility') idFacility: number,
+  ): Promise<Maintenances[]> {
+    return await this.maintenancesService.maintenanceHistory(idFacility);
   }
 
   @Delete(':id')
   async delete(@Param('id') id: number): Promise<void> {
     await this.maintenancesService.delete(id);
+  }
+
+  @Get('findMaintenanceIsFinished')
+  async findMaintenanceIsFinished(): Promise<Maintenances[]> {
+    return await this.maintenancesService.findMaintenanceIsFinished();
+  }
+
+  @Get('findMaintenanceIsNotFinished')
+  async findMaintenanceIsNotFinished(): Promise<Maintenances[]> {
+    return await this.maintenancesService.findMaintenanceIsNotFinished();
+  }
+
+  @Get('count-maintenances-by-month/:facilityId')
+  async countMaintenancesByMonth(
+    @Param('facilityId') facilityId: number,
+    @Query('year') year: number,
+  ): Promise<ChartData> {
+    return await this.maintenancesService.countMaintenancesByMonth(
+      facilityId,
+      year,
+    );
   }
 }

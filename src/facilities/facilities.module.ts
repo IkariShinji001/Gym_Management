@@ -6,8 +6,22 @@ import { FacilitiesService } from './services/facilities.service';
 import { Maintenances } from './repositories/maintenances.entity';
 import { MaintenancesController } from './controllers/maintenances.controller';
 import { MaintenancesService } from './services/maintenances.service';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { join } from 'path';
 @Module({
-  imports: [TypeOrmModule.forFeature([Facilities, Maintenances])],
+  imports: [
+    ClientsModule.register([
+      {
+        name: 'SERVER',
+        transport: Transport.GRPC,
+        options: {
+          package: 'SERVER',
+          protoPath: join(__dirname, '../branch/protos/branch.proto'),
+        },
+      },
+    ]),
+    TypeOrmModule.forFeature([Facilities, Maintenances]),
+  ],
   controllers: [FacilitiesController, MaintenancesController],
   providers: [FacilitiesService, MaintenancesService],
 })

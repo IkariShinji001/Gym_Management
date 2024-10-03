@@ -15,3 +15,11 @@ export interface UserId {
 export interface CustomerStripeId {
   customerStripeId: string;
 }
+
+export interface ListUsersId {
+  ListUsersId: UserId[];
+}
+
+export interface ListUsersName {
+  ListUsersName: Username[];
+}

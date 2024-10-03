@@ -47,7 +47,7 @@ export class BillService {
     this.voucherService =
       this.client.getService<VoucherServiceClient>('VoucherService');
   }
-
+  
   async getVoucherById(id: number) {
     return this.voucherService.FindVoucherById({ id });
   }
@@ -117,6 +117,9 @@ export class BillService {
         now,
       })
       .getMany();
+    if(results.length === 0) {
+      return [];
+    }
 
     if (results.length === 0) {
       return [];
@@ -195,7 +198,6 @@ export class BillService {
 
     const getTimeNow = (): string => {
       const now = new Date();
-
       const day = String(now.getDate()).padStart(2, '0');
       const month = String(now.getMonth() + 1).padStart(2, '0');
       const year = now.getFullYear();

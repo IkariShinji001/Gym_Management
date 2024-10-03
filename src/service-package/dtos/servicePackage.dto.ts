@@ -9,7 +9,7 @@ export class CreateServicePackageDto {
   description: string;
 
   @IsNumber()
-  typeId: number
+  typeId: number;
 }
 
 export class UpdateServicePackageDto extends PartialType(

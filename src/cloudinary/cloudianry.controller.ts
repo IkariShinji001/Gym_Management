@@ -30,6 +30,8 @@ export class CloudinaryController {
     }
   }
 
-  @Delete('/:publicId')
-  async deleteImage(@Param('publicId') publicId: string) {}
+  @Delete(':publicId')
+  async deleteImage(@Param('publicId') publicId: string): Promise<void> {
+      await this.cloudinaryService.deleteImage(publicId);
+  }
 }

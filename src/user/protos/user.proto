@@ -5,6 +5,7 @@ package SERVER;
 service UserService {
   rpc FindOneUserByUsername (Username) returns (User);
   rpc FindOneUserById (UserId) returns (CustomerStripeId); // Fixed the typo
+  rpc FindListUsersNameByListUsersId(ListUsersId) returns (ListUsersName);
 }
 
 message UserId {
@@ -23,4 +24,12 @@ message User {
   int32 id = 1;
   string username = 2;
   string password = 3;
+}
+
+message ListUsersId {
+  repeated UserId ListUsersId = 1;
+}
+
+message ListUsersName {
+  repeated Username ListUsersName = 1;
 }

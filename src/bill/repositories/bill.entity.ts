@@ -1,5 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { BillDetail } from './billDetail.entity';
+import * as moment from 'moment';
 
 export enum BillStatus {
   PENDING = 'PENDING',
@@ -29,6 +30,17 @@ export class Bills {
     default: BillStatus.PENDING,
   })
   status: BillStatus;
+
+  @Column({
+    type: 'timestamp with time zone',
+    default: () => 'CURRENT_TIMESTAMP',
+    transformer: {
+      to: (value: Date) => value, // Không thay đổi khi lưu
+      from: (value: Date) =>
+        moment(value).utcOffset('+07:00').format('YYYY-MM-DD HH:mm:ss'), // Chuyển đổi khi lấy
+    },
+  })
+  createAt: Date;
 
   @OneToMany(() => BillDetail, (BillDetail) => BillDetail.bill)
   billDetails: BillDetail[];

@@ -22,6 +22,7 @@ import { StripeModule } from './stripe/stripe.module';
 import { MailModule } from './mail/mail.module';
 import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
 import { ChatbotModule } from './chatbot/chatbot.module';
+import { BlogModule } from './blog/blog.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { ChatbotModule } from './chatbot/chatbot.module';
     CloudinaryModule, 
     ServicePackageModule,
     BranchModule,
+    BlogModule,
   ],
   controllers: [AppController],
   providers: [

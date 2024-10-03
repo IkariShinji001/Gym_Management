@@ -1,3 +1,4 @@
+import { BranchId } from 'src/shared/interfaces/grpc/branch/branchService.interface';
 import { CreateFacilityDto, updateFacilityDto } from '../dtos/facilities.dto';
 import { Facilities } from '../repositories/facilities.entity';
 import { FacilitiesService } from '../services/facilities.service';
@@ -11,6 +12,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { GrpcMethod } from '@nestjs/microservices';
 
 @Controller('/facilities')
 export class FacilitiesController {
@@ -38,12 +40,33 @@ export class FacilitiesController {
     } else return await this.facilitiesService.findAll();
   }
 
-  @Get('findFacilityIsFinishedTrue')
+  @Get('findFacilitiesByBranchId/:id')
+  async findFacilitiesByBranchId(
+    @Param('id') id: number,
+  ): Promise<Facilities[]> {
+    return await this.facilitiesService.findFacilitiesByBranchId(id);
+  }
+
+  // @Get('delete-facilities-by-branch-id/:id')
+  // async deleteFacilitiesByBranchId(@Param('id') id: number) {
+  // const BranchId = { id: id };
+  // console.log(BranchId);
+  //   await this.facilitiesService.deleteFacilitiesByBranchId(id);
+  // }
+
+  @GrpcMethod('FacilityService', 'deleteFacilitiesByBranchId')
+  async deleteFacilitiesByBranchId(BranchId: BranchId) {
+    const branchId = BranchId.id;
+    console.log(branchId);
+    return await this.facilitiesService.deleteFacilitiesByBranchId(branchId);
+  }
+
+  @Get('find-facilities-is-finished-true')
   async findFacilityIsFinishedTrue(): Promise<Facilities[]> {
     return this.facilitiesService.findFacilityIsFinishedTrue();
   }
 
-  @Get('checkFacilityIsFinishedIsFalse/:id')
+  @Get('check-facility-is-finished-is-false/:id')
   async checkFacilityIsFinishedIsFalse(
     @Param('id') id: number,
   ): Promise<Facilities> {
@@ -51,8 +74,9 @@ export class FacilitiesController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number): Promise<Facilities> {
-    return await this.facilitiesService.findOne(id);
+  async findById(@Param('id') id: number): Promise<Facilities> {
+    console.log(id);
+    return await this.facilitiesService.findById(id);
   }
 
   @Delete(':id')

@@ -32,6 +32,8 @@ async function bootstrap() {
         join(__dirname, './user/protos/user.proto'),
         join(__dirname, './user/protos/voucher.proto'),
         join(__dirname, './service-package/protos/servicePackage.proto'),
+        join(__dirname, './branch/protos/branch.proto'),
+        join(__dirname, './facilities/protos/facility.proto'),
       ],
       url: 'localhost:5000',
     },

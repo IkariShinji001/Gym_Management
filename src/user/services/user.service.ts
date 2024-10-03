@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { IUserService } from '../interfaces/userService.interface';
+import { IUserService, ListUsersId } from '../interfaces/userService.interface';
 import { CreateUserDto, UpdateUserDto } from '../dtos/user.dto';
 import { User } from '../repositories/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,6 +9,9 @@ import { HistoryEntryTime } from '../repositories/historyEntryTime.entity';
 import * as moment from 'moment-timezone';
 import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
+import { PageOptionsDto } from 'src/shared/dto/page.options.dto';
+import { PageDto } from 'src/shared/dto/page.dto';
+import { PageMetaDto } from 'src/shared/dto/pageMeta.dto';
 
 @Injectable()
 export class UserService implements IUserService {
@@ -25,6 +28,52 @@ export class UserService implements IUserService {
 
   async findOneByUserId(id: number): Promise<User> {
     return await this.userRepository.findOne({ where: { id: id } });
+  }
+
+  async getAllEmail(): Promise<User[]> {
+    return await this.userRepository.find({ select: ['email'] });
+  }
+
+  async getAllUserEmailPerPage(
+    pageOptionsDto: PageOptionsDto,
+  ): Promise<PageDto<User>> {
+    const queryBuilder = this.userRepository.createQueryBuilder('user');
+
+    queryBuilder
+      .select(['user.email', 'user.fullName', 'user.gender'])
+      .orderBy('"user"."email"', pageOptionsDto.order)
+      .skip((pageOptionsDto.page - 1) * pageOptionsDto.take)
+      .take(pageOptionsDto.take);
+
+    const itemCount = await queryBuilder.getCount();
+
+    const { entities } = await queryBuilder.getRawAndEntities();
+
+    const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
+
+    return new PageDto(entities, pageMetaDto);
+  }
+
+  async getAllUserEmailPerPageByGender(
+    pageOptionsDto: PageOptionsDto,
+    gender: boolean,
+  ): Promise<PageDto<User>> {
+    const queryBuilder = this.userRepository.createQueryBuilder('user');
+
+    queryBuilder
+      .select(['user.email', 'user.fullName', 'user.gender']) // Use double quotes
+      .where('user.gender = :gender', { gender })
+      .orderBy('"user"."email"', pageOptionsDto.order) // Use validated order
+      .skip((pageOptionsDto.page - 1) * pageOptionsDto.take)
+      .take(pageOptionsDto.take);
+
+    const itemCount = await queryBuilder.getCount();
+
+    const { entities } = await queryBuilder.getRawAndEntities();
+
+    const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
+
+    return new PageDto(entities, pageMetaDto);
   }
 
   async findOneByFerralCode(code: string): Promise<User> {
@@ -62,6 +111,29 @@ export class UserService implements IUserService {
 
   async findOneByUsername(username: string): Promise<User> {
     return await this.userRepository.findOne({ where: { username } });
+  }
+
+  async FindListUsersNameByListUsersId(listUsersId: ListUsersId) {
+    const userIds = listUsersId.ListUsersId.map((user) => user.id);
+    console.log(userIds);
+    //Truy vấn để lấy dánh sách tên user dựa trên userId
+    const usersName = await this.userRepository
+      .createQueryBuilder('user')
+      .select('user.fullName', 'username')
+      .addSelect('user.id', 'id')
+      .where('user.id IN (:...userIds)', { userIds })
+      .getRawMany();
+
+    // Sắp xếp lại mảng usersName dựa trên thứ tự của userIds
+    const sortedUsersName = userIds.map((id) =>
+      usersName.find((user) => user.id === id),
+    );
+    console.log(sortedUsersName);
+    console.log(usersName);
+    const listUsersName = {
+      ListUsersName: sortedUsersName,
+    };
+    return listUsersName;
   }
 
   async createUser(newUser: CreateUserDto): Promise<User> {

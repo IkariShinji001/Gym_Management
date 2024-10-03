@@ -9,10 +9,24 @@ import { Provinces } from './repositories/provinces.entity';
 import { Districts } from './repositories/districts.entity';
 import { DistrictsController } from './controllers/districts.controller';
 import { DistrictsService } from './services/districts.service';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { join } from 'path';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Branches, Provinces, Districts])],
-    controllers: [BranchesController, ProvincesController, DistrictsController],
-    providers: [BranchesService, ProvincesService, DistrictsService]
+  imports: [
+    ClientsModule.register([
+      {
+        name: 'SERVER',
+        transport: Transport.GRPC,
+        options: {
+          package: 'SERVER',
+          protoPath: join(__dirname, '../facilities/protos/facility.proto'),
+        },
+      },
+    ]),
+    TypeOrmModule.forFeature([Branches, Provinces, Districts]),
+  ],
+  controllers: [BranchesController, ProvincesController, DistrictsController],
+  providers: [BranchesService, ProvincesService, DistrictsService],
 })
 export class BranchModule {}

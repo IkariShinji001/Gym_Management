@@ -1,37 +1,145 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { IBranchService } from '../interfaces/branches.service.interface';
 import { CreateBranchDto, UpdateBrachDto } from '../dtos/branches.dto';
 import { Branches } from '../repositories/branches.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { DistrictsService } from '../services/districts.service';
+import { FacilityServiceClient } from 'src/shared/interfaces/grpc/facility/facilityServiceClient.interface';
+import { ClientGrpc } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
-export class BranchesService implements IBranchService {
+export class BranchesService implements IBranchService, OnModuleInit {
+  private facilitiesService: FacilityServiceClient;
   constructor(
+    @Inject('SERVER')
+    private client: ClientGrpc,
     @InjectRepository(Branches)
     private branchesRepository: Repository<Branches>,
+    private districtsService: DistrictsService,
   ) {}
+  onModuleInit() {
+    this.facilitiesService =
+      this.client.getService<FacilityServiceClient>('FacilityService');
+  }
+
   async findAll(): Promise<Branches[]> {
-    return await this.branchesRepository.find();
+    // return await this.branchesRepository.find({relations: ['district']});
+    const branches = this.branchesRepository
+      .createQueryBuilder('branch')
+      .leftJoinAndSelect('branch.district', 'district')
+      .leftJoinAndSelect('district.province', 'province')
+      .getMany();
+    return branches;
+  }
+
+  async findById(id: number): Promise<Branches> {
+    return await this.branchesRepository
+      .createQueryBuilder('branch')
+      .where('branch.id = :id', { id })
+      .select('branch.name')
+      .getOne();
+  }
+
+  async findBranchById(branchId: { id: number }): Promise<Branches> {
+    const id = branchId.id;
+    console.log(id);
+    return await this.branchesRepository
+      .createQueryBuilder('branch')
+      .where('branch.id = :id', { id })
+      .select('branch.name')
+      .getOne();
+  }
+
+  async findDetailById(id: number): Promise<Branches> {
+    const branch = this.branchesRepository
+      .createQueryBuilder('branch')
+      .leftJoinAndSelect('branch.district', 'district')
+      .leftJoinAndSelect('district.province', 'province')
+      .where('branch.id = :id', { id })
+      .getOne();
+    return branch;
   }
 
   async countBranch(): Promise<{ num_branches: number }> {
     const counted = await this.branchesRepository.count();
-    return { "num_branches": counted };
-}
+    return { num_branches: counted };
+  }
   async findOne(id: number): Promise<Branches> {
     return await this.branchesRepository.findOne({ where: { id: id } });
   }
   async create(newBranch: CreateBranchDto): Promise<Branches> {
-    const branch = this.branchesRepository.create(newBranch);
-    return await this.branchesRepository.save(branch);
+    const existedDistrict = await this.districtsService.findOne(
+      newBranch.districtId,
+    );
+    const branch = this.branchesRepository.create({
+      ...newBranch,
+      district: existedDistrict,
+    });
+    const savedBranch = await this.branchesRepository.save(branch);
+
+    return await this.findDetailById(savedBranch.id);
   }
   async update(id: number, updateBranch: UpdateBrachDto): Promise<Branches> {
-    await this.branchesRepository.update(id, updateBranch);
-    return this.branchesRepository.findOne({ where: { id } });
+    console.log(updateBranch);
+    // Lấy dữ liệu gốc của chi nhánh
+    const originalBranch = await this.branchesRepository.findOne({
+      where: { id },
+    });
+
+    if (!originalBranch) {
+      throw new Error('Branch not found');
+    }
+
+    // Hàm để lấy ra các thuộc tính đã thay đổi
+    const getChangedProperties = (original, updated) => {
+      return Object.keys(updated).reduce((changes, key) => {
+        // So sánh từng thuộc tính, chỉ lấy các thuộc tính thay đổi
+        if (updated[key] !== undefined && original[key] !== updated[key]) {
+          changes[key] = updated[key];
+        }
+        return changes;
+      }, {});
+    };
+
+    // Lấy các thuộc tính đã thay đổi
+    const changes = getChangedProperties(originalBranch, updateBranch);
+
+    console.log(changes);
+
+    // Nếu không có thay đổi, thoát ra sớm
+    if (Object.keys(changes).length === 0) {
+      console.log('Không có thuộc tính nào thay đổi.');
+      return originalBranch;
+    }
+
+    // Cập nhật chỉ với các thuộc tính thay đổi
+    await this.branchesRepository.update(id, changes);
+    return await this.findDetailById(id);
   }
-  async delete(id: number): Promise<void> {
-    const branch = await this.branchesRepository.findOne({ where: { id } });
+
+  async delete(BranchId: number): Promise<void> {
+    const branch = await this.branchesRepository.findOne({
+      where: { id: BranchId },
+    });
+    const branchId = {
+      id: BranchId,
+    }
+    const res = await firstValueFrom(
+      this.facilitiesService.deleteFacilitiesByBranchId(branchId),
+    );
+    console.log(res);
     await this.branchesRepository.delete(branch);
+  }
+
+  async findBranchInProvince(provinceId: number): Promise<Branches[]> {
+    const branches = await this.branchesRepository
+      .createQueryBuilder('branch')
+      .leftJoinAndSelect('branch.district', 'district')
+      .leftJoinAndSelect('district.province', 'province')
+      .where('district.provinceId = :provinceId', { provinceId })
+      .getMany();
+    return branches;
   }
 }

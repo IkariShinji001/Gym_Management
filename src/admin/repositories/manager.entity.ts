@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { Profile } from './profile.entity';
 import { Employees } from './employee.entity';
+import { Pt } from './pt.entity';
 
 @Entity()
 export class Managers {
@@ -16,6 +17,9 @@ export class Managers {
 
   @OneToMany(() => Employees, (Employees) => Employees.manager)
   employees: Employees[];
+
+  @OneToMany(() => Pt, (Pt) => Pt.manager)
+  pt: Pt[];
 
   @OneToOne(() => Profile)
   @JoinColumn()

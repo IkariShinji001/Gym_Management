@@ -42,4 +42,10 @@ export class DistrictsController {
   async delete(@Param('id') id: number): Promise<void> {
     await this.districtsService.delete(id);
   }
+
+  @Get('findDistrictsInProvince/:provinceId')
+  async findDistrictsInProvince(@Param('provinceId') provinceId: number): Promise<Districts[]> {
+    return await this.districtsService.findDistrictsInProvince(provinceId);
+  }
+
 }

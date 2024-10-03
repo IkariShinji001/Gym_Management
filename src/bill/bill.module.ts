@@ -6,6 +6,8 @@ import { BillService } from './services/bill.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Bills } from './repositories/bill.entity';
 import { BillDetail } from './repositories/billDetail.entity';
+import { RevenueBillsController } from './controllers/revenueBills.controller';
+import { RevenueBillsService } from './services/revenueBills.service';
 @Module({
   imports: [
     ClientsModule.register([
@@ -25,7 +27,7 @@ import { BillDetail } from './repositories/billDetail.entity';
     ]),
     TypeOrmModule.forFeature([Bills, BillDetail]),
   ],
-  controllers: [BillController],
-  providers: [BillService],
+  controllers: [BillController, RevenueBillsController],
+  providers: [BillService, RevenueBillsService],
 })
 export class BillModule {}

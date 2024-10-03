@@ -5,21 +5,21 @@ import {
   CreateSProductTypeDto,
   UpdateSProductTypeDto,
 } from '../dtos/sProductType.dto';
-import { SProductType } from '../repositories/sProductType.entity';
+import { SupplementProductType } from '../repositories/sProductType.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class SProductTypeService implements ISProductTypeService {
   constructor(
-    @InjectRepository(SProductType)
-    private sProductTypeRepository: Repository<SProductType>,
+    @InjectRepository(SupplementProductType)
+    private sProductTypeRepository: Repository<SupplementProductType>,
   ) {}
 
-  async findAll(): Promise<SProductType[]> {
+  async findAll(): Promise<SupplementProductType[]> {
     return await this.sProductTypeRepository.find();
   }
 
-  async findByName(name: string): Promise<SProductType> {
+  async findByName(name: string): Promise<SupplementProductType> {
     const productType = await this.sProductTypeRepository.findOneBy({ name });
     if (!productType) {
       throw new NotFoundException(`Product type with name ${name} not found`);
@@ -28,7 +28,7 @@ export class SProductTypeService implements ISProductTypeService {
   }
   async create(
     createSProductTypeDto: CreateSProductTypeDto,
-  ): Promise<SProductType> {
+  ): Promise<SupplementProductType> {
 
     const productType = await this.sProductTypeRepository.findOneBy({name: createSProductTypeDto.name});
     if (productType) {
@@ -43,7 +43,7 @@ export class SProductTypeService implements ISProductTypeService {
   async update(
     id: number,
     updateSProductDto: UpdateSProductTypeDto,
-  ): Promise<SProductType> {
+  ): Promise<SupplementProductType> {
     const sProductType = await this.sProductTypeRepository.findOneBy({ id });
     if (!sProductType) {
       throw new NotFoundException('Khong tim thay thai');

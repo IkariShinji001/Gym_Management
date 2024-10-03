@@ -14,5 +14,6 @@ import { VoucherService } from './services/voucher.service';
   imports: [TypeOrmModule.forFeature([User, HistoryEntryTime, Voucher])],
   controllers: [UserController, HistoryEntryTimeController, VoucherController],
   providers: [UserService, HistoryEntryTimeService, VoucherService],
+  exports: [UserService],
 })
 export class UserModule {}

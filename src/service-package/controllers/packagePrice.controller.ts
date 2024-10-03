@@ -40,4 +40,8 @@ export class PackagePriceController {
   ): Promise<ServicePackagePrice[]> {
     return await this.packagePriceService.findByServicePackage(id);
   }
+  @Get("/id/:id")
+  async findByServicePackageId(@Param('id') id:number): Promise<ServicePackagePrice[]> {
+    return await this.packagePriceService.findByServicePackageId(id)
+  }
 }
