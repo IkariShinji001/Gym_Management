@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { DiscountType } from '../repositories/voucher.entity';
 import Stripe from 'stripe';
 import { ConfigService } from '@nestjs/config';
+import { v4 as uuidv4 } from 'uuid';
 @Injectable()
 export class VoucherService {
   private stripe: Stripe;
@@ -51,6 +52,7 @@ export class VoucherService {
       minAmount: number;
     },
   ) {
+    console.log(userId, voucher);
     const user = await this.userService.findOneByUserId(userId);
 
     if (!user) {
@@ -66,6 +68,9 @@ export class VoucherService {
       ...voucher,
       couponStripeId: coupon.id,
     });
+    if (!newVoucher.code) {
+      newVoucher.code = uuidv4();
+    }
     await this.voucherRepository.save({ ...newVoucher, user });
     return newVoucher;
   }

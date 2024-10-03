@@ -27,6 +27,10 @@ export class UserService implements IUserService {
     return await this.userRepository.findOne({ where: { id: id } });
   }
 
+  async findOneByFerralCode(code: string): Promise<User> {
+    return await this.userRepository.findOne({ where: { referralCode: code } });
+  }
+
   async getAllEntryTimeByUserId(
     id: number,
     startDate: Date,

@@ -55,7 +55,17 @@ export class ServicePackagePriceService implements IServicePackagePriceService {
 
     return final; // Return the final result
   }
+
   async findByServicePackage(
+    servicePackageId: number,
+  ): Promise<ServicePackagePrice[]> {
+    return await this.packagePriceRepository.find({
+      where: { id: servicePackageId },
+      relations: ['servicePackage', 'packageDuration'],
+    });
+  }
+
+  async findByServicePackageId(
     servicePackageId: number,
   ): Promise<ServicePackagePrice[]> {
     return await this.packagePriceRepository.find({
@@ -71,6 +81,7 @@ export class ServicePackagePriceService implements IServicePackagePriceService {
     const packageDuration = await this.packageDurationService.findOneById(
       createPackagePriceDto.packageDurationId,
     );
+
     if (!packageDuration) {
       console.log(
         `--- Duration with ID: ${createPackagePriceDto.packageDurationId} not found ---`,

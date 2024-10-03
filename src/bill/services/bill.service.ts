@@ -170,6 +170,7 @@ export class BillService {
     userId: number,
     priceListIds: { id: number }[],
     voucherId: number,
+    userInvitedId: number,
   ) {
     const user: CustomerStripeId = await firstValueFrom(
       await this.getCustomerStripeId(userId),
@@ -269,21 +270,6 @@ export class BillService {
         );
 
         if (coupon) {
-          session = await this.stripe.checkout.sessions.create({
-            line_items: lineItemsTest,
-            mode: 'payment',
-            discounts: [{ coupon: coupon.id }], // Sử dụng coupon id
-            payment_intent_data: {
-              setup_future_usage: 'on_session',
-            },
-            customer: user.customerStripeId,
-            success_url:
-              'http://localhost:8989' +
-              '/pay/success/checkout/session?session_id={CHECKOUT_SESSION_ID}',
-            cancel_url:
-              'http://localhost:3000' + '/pay/failed/checkout/session',
-          });
-
           const bill = this.billRepository.create({
             userId,
             totalAmount,
@@ -326,6 +312,20 @@ export class BillService {
             await this.billDetailRepository.save(billDetail);
           }
 
+          session = await this.stripe.checkout.sessions.create({
+            line_items: lineItemsTest,
+            mode: 'payment',
+            discounts: [{ coupon: coupon.id }],
+            payment_intent_data: {
+              setup_future_usage: 'on_session',
+            },
+            customer: user.customerStripeId,
+            success_url:
+              'http://localhost:8989' +
+              `/pay/success/checkout/session?session_id={CHECKOUT_SESSION_ID}&bill_id=${bill.id}&user_id=${userId}&user_invited_id=${userInvitedId}`,
+            cancel_url: `http://localhost:8989/pay/failed/checkout/session&bill_id=${bill.id}`,
+          });
+
           return session;
         }
       }
@@ -343,7 +343,7 @@ export class BillService {
         const billDetail = this.billDetailRepository.create({
           servicePackagePriceId: packagePrice.servicePackagePriceList[i].id,
           price: packagePrice.servicePackagePriceList[i].price,
-          startEffective: new Date(getTimeNow()),
+          startEffective: new Date(Date.now()),
           endEffective: new Date(
             getEndTime(
               new Date(),
@@ -367,8 +367,8 @@ export class BillService {
         customer: user.customerStripeId,
         success_url:
           'http://localhost:8989' +
-          '/pay/success/checkout/session?session_id={CHECKOUT_SESSION_ID}',
-        cancel_url: 'http://localhost:3000' + '/pay/failed/checkout/session',
+          `/pay/success/checkout/session?session_id={CHECKOUT_SESSION_ID}&bill_id=${bill.id}&user_id=${userId}&user_invited_id=${userInvitedId}`,
+        cancel_url: `http://localhost:8989/pay/failed/checkout/session&bill_id=${bill.id}`,
       });
 
       return session;

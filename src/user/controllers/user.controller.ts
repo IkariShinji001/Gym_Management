@@ -45,6 +45,11 @@ export class UserController {
     return await this.userService.updateUser(id, updateUserDto);
   }
 
+  @Get('/refferal-code/:code')
+  async getUserByCode(@Param('code') code: string) {
+    return await this.userService.findOneByFerralCode(code);
+  }
+
   @Post()
   async createUser(@Body() newUser: CreateUserDto) {
     console.log(newUser);
