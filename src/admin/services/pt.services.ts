@@ -9,6 +9,7 @@ import { CreateProfileDto } from '../dtos/profile.dto';
 import { IPtService } from '../interfaces/pt.service.interface';
 import { createImagesDto } from '../dtos/createImages.dto';
 import { PtImagesService } from './ptImages.services';
+import { ManagerService } from './manager.services';
 
 @Injectable()
 export class PtService implements IPtService {
@@ -17,6 +18,7 @@ export class PtService implements IPtService {
     private ptRepository: Repository<Pt>,
     private profileService: ProfileService,
     private imageService: PtImagesService,
+    private managerService: ManagerService,
   ) {}
 
   async findAll(): Promise<Pt[]> {
@@ -30,15 +32,23 @@ export class PtService implements IPtService {
       relations: ['images', 'profile'],
     });
   }
+  async findByProfileId(id: number): Promise<Pt> {
+    return await this.ptRepository.findOne({
+      where: { profile: { id } },
+      relations: ['images', 'profile'],
+    });
+  }
   async create(
     newProfile: CreateProfileDto,
-    ptInfo: CreatePtDto,
+    newPt: CreatePtDto,
     imageDtoList: createImagesDto[],
   ): Promise<Pt> {
     const createdProfile = await this.profileService.create(newProfile);
+    const manager = await this.managerService.findOne(newPt.managerId);
     const ceratedPt = this.ptRepository.create({
-      ...ptInfo,
+      ...newPt,
       profile: createdProfile,
+      manager,
     });
     const savedPt = await this.ptRepository.save(ceratedPt);
     for (const imageDto of imageDtoList) {

@@ -12,10 +12,30 @@ import {
 import { CreateUserDto, UpdateUserDto } from '../dtos/user.dto';
 import { parseDateFromMMDDYYYY } from '../../shared/formatDate';
 import { ListUsersId } from '../interfaces/userService.interface';
+import { PageOptionsDto } from 'src/shared/dto/page.options.dto';
+import { User } from '../repositories/user.entity';
+import { PageDto } from 'src/shared/dto/page.dto';
 
 @Controller('/users')
 export class UserController {
   constructor(private userService: UserService) {}
+  @Get('/all-emails-per-page')
+  async getUsers(
+    @Query() pageOptionsDto: PageOptionsDto,
+  ): Promise<PageDto<User>> {
+    return this.userService.getAllUserEmailPerPage(pageOptionsDto);
+  }
+
+  @Get('all-emails-per-page-by-gender')
+  async getAllUserEmailPerPageByGender(
+    @Query() pageOptionsDto: PageOptionsDto,
+    @Query('gender') gender: boolean,
+  ): Promise<PageDto<User>> {
+    return await this.userService.getAllUserEmailPerPageByGender(
+      pageOptionsDto,
+      gender,
+    );
+  }
 
   @GrpcMethod('UserService', 'FindOneUserByUsername')
   async FindOneUserByUsername(username: { username: string }) {
@@ -49,6 +69,11 @@ export class UserController {
     @Body() updateUserDto: UpdateUserDto,
   ) {
     return await this.userService.updateUser(id, updateUserDto);
+  }
+
+  @Get('/refferal-code/:code')
+  async getUserByCode(@Param('code') code: string) {
+    return await this.userService.findOneByFerralCode(code);
   }
 
   @Post()

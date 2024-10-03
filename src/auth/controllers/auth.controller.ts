@@ -20,7 +20,7 @@ export class AuthController {
     @Res() res: Response,
   ) {
     try {
-      console.log(adminInfo);
+      // console.log(adminInfo);
       const accessToken = await this.authService.signInAdmin(
         adminInfo.email,
         adminInfo.password,
