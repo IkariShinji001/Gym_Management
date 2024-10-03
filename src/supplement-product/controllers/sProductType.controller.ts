@@ -8,7 +8,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { SProductTypeService } from '../services/sProductType.service';
-import { SProductType } from '../repositories/sProductType.entity';
+import { SupplementProductType } from '../repositories/sProductType.entity';
 import {
   CreateSProductTypeDto,
   UpdateSProductTypeDto,
@@ -19,7 +19,7 @@ export class SProductTypeController {
   constructor(private sProductTypeService: SProductTypeService) {}
 
   @Get()
-  async getAllSProductType(): Promise<SProductType[]> {
+  async getAllSProductType(): Promise<SupplementProductType[]> {
     return this.sProductTypeService.findAll();
   }
 
@@ -31,7 +31,7 @@ export class SProductTypeController {
   @Post()
   async createSProductType(
     @Body() createSProductType: CreateSProductTypeDto,
-  ): Promise<SProductType> {
+  ): Promise<SupplementProductType> {
     return this.sProductTypeService.create(createSProductType);
   }
 
@@ -39,7 +39,7 @@ export class SProductTypeController {
   async updateSProductType(
     @Param('id') id: number,
     @Body() updateSProductTypeDto: UpdateSProductTypeDto,
-  ): Promise<SProductType> {
+  ): Promise<SupplementProductType> {
     return await this.sProductTypeService.update(id, updateSProductTypeDto);
   }
 

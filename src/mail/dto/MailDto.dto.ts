@@ -32,4 +32,7 @@ export class SendMailDto {
   @IsString()  
   @IsNotEmpty()
   html: string;
+
+
+  files?: Express.Multer.File[];
 }

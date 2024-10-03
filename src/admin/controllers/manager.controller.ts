@@ -13,7 +13,6 @@ export class ManagerController {
 
     @Get()
     async getManagers() {
-        console.log('getManagers');
         return await this.managerService.findAll();
     }
     @Get(':id')

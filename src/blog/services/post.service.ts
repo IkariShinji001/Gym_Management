@@ -14,6 +14,10 @@ export class PostService implements IPostService {
   async getAllPost(): Promise<PostEntity[]> {
     return await this.postRepo.find();
   }
+
+  async findOneById(id: number): Promise<PostEntity>{
+    return await this.postRepo.findOneBy({id: id})
+  }
   async createPost(createPostDto: CreatePostDto): Promise<PostEntity> {
     const createdPo = this.postRepo.create(createPostDto);
     return await this.postRepo.save(createdPo);
