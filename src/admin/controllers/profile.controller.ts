@@ -50,6 +50,13 @@ export class ProfileController {
   ): Promise<Profile[]> {
     return await this.profileService.findByPhoneNumber(phoneNumber);
   }
+  @Patch('/password/:id')
+  async changePassword(
+    @Param('id') id: number,
+    @Body() data: { password: string, newPassword: string },
+  ) {
+    return await this.profileService.changePassword(id, data.password, data.newPassword);
+  }
 
   @GrpcMethod('AdminService', 'FindAdminByEmail')
   async findProfileByEmail(data: { email: string }) {

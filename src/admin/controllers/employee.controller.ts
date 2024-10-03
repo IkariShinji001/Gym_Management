@@ -18,6 +18,10 @@ export class EmployeeController {
     async getOneEmployee(@Param('id') id: number): Promise<Employees> {
         return await this.employeeService.findOne(id);
     }
+    @Get('/profile/:id')
+    async findByProfileId(@Param('id') id: number): Promise<Employees> {
+        return await this.employeeService.findByProfileId(id);
+    }
     @Post()
     async createEmployee(@Body() createEmployeeProfileDto:CreateEmployeeProfileDto): Promise<Employees> {
         const { createProfileDto, createEmployeeDto } = createEmployeeProfileDto;
