@@ -3,6 +3,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -10,6 +11,7 @@ import {
 import { PtImages } from './ptImages.entity';
 import { Profile } from './profile.entity';
 import { PtPackages } from 'src/service-package/repositories/ptPackage.entity';
+import { Managers } from './manager.entity';
 
 @Entity()
 export class Pt {
@@ -43,4 +45,8 @@ export class Pt {
   @OneToOne(() => Profile,  {cascade: true, onDelete: 'CASCADE'})
   @JoinColumn()
   profile: Profile;
+  
+  @ManyToOne(() => Managers, (Managers) => Managers.pt)
+  manager: Managers;
+
 }
