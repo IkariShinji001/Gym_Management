@@ -33,6 +33,7 @@ export class SoldProductService implements ISoldProductService {
       })
       .getRawOne();
 
+    console.log(result);
     const totalRevenue = result.total_revenue
       ? parseFloat(result.total_revenue)
       : 0;
@@ -45,7 +46,7 @@ export class SoldProductService implements ISoldProductService {
       .createQueryBuilder('soldProduct')
       .leftJoinAndSelect('soldProduct.supplementProduct', 'supplementProduct')
       .leftJoinAndSelect('soldProduct.profile', 'profile')
-      .where('DATE(soldProduct.createdAt) = :date', { date: date })
+      .where('DATE(soldProduct.createdAt) = :date', { date })
       .groupBy('supplementProduct.id')
       .select([
         'supplementProduct.id AS supplementProductId',
@@ -54,6 +55,7 @@ export class SoldProductService implements ISoldProductService {
         'SUM(soldProduct.price) AS totalPrice',
       ])
       .getRawMany();
+
     return soldProductList;
   }
 
