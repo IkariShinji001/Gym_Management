@@ -22,6 +22,7 @@ export class SoldProductController {
 
   @Get('/date-revenue')
   async getDateRevenue(@Query('date') date: Date): Promise<number> {
+    console.log(date);
     return await this.soldProductService.getRevenueByDay(date);
   }
 
