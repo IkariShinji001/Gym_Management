@@ -8,10 +8,20 @@ export class BillController {
   @Post('/users/:id')
   async createNewBill(
     @Param('id') id: number,
-    @Body() body: { priceListIds: { id: number }[]; voucherId: number },
+    @Body()
+    body: {
+      priceListIds: { id: number }[];
+      voucherId: number;
+      userInvitedId?: number;
+    },
   ) {
-    const { priceListIds, voucherId } = body;
-    return await this.billService.createBill(id, priceListIds, voucherId);
+    const { priceListIds, voucherId, userInvitedId } = body;
+    return await this.billService.createBill(
+      id,
+      priceListIds,
+      voucherId,
+      userInvitedId,
+    );
   }
 
   @Get('/users/:id')

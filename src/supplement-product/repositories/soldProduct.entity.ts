@@ -32,7 +32,7 @@ export class SoldProduct {
     transformer: {
       to: (value: Date) => value,
       from: (value: Date) =>
-        moment(value).utcOffset('+07:00').format('DD-MM-YYYY HH:mm:ss'),
+        moment(value).utcOffset('+07:00').format('DD/MM/YYYY HH:mm:ss'),
     },
   })
   createdAt: Date;

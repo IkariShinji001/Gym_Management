@@ -26,12 +26,13 @@ export class CloudinaryController {
         public_id: result.public_id,
       };
     } catch (error) {
+      console.log(error);
       throw new HttpException('Image upload failed', HttpStatus.BAD_REQUEST);
     }
   }
 
   @Delete(':publicId')
   async deleteImage(@Param('publicId') publicId: string): Promise<void> {
-      await this.cloudinaryService.deleteImage(publicId);
+    await this.cloudinaryService.deleteImage(publicId);
   }
 }

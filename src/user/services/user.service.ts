@@ -76,6 +76,10 @@ export class UserService implements IUserService {
     return new PageDto(entities, pageMetaDto);
   }
 
+  async findOneByFerralCode(code: string): Promise<User> {
+    return await this.userRepository.findOne({ where: { referralCode: code } });
+  }
+
   async getAllEntryTimeByUserId(
     id: number,
     startDate: Date,
