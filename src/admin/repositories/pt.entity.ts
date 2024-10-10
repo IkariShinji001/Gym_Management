@@ -40,7 +40,7 @@ export class Pt {
   images: PtImages[];
 
   @OneToMany(() => PtPackages, (ptPackage) => ptPackage.pt)
-  ptPackages: PtPackages
+  ptPackages: PtPackages[]
 
   @OneToOne(() => Profile,  {cascade: true, onDelete: 'CASCADE'})
   @JoinColumn()

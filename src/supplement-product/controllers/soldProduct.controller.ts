@@ -63,7 +63,10 @@ export class SoldProductController {
   async createSoldProduct(
     @Body() newSoldProduct: CreateSoldProductDto,
   ): Promise<SoldProduct> {
-    return await this.soldProductService.create(newSoldProduct);
+    const res = await this.soldProductService.create(newSoldProduct);
+    console.log('asdf')
+    console.log(res);
+    return res;
   }
 
   @Delete('/:id')

@@ -36,7 +36,7 @@ export class FitnessPackageController {
   async getFitnessPackageById(id) {
     return await this.fitnessPackageService.findOneFitness(id);
   }
-  
+
   @Post()
   async createServicePackage(
     @Body() createAllFitnessDto: CreateAllFitnessServicePackageDto,
