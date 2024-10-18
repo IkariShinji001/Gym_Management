@@ -21,7 +21,6 @@ export class ServicePackagePriceService implements IServicePackagePriceService {
   constructor(
     @InjectRepository(ServicePackagePrice)
     private packagePriceRepository: Repository<ServicePackagePrice>,
-
     private packageDurationService: PackageDurationService,
   ) {}
 
@@ -29,6 +28,20 @@ export class ServicePackagePriceService implements IServicePackagePriceService {
     return await this.packagePriceRepository.find({
       relations: ['servicePackage', 'packageDuration'],
     });
+  }
+
+  async getAllTypeByListIds(listId: { listPriceIds: number[] }) {
+    const res = await this.packagePriceRepository
+      .createQueryBuilder('packagePrice')
+      .leftJoinAndSelect('packagePrice.servicePackage', 'servicePackage')
+      .leftJoinAndSelect('servicePackage.serviceType', 'serviceType')
+      .where('packagePrice.id IN (:...listPriceIds)', {
+        listPriceIds: listId.listPriceIds,
+      })
+      .getMany();
+
+    let types = res.map((pkg) => pkg.servicePackage.serviceType);
+    return types;
   }
 
   async getAllByListIds(
