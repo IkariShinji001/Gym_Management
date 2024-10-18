@@ -9,9 +9,11 @@ import { HistoryEntryTimeService } from './services/historyEntryTime.service';
 import { Voucher } from './repositories/voucher.entity';
 import { VoucherController } from './controllers/voucher.controller';
 import { VoucherService } from './services/voucher.service';
+import { MailModule } from 'src/mail/mail.module';
+
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, HistoryEntryTime, Voucher])],
+  imports: [TypeOrmModule.forFeature([User, HistoryEntryTime, Voucher]),MailModule],
   controllers: [UserController, HistoryEntryTimeController, VoucherController],
   providers: [UserService, HistoryEntryTimeService, VoucherService],
   exports: [UserService],

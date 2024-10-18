@@ -6,10 +6,16 @@ export class CreatePtPackagesDto {
   maxClients: number;
 
   @IsNumber()
-  servicePackageId: number;
-
-  @IsNumber()
   ptId: number;
 }
 
-export class UpdatePtPackageDto extends PartialType(CreatePtPackagesDto) {}
+export class UpdatePtPackageDto {
+  @IsNumber()
+  maxClients: number;
+
+  @IsNumber()
+  ptId: number;
+
+  @IsNumber()
+  servicePackageId: number;
+}

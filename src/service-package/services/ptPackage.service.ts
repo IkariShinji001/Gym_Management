@@ -33,8 +33,14 @@ export class PtPackagesService implements IPtPackageService {
       .leftJoinAndSelect('pt.profile', 'profile')
       .leftJoinAndSelect('pt.images', 'ptImages')
       .leftJoinAndSelect('ptPackage.servicePackage', 'servicePackage')
-      .leftJoinAndSelect('servicePackage.servicePackagePrices', 'servicePackagePrice')
-      .leftJoinAndSelect('servicePackagePrice.packageDuration', 'packageDuration')
+      .leftJoinAndSelect(
+        'servicePackage.servicePackagePrices',
+        'servicePackagePrice',
+      )
+      .leftJoinAndSelect(
+        'servicePackagePrice.packageDuration',
+        'packageDuration',
+      )
       .getMany();
 
     return ptPackages;
@@ -46,21 +52,32 @@ export class PtPackagesService implements IPtPackageService {
       .leftJoinAndSelect('pt.profile', 'profile')
       .leftJoinAndSelect('pt.images', 'ptImages')
       .leftJoinAndSelect('ptPackage.servicePackage', 'servicePackage')
-      .leftJoinAndSelect('servicePackage.servicePackagePrices', 'servicePackagePrice')
-      .leftJoinAndSelect('servicePackagePrice.packageDuration', 'packageDuration')
+      .leftJoinAndSelect(
+        'servicePackage.servicePackagePrices',
+        'servicePackagePrice',
+      )
+      .leftJoinAndSelect('servicePackage.serviceType', 'serviceType')
+      .leftJoinAndSelect(
+        'servicePackagePrice.packageDuration',
+        'packageDuration',
+      )
       .where('ptPackage.id = :id', { id })
       .getOne();
-  
+
     return ptPackage;
   }
   async getAllPPDetail() {
     const ptPackages = await this.ptPackageRepository
       .createQueryBuilder('ptPackage')
+      .leftJoinAndSelect('ptPackage.pt', 'pt')
+      .leftJoinAndSelect('pt.profile', 'profile')
+      .leftJoinAndSelect('pt.images', 'ptImages')
       .leftJoinAndSelect('ptPackage.servicePackage', 'servicePackage')
       .leftJoinAndSelect(
         'servicePackage.servicePackagePrices',
         'servicePackagePrice',
       )
+      .leftJoinAndSelect('servicePackage.serviceType', 'serviceType')
       .leftJoinAndSelect(
         'servicePackagePrice.packageDuration',
         'packageDuration',
@@ -74,7 +91,7 @@ export class PtPackagesService implements IPtPackageService {
     const {
       createPtPackageDto,
       createServicePackageDto,
-      createPackagePriceDto,
+      createPackagePriceDtoList,
     } = createAllPPDto;
 
     const savedSP = await this.servicePackageService.create(
@@ -95,10 +112,10 @@ export class PtPackagesService implements IPtPackageService {
       pt: existedPt,
     });
 
-    if (createPackagePriceDto) {
-      for (var i = 0; i < createPackagePriceDto.length; i++) {
+    if (createPackagePriceDtoList) {
+      for (var i = 0; i < createPackagePriceDtoList.length; i++) {
         await this.packagePriceService.createPackagePrice(
-          createPackagePriceDto[i],
+          createPackagePriceDtoList[i],
           savedSP,
         );
       }
@@ -106,7 +123,7 @@ export class PtPackagesService implements IPtPackageService {
 
     const savedPP = await this.ptPackageRepository.save(createdPP);
 
-    return savedPP;
+    return this.getById(savedPP.id);
   }
 
   // ========== UPDATE ==========
@@ -117,22 +134,36 @@ export class PtPackagesService implements IPtPackageService {
     const {
       updatePtPackageDto,
       updateServicePackageDto,
-      updatePackagePriceDto,
+      updatePackagePriceDtoList,
     } = updateAllPPDto;
 
     const updatedSP = await this.servicePackageService.update(
       updatePtPackageDto.servicePackageId,
       updateServicePackageDto,
     );
+
     const existedPP = await this.ptPackageRepository.findOne({
       where: { id: ptPackageId },
+      relations: ['servicePackage', 'pt'],
     });
+
+    if (!existedPP) {
+      console.log(`Pt Package with ID: ${ptPackageId} not found`);
+      throw new HttpException(
+        `Pt Package with ID: ${ptPackageId} not found`,
+        400,
+      );
+    }
 
     const existedPt = await this.ptSerivce.findOne(updatePtPackageDto.ptId);
     if (!existedPt) {
-      console.log(`Pt with ID: ${ptPackageId} not found`);
-      throw new HttpException(`Pt with ID: ${ptPackageId} not found`, 400);
+      console.log(`Pt with ID: ${updatePtPackageDto.ptId} not found`);
+      throw new HttpException(
+        `Pt with ID: ${updatePtPackageDto.ptId} not found`,
+        400,
+      );
     }
+
     Object.assign(existedPP, updatePtPackageDto);
 
     const savedPP = await this.ptPackageRepository.save({
@@ -141,17 +172,17 @@ export class PtPackagesService implements IPtPackageService {
       pt: existedPt,
     });
 
-    if (updatePackagePriceDto) {
-      for (var i = 0; i < updatePackagePriceDto.length; i++) {
+    if (updatePackagePriceDtoList) {
+      for (var i = 0; i < updatePackagePriceDtoList.length; i++) {
         await this.packagePriceService.updatePackagePrice(
-          updatePackagePriceDto[i].priceId,
-          updatePackagePriceDto[i],
+          updatePackagePriceDtoList[i].priceId,
+          updatePackagePriceDtoList[i],
           updatedSP,
         );
       }
     }
 
-    return savedPP;
+    return this.getById(savedPP.id); ;
   }
   async delete(PPId: number): Promise<void> {
     await this.ptPackageRepository.delete(PPId);
