@@ -49,7 +49,7 @@ export class AuthService implements OnModuleInit {
 
     if (!user) {
       throw new HttpException(
-        'Invalid email or password',
+        'Tài khoản hoặc mật khẩu không hợp lệ',
         HttpStatus.UNAUTHORIZED,
       );
     }
@@ -57,7 +57,7 @@ export class AuthService implements OnModuleInit {
 
     if (!isMatchPassword) {
       throw new HttpException(
-        'Invalid email or password',
+        'Tài khoản hoặc mật khẩu không hợp lệ',
         HttpStatus.UNAUTHORIZED,
       );
     }
@@ -70,7 +70,7 @@ export class AuthService implements OnModuleInit {
 
     if (!user) {
       throw new HttpException(
-        'Invalid email or password',
+        'Tài khoản hoặc mật khẩu không hợp lệ',
         HttpStatus.UNAUTHORIZED,
       );
     }
@@ -79,7 +79,7 @@ export class AuthService implements OnModuleInit {
 
     if (!isMatchPassword) {
       throw new HttpException(
-        'Invalid email or password',
+        'Tài Khoản hoặc mật khẩu không hợp lệ',
         HttpStatus.UNAUTHORIZED,
       );
     }
@@ -97,7 +97,7 @@ export class AuthService implements OnModuleInit {
     const admin = await firstValueFrom(await this.getDataAdmin({ email }));
     if (!admin) {
       throw new HttpException(
-        'Invalid email or password',
+        'Email hoặc mật khẩu không hợp lệ',
         HttpStatus.UNAUTHORIZED,
       );
     }
@@ -106,7 +106,7 @@ export class AuthService implements OnModuleInit {
 
     if (!isMatchPassword) {
       throw new HttpException(
-        'Invalid email or password',
+        'Email hoặc mật khẩu không hợp lệ',
         HttpStatus.UNAUTHORIZED,
       );
     }
