@@ -33,10 +33,10 @@ export class FitnessPackageController {
     return await this.fitnessPackageService.findByType(typeId);
   }
   @Get('/:fitnessId')
-  async getFitnessPackageById(id) {
+  async getFitnessPackageById(@Param('fitnessId') id: number) {
     return await this.fitnessPackageService.findOneFitness(id);
   }
-  
+
   @Post()
   async createServicePackage(
     @Body() createAllFitnessDto: CreateAllFitnessServicePackageDto,

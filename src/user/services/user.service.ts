@@ -9,6 +9,9 @@ import { HistoryEntryTime } from '../repositories/historyEntryTime.entity';
 import * as moment from 'moment-timezone';
 import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
+import { PageOptionsDto } from 'src/shared/dto/page.options.dto';
+import { PageDto } from 'src/shared/dto/page.dto';
+import { PageMetaDto } from 'src/shared/dto/pageMeta.dto';
 import { EmailService } from 'src/mail/service/mail.service';
 import * as jwt from 'jsonwebtoken';
 
@@ -28,6 +31,56 @@ export class UserService implements IUserService {
 
   async findOneByUserId(id: number): Promise<User> {
     return await this.userRepository.findOne({ where: { id: id } });
+  }
+
+  async getAllEmail(): Promise<User[]> {
+    return await this.userRepository.find({ select: ['email'] });
+  }
+
+  async getAllUserEmailPerPage(
+    pageOptionsDto: PageOptionsDto,
+  ): Promise<PageDto<User>> {
+    const queryBuilder = this.userRepository.createQueryBuilder('user');
+
+    queryBuilder
+      .select(['user.email', 'user.fullName', 'user.gender'])
+      .orderBy('"user"."email"', pageOptionsDto.order)
+      .skip((pageOptionsDto.page - 1) * pageOptionsDto.take)
+      .take(pageOptionsDto.take);
+
+    const itemCount = await queryBuilder.getCount();
+
+    const { entities } = await queryBuilder.getRawAndEntities();
+
+    const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
+
+    return new PageDto(entities, pageMetaDto);
+  }
+
+  async getAllUserEmailPerPageByGender(
+    pageOptionsDto: PageOptionsDto,
+    gender: boolean,
+  ): Promise<PageDto<User>> {
+    const queryBuilder = this.userRepository.createQueryBuilder('user');
+
+    queryBuilder
+      .select(['user.email', 'user.fullName', 'user.gender']) // Use double quotes
+      .where('user.gender = :gender', { gender })
+      .orderBy('"user"."email"', pageOptionsDto.order) // Use validated order
+      .skip((pageOptionsDto.page - 1) * pageOptionsDto.take)
+      .take(pageOptionsDto.take);
+
+    const itemCount = await queryBuilder.getCount();
+
+    const { entities } = await queryBuilder.getRawAndEntities();
+
+    const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
+
+    return new PageDto(entities, pageMetaDto);
+  }
+
+  async findOneByFerralCode(code: string): Promise<User> {
+    return await this.userRepository.findOne({ where: { referralCode: code } });
   }
 
   async getAllEntryTimeByUserId(

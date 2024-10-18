@@ -21,6 +21,17 @@ export class PtService implements IPtService {
     private managerService: ManagerService,
   ) {}
 
+  //hukhan
+  async getAllPtWithIdAndName(): Promise<Pt[]> {
+    const ptList = await this.ptRepository
+      .createQueryBuilder('pt')
+      .leftJoinAndSelect('pt.profile', 'profile')
+      .select(['pt.id AS id', 'profile.fullName AS fullName'])
+      .getRawMany();
+
+    return ptList;
+  }
+
   async findAll(): Promise<Pt[]> {
     return await this.ptRepository.find({
       relations: ['profile', 'images'],

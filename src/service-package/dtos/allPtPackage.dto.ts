@@ -11,10 +11,10 @@ import {
 export class CreateAllPtPackagesDto {
   createPtPackageDto: CreatePtPackagesDto;
   createServicePackageDto: CreateServicePackageDto;
-  createPackagePriceDto: CreateServicePackagePriceDto[];
+  createPackagePriceDtoList: CreateServicePackagePriceDto[];
 }
 export class UpdateAllPtPackageDto {
   updatePtPackageDto: Partial<UpdatePtPackageDto>;
   updateServicePackageDto: Partial<UpdateServicePackageDto>;
-  updatePackagePriceDto: Partial<UpdateServicePackagePriceDto[]>;
+  updatePackagePriceDtoList: Partial<UpdateServicePackagePriceDto[]>;
 }

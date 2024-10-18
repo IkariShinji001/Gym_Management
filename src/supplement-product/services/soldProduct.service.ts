@@ -155,6 +155,7 @@ export class SoldProductService implements ISoldProductService {
       profile,
     });
 
+
     return await this.soldProductRepository.save(product);
   }
 

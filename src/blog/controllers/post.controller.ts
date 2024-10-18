@@ -14,6 +14,11 @@ export class PostController{
         return this.postService.getAllPost()
     }
 
+    @Get("/posts/:id")
+    async getOneById(@Param('id') id:number):Promise<PostEntity>{
+        return this.postService.findOneById(id)
+    }
+
     @Post()
     async createPost(
         @Body()

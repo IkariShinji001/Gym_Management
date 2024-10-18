@@ -16,5 +16,6 @@ import { MailModule } from 'src/mail/mail.module';
   imports: [TypeOrmModule.forFeature([User, HistoryEntryTime, Voucher]),MailModule],
   controllers: [UserController, HistoryEntryTimeController, VoucherController],
   providers: [UserService, HistoryEntryTimeService, VoucherService],
+  exports: [UserService],
 })
 export class UserModule {}

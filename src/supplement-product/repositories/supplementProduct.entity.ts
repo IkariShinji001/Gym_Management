@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { SProductType } from './sProductType.entity';
+import { SupplementProductType } from './sProductType.entity';
 import { SoldProduct } from './soldProduct.entity';
 
 @Entity()
@@ -16,8 +16,8 @@ export class SupplementProduct {
   @Column({ nullable: false })
   imageUrl: string;
 
-  @ManyToOne(() => SProductType, (type) => type.supplementProducts, {onDelete: 'CASCADE' })
-  type: SProductType
+  @ManyToOne(() => SupplementProductType, (type) => type.supplementProducts, {onDelete: 'CASCADE' })
+  type: SupplementProductType
 
   @OneToMany(() => SoldProduct, (soldProduct) => soldProduct.supplementProduct)
   soldProducts: SoldProduct[]
