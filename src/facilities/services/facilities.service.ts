@@ -8,6 +8,7 @@ import { ClientGrpc } from '@nestjs/microservices';
 import { BranchServiceClient } from 'src/shared/interfaces/grpc/branch/branchServiceClient.interface';
 import { BranchId } from 'src/shared/interfaces/grpc/branch/branchService.interface';
 import { firstValueFrom } from 'rxjs';
+import { FacilityTypeService } from './facilityType.service';
 
 @Injectable()
 export class FacilitiesService implements IFacilitiesService, OnModuleInit {
@@ -17,6 +18,7 @@ export class FacilitiesService implements IFacilitiesService, OnModuleInit {
     @Inject('SERVER') private client: ClientGrpc,
     @InjectRepository(Facilities)
     private facilitiesRepository: Repository<Facilities>,
+    private facilityTypeService: FacilityTypeService,
   ) {}
   onModuleInit() {
     this.branchService =
@@ -24,7 +26,7 @@ export class FacilitiesService implements IFacilitiesService, OnModuleInit {
   }
 
   async findAll(): Promise<Facilities[]> {
-    return await this.facilitiesRepository.find();
+    return await this.facilitiesRepository.find({relations: ['facilityType']});
   }
 
   async findNameBranchById(branchId: BranchId) {
@@ -37,6 +39,10 @@ export class FacilitiesService implements IFacilitiesService, OnModuleInit {
     const branchId = {
       id: facility.branchId,
     };
+    const facilityType = await this.facilityTypeService.findById(
+      newFacility.facilityTypeId,
+    );
+
     const nameBranch = await firstValueFrom(
       await this.findNameBranchById(branchId),
     );
@@ -44,6 +50,7 @@ export class FacilitiesService implements IFacilitiesService, OnModuleInit {
     console.log(nameBranch);
     const facilityNew = {
       ...facility,
+      facilityType: facilityType,
       nameBranch: nameBranch.name,
     };
     console.log(facilityNew);
@@ -67,7 +74,7 @@ export class FacilitiesService implements IFacilitiesService, OnModuleInit {
     updateFacility: updateFacilityDto,
   ): Promise<Facilities> {
     await this.facilitiesRepository.update(id, updateFacility);
-    return this.facilitiesRepository.findOne({ where: { id } });
+    return this.facilitiesRepository.findOne({ where: { id }, relations: ['facilityType'] });
   }
 
   async findByName(name: string): Promise<Facilities[]> {
@@ -88,7 +95,10 @@ export class FacilitiesService implements IFacilitiesService, OnModuleInit {
   }
 
   async findById(id: number): Promise<Facilities> {
-    const facility = await this.facilitiesRepository.findOne({ where: { id } });
+    const facility = await this.facilitiesRepository.findOne({
+      where: { id },
+      relations: ['facilityType'],
+    });
     return facility;
   }
 
