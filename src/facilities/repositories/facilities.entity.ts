@@ -1,5 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  ManyToOne,
+} from 'typeorm';
 import { Maintenances } from './maintenances.entity';
+import { FacilityType } from './facilityType.entity';
 
 @Entity()
 export class Facilities {
@@ -27,9 +34,15 @@ export class Facilities {
   @Column({ type: 'timestamptz', nullable: false })
   warrantyEndDate: Date;
 
-  @Column({ nullable: false, default: true})
+  @Column({ nullable: false, default: true })
   isActive: boolean;
+
+  @Column({ nullable: false })
+  facilityTypeId: number;
 
   @OneToMany(() => Maintenances, (Maintenances) => Maintenances.facility)
   maintenances: Maintenances[];
+
+  @ManyToOne(() => FacilityType, (FacilityType) => FacilityType.facilities)
+  facilityType: FacilityType;
 }

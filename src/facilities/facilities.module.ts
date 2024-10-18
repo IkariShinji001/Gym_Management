@@ -8,6 +8,9 @@ import { MaintenancesController } from './controllers/maintenances.controller';
 import { MaintenancesService } from './services/maintenances.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
+import { FacilityType } from './repositories/facilityType.entity';
+import { FacilityTypeController } from './controllers/facilityTpye.controller';
+import { FacilityTypeService } from './services/facilityType.service';
 @Module({
   imports: [
     ClientsModule.register([
@@ -20,9 +23,9 @@ import { join } from 'path';
         },
       },
     ]),
-    TypeOrmModule.forFeature([Facilities, Maintenances]),
+    TypeOrmModule.forFeature([Facilities, Maintenances, FacilityType]),
   ],
-  controllers: [FacilitiesController, MaintenancesController],
-  providers: [FacilitiesService, MaintenancesService],
+  controllers: [FacilitiesController, MaintenancesController, FacilityTypeController],
+  providers: [FacilitiesService, MaintenancesService, FacilityTypeService],
 })
 export class FacilitiesModule {}
