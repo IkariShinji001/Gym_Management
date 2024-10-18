@@ -100,13 +100,7 @@ export class FitnessPackageService implements IFitnessPackageService {
   }
 
   // ======== CREATE METHOD =========
-
-  // tạo duration vs servicePackage(fitness) trc  VD: spId:1
-  // xong mới cho tạo các giá vs servicePackageId vs durationId
-  // VD: spId=1, duration: 1mon => 100$
-  // VD: spId=1, duration: 3mon => 250$
-  // VD: spId=1, duration: 6mon => 450$
-
+  // ======== CREATE METHOD =========
   async create(
     createAllFitnessDto: CreateAllFitnessServicePackageDto,
   ): Promise<FitnessPackage> {
@@ -114,7 +108,6 @@ export class FitnessPackageService implements IFitnessPackageService {
       createFitnessPackageDto,
       createServicePackageDto,
       createPackagePriceDtoList,
-      createNewBenefitList,
     } = createAllFitnessDto;
 
     const savedSP = await this.servicePackageService.create(
@@ -138,21 +131,13 @@ export class FitnessPackageService implements IFitnessPackageService {
     const savedFitness =
       await this.fitnessPackageRepository.save(createdFitness);
 
-    if (createNewBenefitList) {
-      for (var i = 0; i < createNewBenefitList.length; i++) {
-        const savedBenefit = await this.benefitService.create(
-          createNewBenefitList[i],
-        );
-        await this.fitnessBefefitService.createFB(savedFitness, savedBenefit);
-      }
-    }
-
     const resultDetail = await this.getAllFitnessPackagesWithDetailsById(
       savedFitness.id,
     );
     return resultDetail;
   }
 
+  // ======== UPDATE METHOD =========
   // ======== UPDATE METHOD =========
   async updateFitness(
     fitnessId: number,
@@ -162,7 +147,6 @@ export class FitnessPackageService implements IFitnessPackageService {
       updateFitnessPackageDto,
       updateServicePackageDto,
       updatePackagePriceDtoList,
-      updateNewBenefitList,
     } = updateAllFitnessDto;
 
     const updatedSP = await this.servicePackageService.update(
@@ -192,15 +176,6 @@ export class FitnessPackageService implements IFitnessPackageService {
           updatePackagePriceDtoList[i],
           updatedSP,
         );
-      }
-    }
-
-    if (updateNewBenefitList) {
-      for (var i = 0; i < updateNewBenefitList.length; i++) {
-        const savedBenefit = await this.benefitService.create(
-          updateNewBenefitList[i],
-        );
-        await this.fitnessBefefitService.createFB(savedFitness, savedBenefit);
       }
     }
 

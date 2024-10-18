@@ -24,13 +24,16 @@ export class ServicePackagesService implements IServicePackageService {
     //   relations: ['servicePackagePrices'],
     // });
     const servicePackageList = await this.servicePackageRepository
-    .createQueryBuilder('servicePackage')
-    .leftJoinAndSelect('servicePackage.servicePackagePrices', 'servicePackagePrices')
-    .leftJoinAndSelect(
-      'servicePackagePrices.packageDuration',
-      'packageDuration',
-    )
-    .getMany();
+      .createQueryBuilder('servicePackage')
+      .leftJoinAndSelect(
+        'servicePackage.servicePackagePrices',
+        'servicePackagePrices',
+      )
+      .leftJoinAndSelect(
+        'servicePackagePrices.packageDuration',
+        'packageDuration',
+      )
+      .getMany();
     return servicePackageList;
   }
 
@@ -53,10 +56,12 @@ export class ServicePackagesService implements IServicePackageService {
         400,
       );
     }
+
     const servicePackage = this.servicePackageRepository.create({
       ...newServicePackage,
       serviceType: existedType,
     });
+
     return await this.servicePackageRepository.save(servicePackage);
   }
 
@@ -64,6 +69,11 @@ export class ServicePackagesService implements IServicePackageService {
     servicePackageId: number,
     updateServicePackage: UpdateServicePackageDto,
   ): Promise<ServicePackages> {
+    if (servicePackageId === undefined || servicePackageId === null) {
+      console.log('Have no servicePackageId is passed');
+      throw new HttpException('Service package ID is missing', 400);
+    }
+
     const existedSP = await this.servicePackageRepository.findOne({
       where: { id: servicePackageId },
     });

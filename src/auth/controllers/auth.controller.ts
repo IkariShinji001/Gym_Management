@@ -6,8 +6,7 @@ import { Public } from 'src/constant';
 
 @Controller('/auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
-
+  constructor(private authService: AuthService  ) {}
   @Post()
   async getDataAdmin(@Body() email: AdminEmail) {
     return this.authService.getDataAdmin(email);

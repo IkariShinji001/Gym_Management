@@ -1,8 +1,19 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { PtPackagesService } from '../services/ptPackage.service';
 import { PtPackages } from '../repositories/ptPackage.entity';
 import { CreatePtPackagesDto } from '../dtos/ptPackage.dto';
-import { CreateAllPtPackagesDto, UpdateAllPtPackageDto } from '../dtos/allPtPackage.dto';
+import {
+  CreateAllPtPackagesDto,
+  UpdateAllPtPackageDto,
+} from '../dtos/allPtPackage.dto';
 
 @Controller('/pt-packages')
 export class PtPackagesController {
@@ -14,33 +25,37 @@ export class PtPackagesController {
   }
 
   @Get('/detail')
-  async getAllPPDetail(){
-    return await this.ptPackagesService.getAllPPDetail()
+  async getAllPPDetail() {
+    return await this.ptPackagesService.getAllPPDetail();
   }
 
   @Get('/getAll')
   async getAll(): Promise<PtPackages[]> {
     return await this.ptPackagesService.getAll();
   }
-  @Get("/:id")
-  async getPPById(@Param("id") ptPackageId: number): Promise<PtPackages>{
+  @Get('/:id')
+  async getPPById(@Param('id') ptPackageId: number): Promise<PtPackages> {
     return await this.ptPackagesService.getById(ptPackageId);
   }
 
   @Post()
-  async createPP(@Body()  createAllPPDto: CreateAllPtPackagesDto): Promise<PtPackages> {
-    return await this.ptPackagesService.create(createAllPPDto)
+  async createPP(
+    @Body() createAllPPDto: CreateAllPtPackagesDto,
+  ): Promise<PtPackages> {
+    return await this.ptPackagesService.create(createAllPPDto);
   }
 
-  @Patch("/:id")
-  async updatePP(@Param("id") ptPackageId: number, @Body() updateAllPPDto: UpdateAllPtPackageDto, ){
-    console.log(updateAllPPDto)
+  @Patch('/:id')
+  async updatePP(
+    @Param('id') ptPackageId: number,
+    @Body() updateAllPPDto: UpdateAllPtPackageDto,
+  ):Promise<PtPackages> {
 
     return this.ptPackagesService.updatePP(ptPackageId, updateAllPPDto);
   }
 
-  @Delete("/:id")
-  async deletePP(@Param("id") ptPackageId: number): Promise<void>{
-    await this.ptPackagesService.delete(ptPackageId)
+  @Delete('/:id')
+  async deletePP(@Param('id') ptPackageId: number): Promise<void> {
+    await this.ptPackagesService.delete(ptPackageId);
   }
 }

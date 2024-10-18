@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { IUserService, ListUsersId } from '../interfaces/userService.interface';
 import { CreateUserDto, UpdateUserDto } from '../dtos/user.dto';
 import { User } from '../repositories/user.entity';
@@ -12,6 +12,8 @@ import Stripe from 'stripe';
 import { PageOptionsDto } from 'src/shared/dto/page.options.dto';
 import { PageDto } from 'src/shared/dto/page.dto';
 import { PageMetaDto } from 'src/shared/dto/pageMeta.dto';
+import { EmailService } from 'src/mail/service/mail.service';
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class UserService implements IUserService {
@@ -22,6 +24,7 @@ export class UserService implements IUserService {
     @InjectRepository(HistoryEntryTime)
     private historyEntryTimeRepository: Repository<HistoryEntryTime>,
     private configService: ConfigService,
+    private EmailService: EmailService
   ) {
     this.stripe = new Stripe(configService.get('STRIPE_SECRET_KEY'));
   }
@@ -165,6 +168,61 @@ export class UserService implements IUserService {
     return await this.userRepository.findOne({ where: { id } });
   }
 
+  async sendMailResetPassword(email: string): Promise<void> {
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user) {
+      throw new HttpException(
+        'Không tìm thấy người dùng',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    const token = await this.EmailService.generateToken(user.id); // Generate token
+    await this.EmailService.sendMailResetPassword(email, token); // Send reset password email
+  }
+
+  async changePassword(
+    id: number,
+    password: string,
+    newPassword: string,
+  ): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new HttpException('Không tìm thấy người dùng', HttpStatus.BAD_REQUEST);
+    }
+    const isMatch =  bcrypt.compareSync(password, user.password);
+    if (!isMatch) {
+      throw new BadRequestException('Mật khẩu không chính xác!');
+       
+    }
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword = bcrypt.hashSync(newPassword, salt);
+    user.password = hashedPassword;
+    await this.userRepository.update(id, user);
+    return await this.userRepository.findOne({ where: { id } });
+  }
+
+  async updatePassword(id: number, newPassword: string): Promise<User> {
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword = bcrypt.hashSync(newPassword, salt);
+    await this.userRepository.update(id, { password: hashedPassword });
+    return await this.userRepository.findOne({ where: { id } });
+  }
+
+  async updatePasswordWithToken(token: string, newPassword: string): Promise<void> {
+    try {
+      const secret = this.configService.get<string>('JWT_SECRET');
+      const decoded = jwt.verify(token, secret) as { userId: number };
+      const user = await this.userRepository.findOne({ where: { id: decoded.userId } });
+      if (!user) {
+        throw new HttpException('Người dùng không tồn tại', HttpStatus.NOT_FOUND);
+      }
+      const salt = bcrypt.genSaltSync(10);
+      const hashedPassword = bcrypt.hashSync(newPassword, salt);
+      await this.userRepository.update(decoded.userId, { password: hashedPassword });
+    } catch (error) {
+      throw new HttpException('Token không hợp lệ hoặc đã hết hạn', HttpStatus.BAD_REQUEST);
+    }
+  }
   deleteUser(id: number): Promise<void> {
     throw new Error('Method not implemented.');
   }

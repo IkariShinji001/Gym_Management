@@ -19,12 +19,10 @@ export class CreateAllFitnessServicePackageDto {
   createFitnessPackageDto: CreateFitnessPackageDto;
   createServicePackageDto: CreateServicePackageDto;
   createPackagePriceDtoList: CreateServicePackagePriceDto[];
-  createNewBenefitList: Partial<CreatePackageBenefitsDto[]>;
 }
 
 export class UpdateAllFitnessServicePackageDto {
   updateFitnessPackageDto: Partial<UpdateFitnessPackageDto>;
   updateServicePackageDto: Partial<UpdateServicePackageDto>;
   updatePackagePriceDtoList: Partial<UpdateServicePackagePriceDto[]>;
-  updateNewBenefitList: Partial<CreatePackageBenefitsDto[]>;
 }
