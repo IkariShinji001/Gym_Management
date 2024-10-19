@@ -9,6 +9,9 @@ export class Provinces {
     @Column({nullable: false})
     name: string;
 
+    @Column({nullable: false})
+    id_external: number;
+
     @OneToMany(() => Districts, (Districts) => Districts.province, {onDelete: 'CASCADE'} )
     districts: Districts[];
 }

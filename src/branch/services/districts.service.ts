@@ -19,15 +19,30 @@ export class DistrictsService implements IDistrictService {
   async findOne(id: number): Promise<Districts> {
     return await this.districtsRepository.findOne({ where: { id } });
   }
+  async checkDistrictExisted(nameDistrict: string) {
+    const district = await this.districtsRepository.findOne({
+      where: { name: nameDistrict },
+    });
+    return district;
+  }
+
   async create(district: CreateDistrictDto): Promise<Districts> {
     const existedProvince = await this.provincesService.findOne(
       district.provinceId,
     );
-    const newDistrict = this.districtsRepository.create({
-      ...district,
-      province: existedProvince,
-    });
-    return await this.districtsRepository.save(newDistrict);
+    const result = await this.checkDistrictExisted(district.name);
+    if (result) {
+      const districtExisted = await this.districtsRepository.findOne({
+        where: { name: result.name },
+      });
+      return districtExisted;
+    } else {
+      const newDistrict = this.districtsRepository.create({
+        ...district,
+        province: existedProvince,
+      });
+      return await this.districtsRepository.save(newDistrict);
+    }
   }
   async update(id: number, district: UpdateDistrictDto): Promise<Districts> {
     await this.districtsRepository.update(id, district);

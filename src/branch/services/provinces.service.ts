@@ -17,9 +17,38 @@ export class ProvincesService implements IProvinceService {
   async findOne(id: number): Promise<Provinces> {
     return await this.provincesRepository.findOne({ where: { id } });
   }
+
+  async findOneByCode(codeProvince: number) {
+    console.log(codeProvince)
+    const province = await this.provincesRepository.findOne({
+      where: { id_external: codeProvince },
+    });
+    return province;
+  }
+
+  async checkProvinceExisted(codeProvince: number) {
+    const province = await this.provincesRepository.findOne({
+      where: { id_external: codeProvince },
+    });
+    if (province) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
+
   async create(province: CreateProvinceDto): Promise<Provinces> {
-    const newProvince = await this.provincesRepository.create(province);
-    return await this.provincesRepository.save(newProvince);
+    console.log(province);
+    const result = await this.checkProvinceExisted(province.id_external);
+    if (result === 1) {
+      const provinceExisted = await this.provincesRepository.findOne({
+        where: { id_external: province.id_external },
+      });
+      return provinceExisted;
+    } else {
+      const newProvince = await this.provincesRepository.create(province);
+      return await this.provincesRepository.save(newProvince);
+    }
   }
   async update(
     id: number,

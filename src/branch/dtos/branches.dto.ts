@@ -1,5 +1,5 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { IsNumber, IsString, Matches } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 
 export class CreateBranchDto {
   @IsString()
