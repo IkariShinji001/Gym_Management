@@ -44,10 +44,9 @@ export class EmailService {
 
   /// <----------- send to ALL USER ----------->
   async sendAllEmail(sendMailDto: SendMailDto) {
-    const { recipients, from, subject, html, files } = sendMailDto;
+    const { subject, html, files } = sendMailDto;
     const allEmail = await this.userService.getAllEmail();
     const emailArray = allEmail.map((user) => user.email);
-
 
     try {
       const emailSend = await this.mailerService.sendMail({

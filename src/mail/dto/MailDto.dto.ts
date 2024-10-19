@@ -3,7 +3,7 @@ import {
   IsNotEmpty,
   IsString,
   ValidateNested,
-  IsArray
+  IsArray,
 } from 'class-validator';
 
 class From {
@@ -20,7 +20,7 @@ export class SendMailDto {
   @IsArray()
   @IsEmail({}, { each: true })
   @IsNotEmpty()
-  recipients: string[];
+  recipients: Partial<string[]>;
 
   @IsNotEmpty()
   from: From;
@@ -29,10 +29,9 @@ export class SendMailDto {
   @IsNotEmpty()
   subject: string;
 
-  @IsString()  
+  @IsString()
   @IsNotEmpty()
   html: string;
-
 
   files?: Express.Multer.File[];
 }

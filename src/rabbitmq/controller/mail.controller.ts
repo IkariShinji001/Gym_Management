@@ -11,7 +11,7 @@ import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import { SendMailDto } from 'src/mail/dto/MailDto.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 
-@Controller('emails')
+@Controller('/emails')
 export class EmailController {
   constructor(private amqpConnection: AmqpConnection) {}
 
