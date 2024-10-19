@@ -16,6 +16,11 @@ export class ProvincesController {
     return await this.provincesService.findOne(id);
   }
 
+  @Get(':codeProvince')
+  async findOneByCode(@Param('codeProvince') codeProvince: number) {
+    return await this.provincesService.findOneByCode(codeProvince);
+  }
+
   @Post()
   async create(@Body() province: CreateProvinceDto): Promise<Provinces> {
     return await this.provincesService.create(province)

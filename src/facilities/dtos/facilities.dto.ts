@@ -25,6 +25,9 @@ export class CreateFacilityDto {
 
   @IsString()
   imageUrl: string;
+
+  @IsNumber()
+  facilityTypeId: number;
 }
 
 export class updateFacilityDto extends PartialType(CreateFacilityDto) {}

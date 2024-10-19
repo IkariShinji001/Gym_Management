@@ -3,7 +3,7 @@ import { IBranchService } from '../interfaces/branches.service.interface';
 import { CreateBranchDto, UpdateBrachDto } from '../dtos/branches.dto';
 import { Branches } from '../repositories/branches.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { DistrictsService } from '../services/districts.service';
 import { FacilityServiceClient } from 'src/shared/interfaces/grpc/facility/facilityServiceClient.interface';
 import { ClientGrpc } from '@nestjs/microservices';
@@ -32,6 +32,24 @@ export class BranchesService implements IBranchService, OnModuleInit {
       .leftJoinAndSelect('district.province', 'province')
       .getMany();
     return branches;
+  }
+
+  async checkNameBranchExisted(
+    nameNewBranch: string,
+    id: number,
+  ): Promise<boolean> {
+    const branch = await this.branchesRepository.findOne({
+      where: { name: Like(`%${nameNewBranch.trim().toLowerCase()}%`) }, // tìm chi nhánh mà không phân biệt chữ hoa chữ thường và bỏ các dấu khoảng cách ở cuối của tên
+    });
+
+    if (branch) {
+      if (branch?.id == id) {
+        return false;
+      }
+      return true;
+    } else {
+      return false;
+    }
   }
 
   async findById(id: number): Promise<Branches> {
@@ -66,13 +84,16 @@ export class BranchesService implements IBranchService, OnModuleInit {
     const counted = await this.branchesRepository.count();
     return { num_branches: counted };
   }
+
   async findOne(id: number): Promise<Branches> {
     return await this.branchesRepository.findOne({ where: { id: id } });
   }
+
   async create(newBranch: CreateBranchDto): Promise<Branches> {
     const existedDistrict = await this.districtsService.findOne(
       newBranch.districtId,
     );
+    newBranch.name = newBranch.name.toLowerCase();
     const branch = this.branchesRepository.create({
       ...newBranch,
       district: existedDistrict,
@@ -81,6 +102,7 @@ export class BranchesService implements IBranchService, OnModuleInit {
 
     return await this.findDetailById(savedBranch.id);
   }
+
   async update(id: number, updateBranch: UpdateBrachDto): Promise<Branches> {
     console.log(updateBranch);
     // Lấy dữ liệu gốc của chi nhánh
@@ -91,6 +113,7 @@ export class BranchesService implements IBranchService, OnModuleInit {
     if (!originalBranch) {
       throw new Error('Branch not found');
     }
+    updateBranch.name = updateBranch.name.toLowerCase();
 
     // Hàm để lấy ra các thuộc tính đã thay đổi
     const getChangedProperties = (original, updated) => {
@@ -125,7 +148,7 @@ export class BranchesService implements IBranchService, OnModuleInit {
     });
     const branchId = {
       id: BranchId,
-    }
+    };
     const res = await firstValueFrom(
       this.facilitiesService.deleteFacilitiesByBranchId(branchId),
     );

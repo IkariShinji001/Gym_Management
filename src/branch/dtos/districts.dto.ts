@@ -9,4 +9,9 @@ export class CreateDistrictDto {
     provinceId: number;
 }
 
+export class DistrictDto {
+    @IsString()
+    name: string;
+}
+
 export class UpdateDistrictDto extends PartialType(CreateDistrictDto) {}

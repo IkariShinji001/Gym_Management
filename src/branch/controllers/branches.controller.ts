@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { CreateBranchDto, UpdateBrachDto } from '../dtos/branches.dto';
 import { BranchesService } from '../services/branches.service';
 import { Branches } from '../repositories/branches.entity';
@@ -17,7 +25,15 @@ export class BranchesController {
   async findAll(): Promise<Branches[]> {
     return await this.branchesService.findAll();
   }
-  
+
+  @Get('/check-name-branch-existed/:nameNewBranch/:id')
+  async checkNameBranchExisted(
+    @Param('nameNewBranch') nameNewBranch: string,
+    @Param('id') id: number,
+  ) {
+    return await this.branchesService.checkNameBranchExisted(nameNewBranch, id);
+  }
+
   @Get('/count')
   async countBranch(): Promise<{ num_branches: number }> {
     console.log('count all branches');
@@ -25,18 +41,21 @@ export class BranchesController {
   }
 
   @Get(':id')
-  async findById(@Param('id') id: number ): Promise<Branches> {
+  async findById(@Param('id') id: number): Promise<Branches> {
     return await this.branchesService.findById(id);
   }
 
   @GrpcMethod('BranchService', 'findBranchById')
-  async findBranchById(branchId: {id: number} ): Promise<Branches> {
+  async findBranchById(branchId: { id: number }): Promise<Branches> {
     return await this.branchesService.findBranchById(branchId);
   }
 
   @Patch(':id')
-  async update(@Param('id') id: number, @Body() branch: UpdateBrachDto): Promise<Branches> {
-    return await this.branchesService.update(id, branch)
+  async update(
+    @Param('id') id: number,
+    @Body() branch: UpdateBrachDto,
+  ): Promise<Branches> {
+    return await this.branchesService.update(id, branch);
   }
 
   @Delete(':id')
@@ -45,7 +64,9 @@ export class BranchesController {
   }
 
   @Get('findBranchInProvince/:provinceId')
-  async findBranchInProvince(@Param('provinceId') provinceId: number ): Promise<Branches[]> {
+  async findBranchInProvince(
+    @Param('provinceId') provinceId: number,
+  ): Promise<Branches[]> {
     return await this.branchesService.findBranchInProvince(provinceId);
   }
 }

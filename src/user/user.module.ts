@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './repositories/user.entity';
 import { UserController } from './controllers/user.controller';
@@ -9,6 +9,7 @@ import { HistoryEntryTimeService } from './services/historyEntryTime.service';
 import { Voucher } from './repositories/voucher.entity';
 import { VoucherController } from './controllers/voucher.controller';
 import { VoucherService } from './services/voucher.service';
+
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, HistoryEntryTime, Voucher])],

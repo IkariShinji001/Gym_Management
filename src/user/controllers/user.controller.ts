@@ -1,4 +1,4 @@
-import { GrpcMethod } from '@nestjs/microservices';
+import { GrpcMethod, Payload } from '@nestjs/microservices';
 import { UserService } from './../services/user.service';
 import {
   Body,
@@ -95,4 +95,16 @@ export class UserController {
       new Date(endDate),
     );
   }
+  
+ 
+  @Patch('/change-password/:id')
+  async changePassword(@Param('id') id: number, @Body() data: { password: string, newPassword: string }) {
+    return await this.userService.changePassword(id, data.password, data.newPassword);
+  }
+  @Post('/update-password-with-token')
+  async updatePasswordWithToken(@Query('token') token: string, @Body() payload: { newPassword: string }) {
+    const { newPassword } = payload;
+    return await this.userService.updatePasswordWithToken(token, newPassword);
+  }
+
 }

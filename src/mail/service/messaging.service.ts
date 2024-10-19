@@ -26,4 +26,14 @@ export class MessagingService {
     await this.emailService.sendAllEmail(sendMailDto);
     return { status: 'Email sent' };
   }
+  // send email to reset password
+  @RabbitRPC({
+    exchange: 'send_mail_reset_password',
+    routingKey: 'send_mail_reset_password',
+    queue: 'send_mail_reset_password_queue',
+  })
+  async handleSendMailResetPassword(email: string) {
+    await this.emailService.sendMailResetPassword(email);
+    return { status: 'Email sent' };
+  }
 }
