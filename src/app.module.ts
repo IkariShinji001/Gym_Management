@@ -45,6 +45,8 @@ import { BlogModule } from './blog/blog.module';
     BranchModule,
     BlogModule,
     ChatbotModule,
+    RabbitmqModule,
+    MailModule
   ],
   controllers: [AppController],
   providers: [
