@@ -15,16 +15,20 @@ import { UserModule } from 'src/user/user.module';
       useFactory: () => ({
         exchanges: [
           {
-            name: 'exchange3',
+            name: 'email_exchange',
             type: 'topic',
           },
           {
             name: 'email_all_exchange', 
             type: 'topic',
           },
+          {
+            name: 'send_mail_reset_password',
+            type: 'topic',
+          }
         ],
         uri: 'amqp://guest:guest@localhost:5672',
-        connectionInitOptions: { wait: true, reject: true, timeout: 3000 },
+        connectionInitOptions: { wait: true, timeout: 5000 },
       }),
     }),
   ],

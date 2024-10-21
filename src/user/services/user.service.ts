@@ -6,13 +6,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { HistoryEntryTime } from '../repositories/historyEntryTime.entity';
-import * as moment from 'moment-timezone';
 import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
 import { PageOptionsDto } from 'src/shared/dto/page.options.dto';
 import { PageDto } from 'src/shared/dto/page.dto';
 import { PageMetaDto } from 'src/shared/dto/pageMeta.dto';
-import { EmailService } from 'src/mail/service/mail.service';
 import * as jwt from 'jsonwebtoken';
 
 @Injectable()
@@ -23,7 +21,7 @@ export class UserService implements IUserService {
     private userRepository: Repository<User>,
     @InjectRepository(HistoryEntryTime)
     private historyEntryTimeRepository: Repository<HistoryEntryTime>,
-    private configService: ConfigService,
+    private configService: ConfigService
   ) {
     this.stripe = new Stripe(configService.get('STRIPE_SECRET_KEY'));
   }
@@ -163,21 +161,12 @@ export class UserService implements IUserService {
   }
 
   async updateUser(id: number, updateUser: UpdateUserDto): Promise<User> {
+    console.log(updateUser);
     await this.userRepository.update(id, updateUser);
     return await this.userRepository.findOne({ where: { id } });
   }
 
-  // async sendMailResetPassword(email: string): Promise<void> {
-  //   const user = await this.userRepository.findOne({ where: { email } });
-  //   if (!user) {
-  //     throw new HttpException(
-  //       'Không tìm thấy người dùng',
-  //       HttpStatus.NOT_FOUND,
-  //     );
-  //   }
-  //   const token = await this.EmailService.generateToken(user.id); // Generate token
-  //   await this.EmailService.sendMailResetPassword(email, token); // Send reset password email
-  // }
+  
 
   async changePassword(
     id: number,
@@ -224,5 +213,12 @@ export class UserService implements IUserService {
   }
   deleteUser(id: number): Promise<void> {
     throw new Error('Method not implemented.');
+  }
+  async findOneByEmail(email: string): Promise<User> {
+    try {
+      return await this.userRepository.findOne({ where: { email } });
+    } catch (error) {
+      throw new HttpException('Email không tồn tại', HttpStatus.NOT_FOUND);
+    }
   }
 }

@@ -35,7 +35,6 @@ import { BlogModule } from './blog/blog.module';
     AdminModule,
     UserModule,
     BillModule,
-    AdminModule,
     SupplementProductModule,
     FacilitiesModule,
     SharedModule,
@@ -45,6 +44,8 @@ import { BlogModule } from './blog/blog.module';
     BranchModule,
     BlogModule,
     ChatbotModule,
+    RabbitmqModule,
+    MailModule
   ],
   controllers: [AppController],
   providers: [

@@ -11,7 +11,7 @@ import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import { SendMailDto } from 'src/mail/dto/MailDto.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 
-@Controller('emails')
+@Controller('/emails')
 export class EmailController {
   constructor(private amqpConnection: AmqpConnection) {}
 
@@ -45,6 +45,17 @@ export class EmailController {
       'email_all_exchange',
       'send_all_email',
       sendEmailDto,
+    );
+    return { status: 'Email request sent successfully' };
+  }
+
+  @Post('/reset-password')
+  async resetPassword(@Body() payload: { email: string }) {
+   console.log(payload.email);
+    await this.amqpConnection.publish(
+      'send_mail_reset_password',
+      'send_mail_reset_password',
+      payload.email,
     );
     return { status: 'Email request sent successfully' };
   }
