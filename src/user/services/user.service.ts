@@ -24,7 +24,6 @@ export class UserService implements IUserService {
     @InjectRepository(HistoryEntryTime)
     private historyEntryTimeRepository: Repository<HistoryEntryTime>,
     private configService: ConfigService,
-    private EmailService: EmailService
   ) {
     this.stripe = new Stripe(configService.get('STRIPE_SECRET_KEY'));
   }
@@ -140,6 +139,7 @@ export class UserService implements IUserService {
   }
 
   async createUser(newUser: CreateUserDto): Promise<User> {
+    console.log(newUser)
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(newUser.password, salt);
 
@@ -150,7 +150,6 @@ export class UserService implements IUserService {
     }
 
     newUser.password = hashedPassword;
-
     const stripeCustomer = await this.stripe.customers.create({
       name: newUser.fullName,
       email: newUser.email,
@@ -168,17 +167,17 @@ export class UserService implements IUserService {
     return await this.userRepository.findOne({ where: { id } });
   }
 
-  async sendMailResetPassword(email: string): Promise<void> {
-    const user = await this.userRepository.findOne({ where: { email } });
-    if (!user) {
-      throw new HttpException(
-        'Không tìm thấy người dùng',
-        HttpStatus.NOT_FOUND,
-      );
-    }
-    const token = await this.EmailService.generateToken(user.id); // Generate token
-    await this.EmailService.sendMailResetPassword(email, token); // Send reset password email
-  }
+  // async sendMailResetPassword(email: string): Promise<void> {
+  //   const user = await this.userRepository.findOne({ where: { email } });
+  //   if (!user) {
+  //     throw new HttpException(
+  //       'Không tìm thấy người dùng',
+  //       HttpStatus.NOT_FOUND,
+  //     );
+  //   }
+  //   const token = await this.EmailService.generateToken(user.id); // Generate token
+  //   await this.EmailService.sendMailResetPassword(email, token); // Send reset password email
+  // }
 
   async changePassword(
     id: number,
