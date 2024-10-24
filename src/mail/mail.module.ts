@@ -6,7 +6,7 @@ import { UserModule } from 'src/user/user.module';
 import { UserService } from 'src/user/services/user.service';
 @Module({
   imports: [
-    forwardRef(() => UserModule),
+    UserModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -27,7 +27,7 @@ import { UserService } from 'src/user/services/user.service';
       }),
     }),
   ],
-  providers: [EmailService, UserService],
+  providers: [EmailService],
   exports: [EmailService, MailModule],
 })
 export class MailModule {}
