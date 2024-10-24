@@ -61,11 +61,9 @@ export class SoldProductController {
 
   @Post()
   async createSoldProduct(
-    @Body() newSoldProduct: CreateSoldProductDto,
-  ): Promise<SoldProduct> {
-    const res = await this.soldProductService.create(newSoldProduct);
-    console.log('asdf')
-    console.log(res);
+    @Body() newSoldProductDtoList: CreateSoldProductDto[],
+  ): Promise<SoldProduct[]> {
+    const res = await this.soldProductService.create(newSoldProductDtoList);
     return res;
   }
 
