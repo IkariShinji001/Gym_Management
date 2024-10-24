@@ -129,34 +129,49 @@ export class SoldProductService implements ISoldProductService {
     return monthlyRevenue;
   }
 
-  async create(newSoldProduct: CreateSoldProductDto): Promise<SoldProduct> {
-    const supplementProduct = await this.supplementProductRepository.findOne({
-      where: { id: newSoldProduct.supplementProductId },
-    });
+  async create(newSPDtoList: CreateSoldProductDto[]): Promise<SoldProduct[]> {
+    const spList: SoldProduct[] = [];
 
-    const profile = await this.profileReposity.findOne({
-      where: { id: newSoldProduct.profileId },
-    });
-    if (!supplementProduct) {
-      throw new NotFoundException(
-        `Supplement product with ID: ${newSoldProduct.supplementProductId} not found`,
-      );
+    try {
+      for (var i = 0; i < newSPDtoList.length; i++) {
+        const supplementProduct =
+          await this.supplementProductRepository.findOne({
+            where: { id: newSPDtoList[i].supplementProductId },
+          });
+
+        if (!supplementProduct) {
+          console.log(
+            `Supplement product with ID: ${newSPDtoList[i].supplementProductId} not found`,
+          );
+          throw new NotFoundException(
+            `Supplement product with ID: ${newSPDtoList[i].supplementProductId} not found`,
+          );
+        }
+        const profile = await this.profileReposity.findOne({
+          where: { id: newSPDtoList[i].profileId },
+        });
+
+        if (!profile) {
+          console.log(`User with ID: ${newSPDtoList[i].profileId} not found`);
+          throw new NotFoundException(
+            `User with ID: ${newSPDtoList[i].profileId} not found`,
+          );
+        }
+
+        const product = this.soldProductRepository.create({
+          ...newSPDtoList[i],
+          supplementProduct,
+          profile,
+        });
+        const savedPro = await this.soldProductRepository.save(product);
+
+        spList.push(savedPro);
+      }
+    } catch (e) {
+      console.log(e);
     }
 
-    if (!profile) {
-      throw new NotFoundException(
-        `User with ID: ${newSoldProduct.profileId} not found`,
-      );
-    }
-
-    const product = this.soldProductRepository.create({
-      ...newSoldProduct,
-      supplementProduct,
-      profile,
-    });
-
-
-    return await this.soldProductRepository.save(product);
+    return spList;
   }
 
   async delete(id: number): Promise<void> {
