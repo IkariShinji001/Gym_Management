@@ -137,6 +137,7 @@ export class UserService implements IUserService {
   }
 
   async createUser(newUser: CreateUserDto): Promise<User> {
+    console.log(newUser)
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(newUser.password, salt);
 
@@ -147,7 +148,6 @@ export class UserService implements IUserService {
     }
 
     newUser.password = hashedPassword;
-
     const stripeCustomer = await this.stripe.customers.create({
       name: newUser.fullName,
       email: newUser.email,
