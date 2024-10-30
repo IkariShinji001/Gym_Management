@@ -1,11 +1,14 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { IsNumber } from 'class-validator';
+import { IsNotEmpty, IsNumber, Min, MinLength } from 'class-validator';
 
 export class CreateServicePackagePriceDto {
   @IsNumber()
+  @IsNotEmpty()
+  @Min(0, { message: 'Price must be greater than 0' })
   price: number;
 
   @IsNumber()
+  @IsNotEmpty()
   packageDurationId: number;
 }
 

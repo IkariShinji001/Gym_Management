@@ -110,7 +110,7 @@ export class ServicePackagePriceService implements IServicePackagePriceService {
       );
       throw new HttpException(
         `Duration with ID: ${createPackagePriceDto.packageDurationId} not found`,
-        400,
+        404,
       );
     }
 

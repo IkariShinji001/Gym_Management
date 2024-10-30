@@ -1,3 +1,4 @@
+import { ValidateNested } from 'class-validator';
 import {
   CreateFitnessPackageDto,
   UpdateFitnessPackageDto,
@@ -10,14 +11,19 @@ import {
   CreateServicePackagePriceDto,
   UpdateServicePackagePriceDto,
 } from './servicePackagePrice.dto';
-import {
-  CreatePackageBenefitsDto,
-  UpdatePackageBenefitsDto,
-} from './benefitPackage.dto';
+import { Type } from 'class-transformer';
 
 export class CreateAllFitnessServicePackageDto {
+  @ValidateNested()
+  @Type(() => CreateFitnessPackageDto)
   createFitnessPackageDto: CreateFitnessPackageDto;
+
+  @ValidateNested()
+  @Type(() => CreateServicePackageDto)
   createServicePackageDto: CreateServicePackageDto;
+
+  @ValidateNested({ each: true })
+  @Type(() => CreateServicePackagePriceDto)
   createPackagePriceDtoList: CreateServicePackagePriceDto[];
 }
 

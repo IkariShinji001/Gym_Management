@@ -1,15 +1,18 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString, MinLength } from 'class-validator';
 
 export class CreateFitnessPackageDto {
   @IsString()
+  @IsNotEmpty()
+  @MinLength(1)
   coverImageUrl: string;
-
-  @IsNumber()
-  servicePackageId: number;
 }
 
 export class UpdateFitnessPackageDto {
+  @IsString()
   coverImageUrl: Partial<string>;
-  servicePackageId: Partial<number>;
+
+  @IsNumber()
+  @IsNotEmpty()
+  servicePackageId: number;
 }

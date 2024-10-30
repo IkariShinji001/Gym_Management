@@ -22,7 +22,6 @@ export class SendMailDto {
   @IsNotEmpty()
   recipients: Partial<string[]>;
 
-  @IsNotEmpty()
   from: From;
 
   @IsString()
