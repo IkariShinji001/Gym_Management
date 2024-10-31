@@ -16,10 +16,8 @@ export class CreateUserDto {
   @IsBoolean()
   gender: boolean;
 
-  @IsDate()
   dateBirth: Date;
 
-  @IsPhoneNumber()
   phoneNumber: string;
 
   @IsString()

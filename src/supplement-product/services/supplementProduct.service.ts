@@ -53,7 +53,7 @@ export class SupplementProductService implements ISupplementProductService {
     });
 
     if (!type) {
-      throw new NotFoundException('Deo co thai!');
+      throw new NotFoundException('không tìm thấy type!');
     }
     const supplementProduct = this.supplementProductRepository.create({
       ...newSupplementProduct,

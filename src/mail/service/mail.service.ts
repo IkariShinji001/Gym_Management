@@ -92,18 +92,6 @@ export class EmailService {
     return token;
   }
 
-  // async sendMailResetPassword(email: string): Promise<void> {
-  //   const user = await this.userRepository.findOne({ where: { email } });
-  //   if (!user) {
-  //     throw new HttpException(
-  //       'Không tìm thấy người dùng',
-  //       HttpStatus.NOT_FOUND,
-  //     );
-  //   }
-  //   const token = await this.EmailService.generateToken(user.id); // Generate token
-  //   await this.EmailService.sendMailResetPassword(email, token); // Send reset password email
-  // }
-  // Method to send reset password email
   async sendMailResetPassword(email: string): Promise<void> {
     const user = await this.userService.findOneByEmail(email);
     if (!user) {

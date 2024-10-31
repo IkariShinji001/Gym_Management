@@ -107,4 +107,9 @@ export class UserController {
     return await this.userService.updatePasswordWithToken(token, newPassword);
   }
 
+  @Get('email/:email')
+  async getUserByEmail(@Param('email') email: string){
+    return await this.userService.findOneByEmail(email);
+  }
+
 }

@@ -137,27 +137,34 @@ export class UserService implements IUserService {
   }
 
   async createUser(newUser: CreateUserDto): Promise<User> {
-    const salt = bcrypt.genSaltSync(10);
-    const hashedPassword = bcrypt.hashSync(newUser.password, salt);
+    try {
+      const salt = bcrypt.genSaltSync(10);
+      const hashedPassword = bcrypt.hashSync(newUser.password, salt);
 
-    const existedUser = await this.findOneByUsername(newUser.username);
-
-    if (existedUser) {
+      const existedUser = await this.findOneByUsername(newUser.username);
+      
+      if (existedUser) {
       throw new HttpException('Đã tồn tại username', HttpStatus.BAD_REQUEST);
     }
-
+      const existedEmail = await this.userRepository.findOne({where:{email :newUser.email}});
+      if (existedEmail) {
+        throw new HttpException('Đã tồn tại email', HttpStatus.BAD_REQUEST);
+      }
     newUser.password = hashedPassword;
-
+    
     const stripeCustomer = await this.stripe.customers.create({
       name: newUser.fullName,
       email: newUser.email,
     });
 
     const user = { ...newUser, customerStripeId: stripeCustomer.id };
-
+    
     const createdUser = this.userRepository.create(user);
-
+    
     return await this.userRepository.save(createdUser);
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    }
   }
 
   async updateUser(id: number, updateUser: UpdateUserDto): Promise<User> {

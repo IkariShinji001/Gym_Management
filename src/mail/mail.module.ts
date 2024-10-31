@@ -7,7 +7,6 @@ import { UserModule } from 'src/user/user.module';
 @Module({
   imports: [
     UserModule,
-    
     ConfigModule.forRoot({
       isGlobal: true,
     }),

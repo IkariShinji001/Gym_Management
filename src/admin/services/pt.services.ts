@@ -54,21 +54,24 @@ export class PtService implements IPtService {
     newPt: CreatePtDto,
     imageDtoList: createImagesDto[],
   ): Promise<Pt> {
-    const createdProfile = await this.profileService.create(newProfile);
-    const manager = await this.managerService.findOne(newPt.managerId);
-    const ceratedPt = this.ptRepository.create({
-      ...newPt,
-      profile: createdProfile,
-      manager,
-    });
-    const savedPt = await this.ptRepository.save(ceratedPt);
-    for (const imageDto of imageDtoList) {
-      const image = await this.imageService.addImage(
-        imageDto.imageUrl,
-        savedPt.id,
-      );
-    }
-    return savedPt;
+    
+      const createdProfile = await this.profileService.create(newProfile);
+      const manager = await this.managerService.findOne(newPt.managerId);
+      const ceratedPt = this.ptRepository.create({
+        ...newPt,
+        profile: createdProfile,
+        manager,
+      });
+      const savedPt = await this.ptRepository.save(ceratedPt);
+      for (const imageDto of imageDtoList) {
+        const image = await this.imageService.addImage(
+          imageDto.imageUrl,
+          savedPt.id,
+        );
+      }
+      return savedPt;
+    
+   
   }
   async update(id: number, updatePt: UpdatePtDto): Promise<Pt> {
     await this.ptRepository.update(id, updatePt);

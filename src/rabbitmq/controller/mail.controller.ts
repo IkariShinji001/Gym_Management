@@ -52,7 +52,7 @@ export class EmailController {
   @Post('/reset-password')
   async resetPassword(@Body() payload: { email: string }) {
    console.log(payload.email);
-    await this.amqpConnection.publish(
+    this.amqpConnection.publish(
       'send_mail_reset_password',
       'send_mail_reset_password',
       payload.email,

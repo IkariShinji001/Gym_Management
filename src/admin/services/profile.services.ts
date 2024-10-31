@@ -10,6 +10,7 @@ import { IProfileService } from '../interfaces/profile.service.interface';
 import { CreateProfileDto, updateProfileDto } from '../dtos/profile.dto';
 import { Profile } from '../repositories/profile.entity';
 import * as bcrypt from 'bcrypt';
+import { console } from 'inspector';
 
 @Injectable()
 export class ProfileService implements IProfileService {
@@ -35,6 +36,13 @@ export class ProfileService implements IProfileService {
     });
     if (existingEmail) {
       throw new BadRequestException('Đã tồn tại email này!');
+    }
+    // Kiểm tra xem số điện thoại đã tồn tại chưa
+    const existingPhoneNumber = await this.profileRepository.findOneBy({
+      phoneNumber: createProfileDto.phoneNumber,
+    });
+    if (existingPhoneNumber) {
+      throw new BadRequestException('Đã tồn tại số điện thoại này!');
     }
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(createProfileDto.password, salt);
@@ -62,14 +70,14 @@ export class ProfileService implements IProfileService {
       const existingPhoneNumber = await this.profileRepository.findOne({
         where: {
           phoneNumber: updateProfile.phoneNumber,
-          id: Not(id),  // Điều kiện loại trừ chính profile hiện tại
+          id: Not(id), // Điều kiện loại trừ chính profile hiện tại
         },
       });
       if (existingPhoneNumber) {
         throw new BadRequestException('Đã tồn tại số điện thoại này!');
       }
     }
-  
+
     if (updateProfile.password) {
       const salt = bcrypt.genSaltSync(10);
       const hashedPassword = bcrypt.hashSync(updateProfile.password, salt);
@@ -98,7 +106,11 @@ export class ProfileService implements IProfileService {
     });
     return admins;
   }
-  async changePassword (id: number, password: string, newPassword: string): Promise<Profile> {
+  async changePassword(
+    id: number,
+    password: string,
+    newPassword: string,
+  ): Promise<Profile> {
     const profile = await this.profileRepository.findOne({ where: { id } });
     if (!bcrypt.compareSync(password, profile.password)) {
       throw new BadRequestException('Mật khẩu không chính xác!');

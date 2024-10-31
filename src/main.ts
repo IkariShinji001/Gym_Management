@@ -4,10 +4,12 @@ import { HttpExceptionFilter } from './config/http-exception.filter';
 import * as cookieParser from 'cookie-parser';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { join } from 'path';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(cookieParser());
+  app.useGlobalPipes(new ValidationPipe());
   app.useGlobalFilters(new HttpExceptionFilter());
   app.enableCors({
     origin: [
