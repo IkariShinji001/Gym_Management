@@ -10,7 +10,6 @@ import { Voucher } from './repositories/voucher.entity';
 import { VoucherController } from './controllers/voucher.controller';
 import { VoucherService } from './services/voucher.service';
 
-
 @Module({
   imports: [TypeOrmModule.forFeature([User, HistoryEntryTime, Voucher])],
   controllers: [UserController, HistoryEntryTimeController, VoucherController],

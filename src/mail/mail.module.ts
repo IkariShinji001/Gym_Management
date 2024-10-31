@@ -1,9 +1,9 @@
 import { EmailService } from './service/mail.service';
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from 'src/user/user.module';
-
+import { UserService } from 'src/user/services/user.service';
 @Module({
   imports: [
     UserModule,

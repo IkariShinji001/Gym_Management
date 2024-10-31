@@ -158,7 +158,7 @@ export class FitnessPackageService implements IFitnessPackageService {
       console.log('!existedFitness:' + existedFitness);
       throw new HttpException(
         `fitness package with ID: ${fitnessId} not found`,
-        400,
+        404,
       );
     }
 

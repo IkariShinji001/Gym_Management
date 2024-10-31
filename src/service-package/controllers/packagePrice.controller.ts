@@ -15,6 +15,13 @@ export class PackagePriceController {
     return PackagePriceList;
   }
 
+  @Post('/get-all-types')
+  async getAllTypes(@Body() listId: { listPriceIds: number[] }) {
+    const PackagePriceList =
+      await this.packagePriceService.getAllTypeByListIds(listId);
+    return PackagePriceList;
+  }
+
   @Post('/get-by-list-ids')
   async GetServicePackagePriceByListIds(
     @Body() listId: ServicePackagePriceListIds,
@@ -40,8 +47,10 @@ export class PackagePriceController {
   ): Promise<ServicePackagePrice[]> {
     return await this.packagePriceService.findByServicePackage(id);
   }
-  @Get("/id/:id")
-  async findByServicePackageId(@Param('id') id:number): Promise<ServicePackagePrice[]> {
-    return await this.packagePriceService.findByServicePackageId(id)
+  @Get('/id/:id')
+  async findByServicePackageId(
+    @Param('id') id: number,
+  ): Promise<ServicePackagePrice[]> {
+    return await this.packagePriceService.findByServicePackageId(id);
   }
 }

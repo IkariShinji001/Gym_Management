@@ -13,7 +13,7 @@ import { CreateMaintenanceDto } from '../dtos/maintenances.dto';
 import { Maintenances } from '../repositories/maintenances.entity';
 import { UpdateMaintenanceDto } from '../dtos/maintenances.dto';
 import { ChartData } from '../interfaces/maintenances.service.interface';
-import { console } from 'inspector';
+// import { console } from 'inspector';
 
 @Controller('/maintenances')
 export class MaintenancesController {
@@ -31,7 +31,7 @@ export class MaintenancesController {
     @Param('id') id: number,
     @Body() updateMaintenanceDto: UpdateMaintenanceDto,
   ): Promise<Maintenances> {
-    console.log(updateMaintenanceDto)
+    // console.log(updateMaintenanceDto)
     return await this.maintenancesService.update(id, updateMaintenanceDto);
   }
 

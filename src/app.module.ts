@@ -35,7 +35,6 @@ import { BlogModule } from './blog/blog.module';
     AdminModule,
     UserModule,
     BillModule,
-    AdminModule,
     SupplementProductModule,
     FacilitiesModule,
     SharedModule,

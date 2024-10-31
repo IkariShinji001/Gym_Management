@@ -53,7 +53,10 @@ export class SupplementProductService implements ISupplementProductService {
     });
 
     if (!type) {
-      throw new NotFoundException('không tìm thấy type!');
+      console.log(`TypeId: ${newSupplementProduct.typeId} không tồn tại.`);
+      throw new NotFoundException(
+        `TypeId: ${newSupplementProduct.typeId} không tồn tại.`,
+      );
     }
     const supplementProduct = this.supplementProductRepository.create({
       ...newSupplementProduct,
@@ -88,7 +91,12 @@ export class SupplementProductService implements ISupplementProductService {
   }
 
   async delete(id: number): Promise<void> {
-    this.supplementProductRepository.delete(id);
+    const result = await this.supplementProductRepository.delete(id);
+    console.log(result);
+    if (result.affected === 0) {
+      console.log(`Product with ID ${id} not found`);
+      throw new NotFoundException(`Product with ID ${id} not found`);
+    }
   }
 
   async findOne(id: number) {

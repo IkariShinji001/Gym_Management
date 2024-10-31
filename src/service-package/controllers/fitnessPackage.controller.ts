@@ -49,6 +49,7 @@ export class FitnessPackageController {
     @Param('fitnessId') fitnessId: number,
     @Body() updateAllFitnessDto: UpdateAllFitnessServicePackageDto,
   ): Promise<FitnessPackage> {
+   
     return await this.fitnessPackageService.updateFitness(
       fitnessId,
       updateAllFitnessDto,
