@@ -14,7 +14,6 @@ export class EmailService {
     
     private mailerService: MailerService,
     private userService: UserService,
-  ,
     private readonly configService: ConfigService,
   ) {}
 
@@ -113,32 +112,32 @@ export class EmailService {
   }
 
   // Method to generate a reset password token (e.g. JWT)
-  async generateToken(userId: number): Promise<string> {
-    const secret = this.configService.get<string>('JWT_SECRET'); // Access the JWT secret from environment variables
-    const token = jwt.sign({ userId }, secret, { expiresIn: '1h' }); // Token expires in 1 hour
-    console.log('Token:', token);
-    return token;
-  }
+  // async generateToken(userId: number): Promise<string> {
+  //   const secret = this.configService.get<string>('JWT_SECRET'); // Access the JWT secret from environment variables
+  //   const token = jwt.sign({ userId }, secret, { expiresIn: '1h' }); // Token expires in 1 hour
+  //   console.log('Token:', token);
+  //   return token;
+  // }
 
   // Method to send reset password email
-  async sendMailResetPassword(email: string, token: string): Promise<void> {
-    const resetPasswordUrl = `http://localhost:8989/reset-password?token=${token}`;
-    const sendMailDto = {
-      recipients: [email],
-      subject: 'Yêu cầu đặt lại mật khẩu',
-      html: `<p>Nhấn vào link dưới để cập nhật lại mật khẩu:</p>
-             <a href="${resetPasswordUrl}">Đặt lại mật khẩu</a>`,
-      from: null,
-    };
+  // async sendMailResetPassword(email: string, token: string): Promise<void> {
+  //   const resetPasswordUrl = `http://localhost:8989/reset-password?token=${token}`;
+  //   const sendMailDto = {
+  //     recipients: [email],
+  //     subject: 'Yêu cầu đặt lại mật khẩu',
+  //     html: `<p>Nhấn vào link dưới để cập nhật lại mật khẩu:</p>
+  //            <a href="${resetPasswordUrl}">Đặt lại mật khẩu</a>`,
+  //     from: null,
+  //   };
 
-    try {
-      await this.sendEmail(sendMailDto); // Reuse sendEmail method
-    } catch (error) {
-      console.error('Lỗi khi gửi email đặt lại mật khẩu:', error);
-      throw new HttpException(
-        'Lỗi khi gửi email đặt lại mật khẩu',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
+  //   try {
+  //     await this.sendEmail(sendMailDto); // Reuse sendEmail method
+  //   } catch (error) {
+  //     console.error('Lỗi khi gửi email đặt lại mật khẩu:', error);
+  //     throw new HttpException(
+  //       'Lỗi khi gửi email đặt lại mật khẩu',
+  //       HttpStatus.INTERNAL_SERVER_ERROR,
+  //     );
+  //   }
+  // }
 }

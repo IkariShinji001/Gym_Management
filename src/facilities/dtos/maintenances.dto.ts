@@ -4,7 +4,6 @@ export class CreateMaintenanceDto {
   @IsString()
   description: string;
 
-  @IsDate()
   date: Date;
 
   isFinished: boolean;

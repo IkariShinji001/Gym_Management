@@ -1,4 +1,10 @@
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  OnModuleInit,
+} from '@nestjs/common';
 import { IBranchService } from '../interfaces/branches.service.interface';
 import { CreateBranchDto, UpdateBrachDto } from '../dtos/branches.dto';
 import { Branches } from '../repositories/branches.entity';
@@ -90,6 +96,12 @@ export class BranchesService implements IBranchService, OnModuleInit {
   }
 
   async create(newBranch: CreateBranchDto): Promise<Branches> {
+    if (!newBranch.address ) {
+      throw new HttpException(
+        'Địa chỉ không được để trống',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     const existedDistrict = await this.districtsService.findOne(
       newBranch.districtId,
     );
@@ -99,7 +111,6 @@ export class BranchesService implements IBranchService, OnModuleInit {
       district: existedDistrict,
     });
     const savedBranch = await this.branchesRepository.save(branch);
-
     return await this.findDetailById(savedBranch.id);
   }
 
