@@ -1,6 +1,6 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { Facilities } from '../repositories/facilities.entity';
-import { Like, Repository } from 'typeorm';
+import { ILike, Like, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IFacilitiesService } from '../interfaces/facilities.service.interface';
 import { CreateFacilityDto, updateFacilityDto } from '../dtos/facilities.dto';
@@ -83,9 +83,9 @@ export class FacilitiesService implements IFacilitiesService, OnModuleInit {
   }
 
   async checkNameFacilityExisted(nameFacility: string, id: number) {
-    console.log(nameFacility)
+    console.log(nameFacility);
     const facility = await this.facilitiesRepository.findOne({
-      where: { name: Like(`%${nameFacility.trim().toLowerCase()}%`) },
+      where: { name: ILike(`%${nameFacility.trim().toLowerCase()}%`) },
     });
 
     if (facility) {
