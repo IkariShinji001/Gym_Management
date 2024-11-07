@@ -10,7 +10,7 @@ import { IProfileService } from '../interfaces/profile.service.interface';
 import { CreateProfileDto, updateProfileDto } from '../dtos/profile.dto';
 import { Profile } from '../repositories/profile.entity';
 import * as bcrypt from 'bcrypt';
-import { console } from 'inspector';
+// import { console } from 'inspector';
 
 @Injectable()
 export class ProfileService implements IProfileService {

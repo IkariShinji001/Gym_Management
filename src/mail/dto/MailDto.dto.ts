@@ -7,17 +7,12 @@ import {
 } from 'class-validator';
 
 class From {
-  @IsString()
-  @IsNotEmpty()
   name: string;
 
-  @IsEmail()
-  @IsNotEmpty()
   address: string;
 }
 
 export class SendMailDto {
-  @IsArray()
   @IsEmail({}, { each: true })
   @IsNotEmpty()
   recipients: Partial<string[]>;
