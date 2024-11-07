@@ -3,10 +3,8 @@ import { DurationType } from '../repositories/packageDuration.entity';
 import { PartialType } from '@nestjs/mapped-types';
 
 export class CreatePackageDurationDto {
-  @IsNumber()
   duration: number;
 
-  @IsEnum(DurationType)
   durationType: DurationType;
 }
 
