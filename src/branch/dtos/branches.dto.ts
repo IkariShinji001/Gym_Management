@@ -1,14 +1,17 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { IsNumber, IsString } from 'class-validator';
+import { IsDefined, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateBranchDto {
   @IsString()
+  @IsNotEmpty()
   name: string;
 
   @IsString()
+  @IsDefined({ message: 'Địa chỉ không được null.' }) // Kiểm tra không phải null hoặc undefined
+  @IsNotEmpty({ message: 'Tên địa chỉ là bắt buộc.' })
   address: string;
 
-  @IsNumber()
+  @IsString()
   phoneNumber: string;
 
   @IsString()

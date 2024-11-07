@@ -8,26 +8,23 @@ export class CreateFacilityDto {
   @IsNumber()
   branchId: number;
 
-  @IsDate()
   purchaseDate: Date;
 
-  @IsDate()
   warrantyStartDate: Date;
 
-  @IsDate()
   warrantyEndDate: Date;
 
-  @IsBoolean()
-  isActive: boolean;
+  isActive?: boolean;
 
   @IsString()
   description: string;
 
-  @IsString()
   imageUrl: string;
 
   @IsNumber()
   facilityTypeId: number;
 }
 
-export class updateFacilityDto extends PartialType(CreateFacilityDto) {}
+export class updateFacilityDto extends PartialType(CreateFacilityDto) {
+  facilityType: { id: number; name: string };
+}

@@ -34,10 +34,19 @@ export class FacilitiesController {
   }
 
   @Get()
-  async findByName(@Query('name') name: string): Promise<Facilities[]> {
-    if (name) {
-      return await this.facilitiesService.findByName(name);
-    } else return await this.facilitiesService.findAll();
+  async findAll() {
+    return await this.facilitiesService.findAll();
+  }
+
+  @Get('check-name-facility-existed/:nameFacility/:id')
+  async checkNameFacilityExisted(
+    @Param('nameFacility') nameFacility: string,
+    @Param('id') id: number,
+  ) {
+    return await this.facilitiesService.checkNameFacilityExisted(
+      nameFacility,
+      id,
+    );
   }
 
   @Get('findFacilitiesByBranchId/:id')
@@ -45,6 +54,13 @@ export class FacilitiesController {
     @Param('id') id: number,
   ): Promise<Facilities[]> {
     return await this.facilitiesService.findFacilitiesByBranchId(id);
+  }
+
+  @Get('find-facilities-by-facility-type-id/:id')
+  async findFacilitiesByFacilityTypeId(
+    @Param('id') id: number,
+  ): Promise<Facilities[]> {
+    return await this.facilitiesService.findFacilitiesByFacilityTypeId(id);
   }
 
   // @Get('delete-facilities-by-branch-id/:id')

@@ -15,7 +15,6 @@ export class ServiceTypeService implements IServiceTypeService {
     private serviceTypeRepository: Repository<ServicePackageType>,
   ) {}
   async findAll(): Promise<ServicePackageType[]> {
-    console.log('servicepkt findall');
     return await this.serviceTypeRepository.find({
       relations: ['servicePackages'],
     });

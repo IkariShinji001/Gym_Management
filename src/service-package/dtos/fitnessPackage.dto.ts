@@ -12,7 +12,6 @@ export class UpdateFitnessPackageDto {
   @IsString()
   coverImageUrl: Partial<string>;
 
-  @IsNumber()
   @IsNotEmpty()
   servicePackageId: number;
 }

@@ -7,7 +7,6 @@ export interface IFacilitiesService {
   create(newFacility: CreateFacilityDto): Promise<Facilities>;
   update(id: number, updateFacility: updateFacilityDto): Promise<Facilities>;
   delete(id: number): Promise<void>;
-  findByName(name: string): Promise<Facilities[]>;
 }
 
 export interface userName {

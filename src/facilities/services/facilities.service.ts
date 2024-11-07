@@ -1,6 +1,6 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { Facilities } from '../repositories/facilities.entity';
-import { Like, Repository } from 'typeorm';
+import { ILike, Like, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IFacilitiesService } from '../interfaces/facilities.service.interface';
 import { CreateFacilityDto, updateFacilityDto } from '../dtos/facilities.dto';
@@ -26,7 +26,9 @@ export class FacilitiesService implements IFacilitiesService, OnModuleInit {
   }
 
   async findAll(): Promise<Facilities[]> {
-    return await this.facilitiesRepository.find({relations: ['facilityType']});
+    return await this.facilitiesRepository.find({
+      relations: ['facilityType'],
+    });
   }
 
   async findNameBranchById(branchId: BranchId) {
@@ -35,7 +37,6 @@ export class FacilitiesService implements IFacilitiesService, OnModuleInit {
 
   async create(newFacility: CreateFacilityDto): Promise<Facilities> {
     const facility = this.facilitiesRepository.create(newFacility);
-    console.log(facility);
     const branchId = {
       id: facility.branchId,
     };
@@ -46,14 +47,11 @@ export class FacilitiesService implements IFacilitiesService, OnModuleInit {
     const nameBranch = await firstValueFrom(
       await this.findNameBranchById(branchId),
     );
-    console.log(facility);
-    console.log(nameBranch);
     const facilityNew = {
       ...facility,
       facilityType: facilityType,
       nameBranch: nameBranch.name,
     };
-    console.log(facilityNew);
     return await this.facilitiesRepository.save(facilityNew);
   }
 
@@ -73,23 +71,46 @@ export class FacilitiesService implements IFacilitiesService, OnModuleInit {
     id: number,
     updateFacility: updateFacilityDto,
   ): Promise<Facilities> {
+    console.log(updateFacility);
+    updateFacility.facilityType.id = updateFacility.facilityTypeId;
     await this.facilitiesRepository.update(id, updateFacility);
-    return this.facilitiesRepository.findOne({ where: { id }, relations: ['facilityType'] });
+    const facility = await this.facilitiesRepository.findOne({
+      where: { id },
+      relations: ['facilityType'],
+    });
+    console.log(facility);
+    return facility;
   }
 
-  async findByName(name: string): Promise<Facilities[]> {
-    const facilities = await this.facilitiesRepository.find({
-      where: {
-        name: Like(`%${name}%`), // Sử dụng toán tử ilike để tìm kiếm không phân biệt chữ hoa thường
-      },
+  async checkNameFacilityExisted(nameFacility: string, id: number) {
+    console.log(nameFacility);
+    const facility = await this.facilitiesRepository.findOne({
+      where: { name: ILike(`%${nameFacility.trim().toLowerCase()}%`) },
     });
-    return facilities;
+
+    if (facility) {
+      if (facility?.id == id) {
+        return false;
+      }
+      return true;
+    } else {
+      return false;
+    }
   }
 
   async findFacilitiesByBranchId(id: number): Promise<Facilities[]> {
     console.log(id);
     const facilities = this.facilitiesRepository.find({
       where: { branchId: id },
+      relations: ['facilityType'],
+    });
+    return facilities;
+  }
+
+  async findFacilitiesByFacilityTypeId(id: number): Promise<Facilities[]> {
+    const facilities = this.facilitiesRepository.find({
+      where: { facilityTypeId: id },
+      relations: ['facilityType'],
     });
     return facilities;
   }
