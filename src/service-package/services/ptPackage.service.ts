@@ -21,6 +21,13 @@ export class PtPackagesService implements IPtPackageService {
     private ptSerivce: PtService,
   ) {}
 
+  async getAllPtPackagesByTypeId(typeId: number): Promise<PtPackages[]> {
+    return await this.ptPackageRepository.find({
+      where: { servicePackage: { serviceType: { id: typeId } } },
+      relations: ['servicePackage', 'servicePackage.serviceType', 'pt'],
+    });
+  }
+
   async find(): Promise<PtPackages[]> {
     return await this.ptPackageRepository.find({
       relations: ['servicePackage', 'pt'],

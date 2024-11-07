@@ -33,6 +33,10 @@ export class PtPackagesController {
   async getAll(): Promise<PtPackages[]> {
     return await this.ptPackagesService.getAll();
   }
+  @Get('/type/:typeId')
+  async getAllPtPackagesByTypeId(@Param('typeId') typeId: number): Promise<PtPackages[]> {
+    return await this.ptPackagesService.getAllPtPackagesByTypeId(typeId);
+  }
   @Get('/:id')
   async getPPById(@Param('id') ptPackageId: number): Promise<PtPackages> {
     return await this.ptPackagesService.getById(ptPackageId);
