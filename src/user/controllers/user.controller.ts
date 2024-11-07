@@ -96,11 +96,7 @@ export class UserController {
     );
   }
   
-  // @Post('/reset-password')
-  // async resetPassword(@Body() payload: { email: string }) {
-  //   const { email } = payload;
-  //   return await this.userService.sendMailResetPassword(email);
-  // }
+ 
   @Patch('/change-password/:id')
   async changePassword(@Param('id') id: number, @Body() data: { password: string, newPassword: string }) {
     return await this.userService.changePassword(id, data.password, data.newPassword);
@@ -109,6 +105,11 @@ export class UserController {
   async updatePasswordWithToken(@Query('token') token: string, @Body() payload: { newPassword: string }) {
     const { newPassword } = payload;
     return await this.userService.updatePasswordWithToken(token, newPassword);
+  }
+
+  @Get('email/:email')
+  async getUserByEmail(@Param('email') email: string){
+    return await this.userService.findOneByEmail(email);
   }
 
 }

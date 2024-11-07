@@ -67,11 +67,14 @@ export class ServicePackagesService implements IServicePackageService {
 
   async update(
     servicePackageId: number,
-    updateServicePackage: UpdateServicePackageDto,
+    updateServicePackage: Partial<UpdateServicePackageDto>,
   ): Promise<ServicePackages> {
     if (servicePackageId === undefined || servicePackageId === null) {
-      console.log('Have no servicePackageId is passed');
-      throw new HttpException('Service package ID is missing', 400);
+      console.log(`Service package ID: ${servicePackageId} is missing`);
+      throw new HttpException(
+        `Service package ID: ${servicePackageId} is missing`,
+        400,
+      );
     }
 
     const existedSP = await this.servicePackageRepository.findOne({

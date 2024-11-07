@@ -6,13 +6,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { HistoryEntryTime } from '../repositories/historyEntryTime.entity';
-import * as moment from 'moment-timezone';
 import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
 import { PageOptionsDto } from 'src/shared/dto/page.options.dto';
 import { PageDto } from 'src/shared/dto/page.dto';
 import { PageMetaDto } from 'src/shared/dto/pageMeta.dto';
-import { EmailService } from 'src/mail/service/mail.service';
 import * as jwt from 'jsonwebtoken';
 
 @Injectable()
@@ -23,7 +21,7 @@ export class UserService implements IUserService {
     private userRepository: Repository<User>,
     @InjectRepository(HistoryEntryTime)
     private historyEntryTimeRepository: Repository<HistoryEntryTime>,
-    private configService: ConfigService,
+    private configService: ConfigService
   ) {
     this.stripe = new Stripe(configService.get('STRIPE_SECRET_KEY'));
   }
@@ -139,45 +137,44 @@ export class UserService implements IUserService {
   }
 
   async createUser(newUser: CreateUserDto): Promise<User> {
-    const salt = bcrypt.genSaltSync(10);
-    const hashedPassword = bcrypt.hashSync(newUser.password, salt);
+    console.log(newUser)
+    try {
+      const salt = bcrypt.genSaltSync(10);
+      const hashedPassword = bcrypt.hashSync(newUser.password, salt);
 
-    const existedUser = await this.findOneByUsername(newUser.username);
-
-    if (existedUser) {
+      const existedUser = await this.findOneByUsername(newUser.username);
+      
+      if (existedUser) {
       throw new HttpException('Đã tồn tại username', HttpStatus.BAD_REQUEST);
     }
-
+      const existedEmail = await this.userRepository.findOne({where:{email :newUser.email}});
+      if (existedEmail) {
+        throw new HttpException('Đã tồn tại email', HttpStatus.BAD_REQUEST);
+      }
     newUser.password = hashedPassword;
-
+    
     const stripeCustomer = await this.stripe.customers.create({
       name: newUser.fullName,
       email: newUser.email,
     });
 
     const user = { ...newUser, customerStripeId: stripeCustomer.id };
-
+    
     const createdUser = this.userRepository.create(user);
-
+    
     return await this.userRepository.save(createdUser);
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    }
   }
 
   async updateUser(id: number, updateUser: UpdateUserDto): Promise<User> {
+    console.log(updateUser);
     await this.userRepository.update(id, updateUser);
     return await this.userRepository.findOne({ where: { id } });
   }
 
-  // async sendMailResetPassword(email: string): Promise<void> {
-  //   const user = await this.userRepository.findOne({ where: { email } });
-  //   if (!user) {
-  //     throw new HttpException(
-  //       'Không tìm thấy người dùng',
-  //       HttpStatus.NOT_FOUND,
-  //     );
-  //   }
-  //   const token = await this.EmailService.generateToken(user.id); // Generate token
-  //   await this.EmailService.sendMailResetPassword(email, token); // Send reset password email
-  // }
+  
 
   async changePassword(
     id: number,
@@ -224,5 +221,12 @@ export class UserService implements IUserService {
   }
   deleteUser(id: number): Promise<void> {
     throw new Error('Method not implemented.');
+  }
+  async findOneByEmail(email: string): Promise<User> {
+    try {
+      return await this.userRepository.findOne({ where: { email } });
+    } catch (error) {
+      throw new HttpException('Email không tồn tại', HttpStatus.NOT_FOUND);
+    }
   }
 }

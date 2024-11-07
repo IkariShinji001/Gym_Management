@@ -40,6 +40,7 @@ export class EmployeeService implements IEmployeeService {
     newProfile: CreateProfileDto,
     newEmployee: CreateEmployeeDto,
   ): Promise<Employees> {
+    console.log(newProfile);
     // Kiểm tra xem email đã tồn tại chưa
     const existingEmail = await this.profileService.findOneByEmail({
       email: newProfile.email,
@@ -49,12 +50,16 @@ export class EmployeeService implements IEmployeeService {
     }
     const createdProfile = await this.profileService.create(newProfile);
     const manager = await this.managerService.findOne(newEmployee.managerId);
+    if(!manager){
+      throw new BadRequestException('Không tìm thấy manager');
+    }
     const createdEmployee = this.employeeRepository.create({
       ...newEmployee,
       profile: createdProfile,
       manager,
     });
-    return await this.employeeRepository.save(createdEmployee);
+    const savedEmployee = await this.employeeRepository.save(createdEmployee);
+    return savedEmployee;
   }
 
   async update(

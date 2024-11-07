@@ -21,11 +21,22 @@ export class ServiceTypeService implements IServiceTypeService {
     });
   }
 
-   async findOneById(id: number): Promise<ServicePackageType> {
+  async getListTypeByServicePackageId(listIds: number[]) {
+    const res = [];
+    for (let i = 0; i < listIds.length; i++) {
+      const pkg = await this.serviceTypeRepository.find({
+        where: { servicePackages: { id: listIds[i] } },
+      });
+      res.push(pkg);
+    }
+    return res;
+  }
+
+  async findOneById(id: number): Promise<ServicePackageType> {
     return await this.serviceTypeRepository.findOne({
       where: { id },
-      relations:['servicePackages'],
-   });
+      relations: ['servicePackages'],
+    });
   }
 
   async create(
@@ -49,7 +60,7 @@ export class ServiceTypeService implements IServiceTypeService {
       );
     }
     Object.assign(existedType, updateTypeDto);
-    return await this.serviceTypeRepository.save(existedType)
+    return await this.serviceTypeRepository.save(existedType);
   }
 
   async delete(typeId: number): Promise<void> {

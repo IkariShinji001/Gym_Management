@@ -21,7 +21,6 @@ export class ServicePackagePriceService implements IServicePackagePriceService {
   constructor(
     @InjectRepository(ServicePackagePrice)
     private packagePriceRepository: Repository<ServicePackagePrice>,
-
     private packageDurationService: PackageDurationService,
   ) {}
 
@@ -29,6 +28,27 @@ export class ServicePackagePriceService implements IServicePackagePriceService {
     return await this.packagePriceRepository.find({
       relations: ['servicePackage', 'packageDuration'],
     });
+  }
+
+  async getAllTypeByListIds(listId: { listPriceIds: number[] }) {
+    // Check if the array is empty
+    if (!listId.listPriceIds || listId.listPriceIds.length === 0) {
+      return []; // Return an empty array if no IDs are provided
+    }
+  
+    // Proceed with the query if there are IDs
+    const res = await this.packagePriceRepository
+      .createQueryBuilder('packagePrice')
+      .leftJoinAndSelect('packagePrice.servicePackage', 'servicePackage')
+      .leftJoinAndSelect('servicePackage.serviceType', 'serviceType')
+      .where('packagePrice.id IN (:...listPriceIds)', {
+        listPriceIds: listId.listPriceIds,
+      })
+      .getMany();
+  
+    // Map the result to get service types
+    let types = res.map((pkg) => pkg.servicePackage.serviceType);
+    return types;
   }
 
   async getAllByListIds(
@@ -52,6 +72,8 @@ export class ServicePackagePriceService implements IServicePackagePriceService {
       res.push(...mappedPrices);
       final = { servicePackagePriceList: res };
     }
+
+    console.log(final)
 
     return final; // Return the final result
   }
@@ -88,7 +110,7 @@ export class ServicePackagePriceService implements IServicePackagePriceService {
       );
       throw new HttpException(
         `Duration with ID: ${createPackagePriceDto.packageDurationId} not found`,
-        400,
+        404,
       );
     }
 

@@ -39,7 +39,7 @@ export class AuthController {
       res.status(500).json({ error: error.message });
     }
   }
-
+  
   @Public()
   @Post('/verify/user')
   async verifyUser(@Body() data: { accessToken: string }) {

@@ -47,7 +47,7 @@ export class BillService {
     this.voucherService =
       this.client.getService<VoucherServiceClient>('VoucherService');
   }
-  
+
   async getVoucherById(id: number) {
     return this.voucherService.FindVoucherById({ id });
   }
@@ -117,7 +117,7 @@ export class BillService {
         now,
       })
       .getMany();
-    if(results.length === 0) {
+    if (results.length === 0) {
       return [];
     }
 
