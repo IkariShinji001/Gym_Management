@@ -22,11 +22,20 @@ export class PtPackagesService implements IPtPackageService {
   ) {}
 
   async getAllPtPackagesByTypeId(typeId: number): Promise<PtPackages[]> {
-    return await this.ptPackageRepository.find({
-      where: { servicePackage: { serviceType: { id: typeId } } },
-      relations: ['servicePackage', 'servicePackage.serviceType', 'pt'],
-    });
-  }
+  const ptPackages = await this.ptPackageRepository
+    .createQueryBuilder('ptPackage')
+    .leftJoinAndSelect('ptPackage.pt', 'pt')
+    .leftJoinAndSelect('pt.profile', 'profile')
+    .leftJoinAndSelect('pt.images', 'ptImages')
+    .leftJoinAndSelect('ptPackage.servicePackage', 'servicePackage')
+    .leftJoinAndSelect('servicePackage.serviceType', 'serviceType')
+    .leftJoinAndSelect('servicePackage.servicePackagePrices', 'servicePackagePrice')
+    .leftJoinAndSelect('servicePackagePrice.packageDuration', 'packageDuration')
+    .where('serviceType.id = :typeId', { typeId })
+    .getMany();
+
+  return ptPackages;
+}
 
   async find(): Promise<PtPackages[]> {
     return await this.ptPackageRepository.find({
